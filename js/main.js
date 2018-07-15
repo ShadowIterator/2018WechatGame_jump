@@ -7,6 +7,8 @@
 
 // import Stone from './stone/stone'
 
+import Scene from  './ctrl/scene'
+
 let ctx = canvas.getContext('2d')
 // let databus = new DataBus()
 
@@ -19,11 +21,9 @@ export default class Main {
     constructor() {
         // 维护当前requestAnimationFrame的id
         this.aniId = 0;
-        // this.stone = new Stone(canvas.width, canvas.height,
-        //     canvas.width/2 , canvas.height - 50,
-        //     1, 1.5,
-        //     0.6, 0.1, 15);
-        // console.log(canvas.height - 40);
+        console.log('start construct scene');
+        this.scene = new Scene(canvas.width, canvas.height);
+        console.log('construct scene done');
         this.restart();
     }
 
@@ -45,16 +45,13 @@ export default class Main {
 
     render() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        // this.stone.render(ctx);
-
+        this.scene.render(ctx);
     }
     // // 实现游戏帧循环
     loop() {
         // databus.frame++
         this.frame++;
-        // console.log(this.stone.O.x, this.stone.O.y);
-        // this.render();
-        // this.stone.update();
+        this.render();
         this.aniId = window.requestAnimationFrame(
             this.bindLoop,
             canvas

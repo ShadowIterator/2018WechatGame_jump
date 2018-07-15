@@ -26,6 +26,8 @@ export class Segment {
     constructor(tP1, tP2) {
         this.P1 = tP1;
         this.P2 = tP2;
+        // console.log('Segment constructor: P1', this.P1);
+        // console.log('Segment constructor: P2', this.P2);
     }
 }
 
