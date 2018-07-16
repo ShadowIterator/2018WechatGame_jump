@@ -8,6 +8,7 @@
 // import Stone from './stone/stone'
 
 import Scene from  './ctrl/scene'
+import Control from './ctrl/control'
 
 let ctx = canvas.getContext('2d')
 // let databus = new DataBus()
@@ -15,22 +16,49 @@ let ctx = canvas.getContext('2d')
 /**
  * 游戏主函数
  */
-let CL = [];
-let LL = [];
+
 export default class Main {
     constructor() {
         // 维护当前requestAnimationFrame的id
         this.aniId = 0;
+        this.frame = 0;
+        this.scene = {};
+        this.control = {};
+        this.status = 'onConstruction';
         console.log('start construct scene');
-        this.scene = new Scene(canvas.width, canvas.height);
-        console.log('construct scene done');
-        this.restart();
+
+         this.restart();
+         this.gameover();
+    }
+
+    gameover() {
+        this.status = 'over';
+        this.bind_touchstart_hdr = this.touchstart_hdr.bind(this)
+        canvas.addEventListener('touchstart', this.bind_touchstart_hdr);
+        this.control.removeEvent();
+    }
+
+    touchstart_hdr(e) {
+
+        console.log('touchEventHandler');
+
+        e.preventDefault()
+
+        this.restart()
+
     }
 
     restart() {
+
+        this.frame = 0;
+        this.scene = new Scene(canvas.width, canvas.height, this.gameover.bind(this));
+        this.control = new Control(canvas.width, canvas.height, this.scene);
+        this.status = 'gaming';
+        console.log('construct scene done');
+
         canvas.removeEventListener(
             'touchstart',
-            this.touchHandler
+            this.bind_touchstart_hdr
         );
 
         this.bindLoop = this.loop.bind(this);
@@ -43,15 +71,48 @@ export default class Main {
         );
     }
 
+    render_gaming() {
+        this.scene.render(ctx);
+        this.control.render(ctx);
+    }
+
+    render_over() {
+        // context.strokeStyle = Obj.sS;
+        // context.font = Obj.font;
+        // context.beginPath();
+        // context.fillText(`${Obj.text.toFixed(0)}%`, Obj.px, Obj.py);
+        // context.stroke();
+        // // context.closePath();
+        // context.restore();
+        // ctx.save();
+        ctx.strokeStyle = 'white';
+        ctx.font = '25px Arial';
+        ctx.beginPath();
+        ctx.fillText('game over, touch screen to restart', canvas.width / 2, canvas.height / 2);
+        // ctx.stroke();
+        ctx.closePath();
+        // ctx.restore();
+
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2, canvas.height / 2, 30, 0, 6.28, false);
+        ctx.strokeStyle = '#0ff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+    }
+
     render() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        this.scene.render(ctx);
+        if(this.status === 'gaming') this.render_gaming();
+        else if(this.status === 'over') this.render_over();
     }
     // // 实现游戏帧循环
     loop() {
         // databus.frame++
         this.frame++;
         this.render();
+        if(this.status === 'gaming' && (this.frame) % 3 === 0) {
+            this.scene.update();
+        }
         this.aniId = window.requestAnimationFrame(
             this.bindLoop,
             canvas
