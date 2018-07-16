@@ -22,6 +22,7 @@ export default class Main {
         // 维护当前requestAnimationFrame的id
         this.aniId = 0;
         this.frame = 0;
+        this.score = 0;
         this.scene = {};
         this.control = {};
         this.status = 'onConstruction';
@@ -31,7 +32,8 @@ export default class Main {
          this.gameover();
     }
 
-    gameover() {
+    gameover(score) {
+        this.score = score;
         this.status = 'over';
         this.bind_touchstart_hdr = this.touchstart_hdr.bind(this)
         canvas.addEventListener('touchstart', this.bind_touchstart_hdr);
@@ -50,6 +52,7 @@ export default class Main {
 
     restart() {
 
+        this.score = 0;
         this.frame = 0;
         this.scene = new Scene(canvas.width, canvas.height, this.gameover.bind(this));
         this.control = new Control(canvas.width, canvas.height, this.scene);
@@ -85,19 +88,20 @@ export default class Main {
         // // context.closePath();
         // context.restore();
         // ctx.save();
-        ctx.strokeStyle = 'white';
-        ctx.font = '25px Arial';
-        ctx.beginPath();
-        ctx.fillText('game over, touch screen to restart', canvas.width / 2, canvas.height / 2);
+        ctx.fillStyle = '#0ff';
+        ctx.font = '20px Arial';
+        // ctx.beginPath();
+        ctx.fillText(`game over, touch screen to restart`, 10, canvas.height / 2);
+        ctx.fillText(`your score is ${this.score}`, 10, 20 + canvas.height / 2)
         // ctx.stroke();
-        ctx.closePath();
+        // ctx.closePath();
         // ctx.restore();
 
-        ctx.beginPath();
-        ctx.arc(canvas.width / 2, canvas.height / 2, 30, 0, 6.28, false);
-        ctx.strokeStyle = '#0ff';
-        ctx.lineWidth = 2;
-        ctx.stroke();
+        // ctx.beginPath();
+        // ctx.arc(canvas.width / 2, canvas.height / 2, 30, 0, 6.28, false);
+        // ctx.strokeStyle = '#0ff';
+        // ctx.lineWidth = 2;
+        // ctx.stroke();
     }
 
     render() {

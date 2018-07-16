@@ -66,6 +66,15 @@ export function _mul(V, k){
     V.y *= k;
 }
 
+export function _div(V, k) {
+    V.x /= k;
+    V.y /= k;
+}
+
+export function div(V, k) {
+    return new Point(V.x / k, V.y / k);
+}
+
 export function rotate(V, theta) {
     let cosT = Math.cos(theta);
     let sinT = Math.sin(theta);
@@ -165,6 +174,6 @@ export function pointInCircle(P, O) {
     return DBcmp(dist_2(P, O.O), O.R * O.R) <= 0;
 }
 
-export function CircleOnCircle(P, C, R) {
-    return DBcmp(dist_2(P, C.O), (C.R + R) * (C.R + R)) < 0;
+export function CircleOnCircle(C1, C2, ) {
+    return DBcmp(dist_2(C1.O, C2.O), (C1.R + C2.R) * (C1.R + C2.R)) < 0;
 }

@@ -14,12 +14,49 @@ const IMGSRC = '';
 const ENEMY_WIDTH = 10;
 const ENEMY_HEIGHT = 10;
 
-export default class Hero extends Sprite {
-    constructor (S, V) {
-        super(IMGSRC, ENEMY_WIDTH, ENEMY_HEIGHT);
+export default class Enemy{
+    constructor (S) {
+        // super(IMGSRC, ENEMY_WIDTH, ENEMY_HEIGHT);
         this.shape = S;
-        this.V = V;
+        this.V = new Point(0, 0);
+        this.index = 0;
+        this.t = 0;
+        this.totT = 0;
+        this.routine = [];
+        this.maxy = this.shape.O.y;
         this.className = 'enemy';
     }
+
+    updateV() {
+
+    }
+
+    timePass(t) {
+        this.t += t;
+        this.t %= this.totT;
+        for(this.index = 0; this.index < this.routine.length; ++this.index) {
+            if(this.routine[this.index].t >= this.t) {
+                break;
+            }
+        }
+        this.V = this.routine[this.index].V;
+
+    }
+
+    addroutine(RT) {
+        RT.t += this.totT;
+        this.routine.push(RT);
+        this.totT = RT.t;
+    }
+
+    drawToCanvas(ctx, transPosition) {
+        let P = transPosition(this.shape.O);
+        ctx.beginPath();
+        ctx.arc(P.x, P.y, this.shape.R, 0, 2 * PI, false);
+        ctx.strokeStyle = '#f00';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+    }
+
 
 }

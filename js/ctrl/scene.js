@@ -1,6 +1,6 @@
 import {PI, INF, EPS} from  '../libs/geometry'
 import {Point, Circle, Segment, Colli} from '../libs/geometry'
-import {DBcmp, add, _add, sub, _sub, mul, _mul,
+import {DBcmp, add, _add, sub, _sub, mul, _mul, div, _div,
     rotate, _rotate, dot, cross, _reverse,
     mod_2, mod, _normalize, normalize, _relen,
     dist_2, relen, isZero, _toZero, calH,
@@ -12,13 +12,20 @@ import Enemy from '../eles/enemy'
 import Stair from '../eles/stair'
 
 const NVy = new Point(0, 1);
-const AVE_STAIRS_PER_Y = 0.04;
+const AVE_STAIRS_PER_Y = 0.015;
 const AVE_STAIRS_LEN = 40;
 const VARIANCE_STAIRS_LEN = 1;
 const g = 5;
 const Ag = new Point(0, -g);
-const DEFAULT_EJECT_VY = 25;
+const DEFAULT_EJECT_VY = 30;
 const DEFAULT_EJECT_H = DEFAULT_EJECT_VY * DEFAULT_EJECT_VY / (2 * g);
+const AVE_ENEMY_PER_Y = 0.005;
+const AVE_ENEMY_V = 2;
+const AVE_ENEMY_T = 100;
+const ENEMY_DX = 200;
+const ENEMY_DY = 100;
+const AVE_EMEMY_STP = 3;
+
 
 function getRandUniform(L, R) {
     return parseInt(L + Math.random() * (R - L));
@@ -76,23 +83,6 @@ function CircolliSeg(C, V, S, res) {
     return true;
 }
 
-// moveCircle(C, P) {
-//     let V = sub(P, C.O);
-//     if(isZero(V)) return ;
-//     let res = {};
-//     if(this.colliCircle(C, res)) {
-//         let VN = normalize(res.N);
-//         let VH = rotate(VN, -PI / 2);
-//         _mul(VN, dot(VN, this.V));
-//         _mul(VH, dot(VH, this.V));
-//         _reverse(VN);
-//         this.V = add(VN, VH);
-//     }
-//     C.O.x = P.x;
-//     C.O.y = P.y;
-//
-// }
-
 function getRandGauss(L, R, mu, sigma) {
     let rtn = 0;
     do {
@@ -104,8 +94,12 @@ function getRandGauss(L, R, mu, sigma) {
     return rtn;
 }
 
-function __sortByy(A, B) {
+function __sortStairByy(A, B) {
     return -DBcmp(A.shape.P1.y, B.shape.P1.y);
+}
+
+function __sortEnemyByy(A, B) {
+    return -DBcmp(A.maxy, B.maxy);
 }
 
 export default class Scene {
@@ -121,13 +115,15 @@ export default class Scene {
         this.underliney = 0;
         this.stairs = [];
         this.enemys = [];
+        this.score = 0;
         this.callback_gameover = callback_gameover;
         this.highestY = 0;
+        this.gameover = false;
 
         console.log('start construct stairs');
 
-        this.stairs.push(new Stair(new Segment(new Point(-100, 0), new Point(this.W + 100, 0)), new Point(0, 25)));
-        this.stairs.push(new Stair(new Segment(new Point(-100, -3), new Point(this.W + 100, -3)), new Point(0, 25)));
+        // this.stairs.push(new Stair(new Segment(new Point(-100, 0), new Point(this.W + 100, 0)), new Point(0, 25)));
+        // this.stairs.push(new Stair(new Segment(new Point(-100, -3), new Point(this.W + 100, -3)), new Point(0, 25)));
         this.stairs.push(this.genStair_exact(this.hero.shape.O.x - getRandUniform(1, AVE_STAIRS_LEN / 2),
             this.hero.shape.O.x + getRandUniform(1, AVE_STAIRS_LEN / 2),
             0));
@@ -138,6 +134,7 @@ export default class Scene {
 
         console.log('exact stairs done');
         this.appendStairs(10, this.H, DEFAULT_EJECT_H, AVE_STAIRS_PER_Y * 2);
+        this.appendEnemy(this.H / 2, this.H, AVE_ENEMY_PER_Y);
         console.log('append stairs done');
     }
 
@@ -195,6 +192,41 @@ export default class Scene {
         }
     }
 
+    genRoutine(X) {
+        let t = mod(X) / AVE_ENEMY_V;
+        _div(X, t);
+        return {V: X, t: t};
+    }
+
+    genEnemy(y) {
+        let x = getRandUniform(0, this.W);
+        let rtn = new Enemy(new Circle(new Point(x, y), 15), new Point(0, 0));
+        let stp = getRandGauss(1, 3, AVE_EMEMY_STP, 2);
+        let maxy = y;
+        let P = new Point(x, y);
+        let P0 = new Point(x, y);
+        for(; stp > 0; --stp) {
+            let dx = getRandUniform(-ENEMY_DX, ENEMY_DX);//getRandGauss(-ENEMY_DX, ENEMY_DX, 0, 30);
+            let dy = getRandUniform(-ENEMY_DY, ENEMY_DY);//getRandGauss(-ENEMY_DY, ENEMY_DY, 0, 30);
+            let X = new Point(dx, dy);
+            _add(P, X);
+            maxy = Math.max(maxy, P.y);
+            rtn.addroutine(this.genRoutine(X));
+        }
+        _sub(P0, P);
+        rtn.addroutine(this.genRoutine(P0));
+        rtn.maxy = maxy;
+        return rtn;
+    }
+
+    appendEnemy(L, H, rho) {
+        for(let i = L; i < H; ++i) {
+            if(DBcmp(Math.random(), rho) < 0) {
+                this.enemys.push(this.genEnemy(i));
+            }
+        }
+    }
+
     transPosition(P) {
         // console.log('trans cP ', this.centerP);
         // console.log('trans Hd2 ', this.Hd2);
@@ -203,11 +235,18 @@ export default class Scene {
     }
 
     render(ctx) {
+        ctx.fillStyle = '#f00';
+        ctx.font = '10px Arial';
+        ctx.fillText(`your score is ${this.score}`, 0, 10);
         this.hero.drawToCanvas(ctx, this.transPosition.bind(this));
         for(let i = this.stairs.length - 1; i >= 0; --i) {
             // console.log(this.stairs[i]);
             this.stairs[i].drawToCanvas(ctx, this.transPosition.bind(this));
         }
+        for(let i = this.enemys.length - 1; i >= 0; --i) {
+            this.enemys[i].drawToCanvas(ctx, this.transPosition.bind(this));
+        }
+
     }
 
     heroLoop() {
@@ -216,6 +255,7 @@ export default class Scene {
     }
 
     moveHero(t) {
+        if(this.gameover) return ;
         // console.log('t', t);
         // console.log(this.hero);
         if(DBcmp(t, 0) === 0) return ;
@@ -230,29 +270,22 @@ export default class Scene {
         let tres = {};
         let res_stair = {};
         tres.P = new Point(0, 0);
-        // console.log('CLL', CL.length);
-        // for(let i = 0; i < CL.length; ++i) {
-        //     if(! Cir(CL[i], tres))
-        //         continue;
-        //     // this.colliCircle(CL[i], tres);
-        //     // console.log('before,tres', tres);
-        //     if(DBcmp(res.d, tres.d) > 0) {
-        //         res = new Colli(tres);
-        //         // res = Object.create(tres);
-        //         // console.log('xres', res);
-        //         // console.log('tres', tres);
-        //     }
-        // }
-        // for(let i = 0; i < LL.length; ++i) {
-        //     if(! this.colliSeg(LL[i], tres))
-        //         continue;
-        //     if(DBcmp(res.d, tres.d) > 0) {
-        //         res = new Colli(tres);
-        //
-        //         // res = Object.create(tres);
-        //     }
-        // }
-        // console.log('res', res);
+        let herov = mod(this.hero.V);
+
+        for(let i = this.enemys.length - 1; i >= 0; --i) {
+            if(CirColliCir(this.hero.shape, this.hero.V, this.enemys[i].shape, tres)) {
+                if(DBcmp(t, tres.d  / herov) > 0) {
+                    this.gameover = true;
+                    this.callback_gameover(this.score);
+                    return;
+                }
+            }
+            if(CircleOnCircle(this.hero.shape, this.enemys[i].shape)) {
+                this.gameover = true;
+                this.callback_gameover(this.score);
+                return;
+            }
+        }
 
         for(let i = this.stairs.length - 1; i >= 0; --i) {
             if(!CircolliSeg(this.hero.shape, this.hero.V, this.stairs[i].shape, tres))
@@ -263,7 +296,7 @@ export default class Scene {
                 res_stair = this.stairs[i];
             }
         }
-        let rt = res.d / mod(this.hero.V);
+        let rt = res.d / herov;
         // console.log(rt, t);
         if(DBcmp(t, rt) > 0) {
             this.hero.shape.O = Object.create(res.P);
@@ -287,21 +320,35 @@ export default class Scene {
     }
 
     update() {
+        if(this.gameover) return ;
         this.moveHero(1);
+        this.score = Math.max(this.hero.shape.O.y, this.score);
         _add(this.hero.V, Ag);
         this.update_screen();
-        if(DBcmp(this.hero.shape.O.y, this.underliney) < 0)
-            this.callback_gameover();
+        if(DBcmp(this.hero.shape.O.y, this.underliney) < 0) {
+            this.gameover = true;
+            this.callback_gameover(this.score);
+        }
+        for(let i = this.enemys.length -1; i >= 0; --i) {
+            this.enemys[i].timePass(1);
+            _add(this.enemys[i].shape.O, this.enemys[i].V);
+            if(i === 0)
+                console.log(this.enemys[i].shape.O);
+        }
     }
 
     update_screen() {
         //move screen
+        if(this.gameover) return ;
+
         if(DBcmp(this.hero.shape.O.y, this.ceilliney) > 0) {
             let nceily = parseInt(this.hero.shape.O.y);
             let delta = nceily - this.ceilliney;
             this.appendStairs(this.H + this.underliney, this.H + this.underliney + delta,
                 this.maxStairH, AVE_STAIRS_PER_Y);
+            this.appendEnemy(this.H + this.underliney, this.H + this.underliney + delta);
             this.clearStair(this.underliney + delta);
+            this.clearEnemy(this.underliney + delta);
             this.underliney += delta;
             this.ceilliney = nceily;
             this.centerP.y += delta;
@@ -309,11 +356,20 @@ export default class Scene {
     }
 
     clearStair(H) {
-        this.stairs.sort(__sortByy);
+        this.stairs.sort(__sortStairByy);
         let k = 0;
         for(k = 0; k < this.stairs.length; ++k)
             if(DBcmp(this.stairs[k].shape.P1.y, H) < 0)
                 break;
         this.stairs = this.stairs.slice(0, k);
+    }
+
+    clearEnemy(H) {
+        this.enemys.sort(__sortEnemyByy);
+        let k = 0;
+        for(k = 0; k < this.enemys.length; ++k)
+            if(DBcmp(this.enemys[k].maxy, H) < 0)
+                break;
+        this.enemys = this.enemys.slice(0, k);
     }
 }

@@ -11,10 +11,10 @@
 		"newFeature": true
 	},
 	"compileType": "game",
-	"libVersion": "2.0.4",
-	"appid": "touristappid",
-	"projectname": "TestDev1",
-	"isGameTourist": true,
+	"libVersion": "2.2.0",
+	"appid": "wx19da3cfb1f3d57eb",
+	"projectname": "SIjump",
+	"isGameTourist": false,
 	"condition": {
 		"search": {
 			"current": -1,
