@@ -92,7 +92,7 @@ export default class Main {
         ctx.font = '20px Arial';
         // ctx.beginPath();
         ctx.fillText(`game over, touch screen to restart`, 10, canvas.height / 2);
-        ctx.fillText(`your score is ${this.score}`, 10, 20 + canvas.height / 2)
+        ctx.fillText(`your score is ${parseInt(this.score)}`, 10, 20 + canvas.height / 2)
         // ctx.stroke();
         // ctx.closePath();
         // ctx.restore();
@@ -114,9 +114,9 @@ export default class Main {
         // databus.frame++
         this.frame++;
         this.render();
-        if(this.status === 'gaming' && (this.frame) % 3 === 0) {
+        // if(this.status === 'gaming' && (this.frame) % 3 === 0) {
             this.scene.update();
-        }
+        // }
         this.aniId = window.requestAnimationFrame(
             this.bindLoop,
             canvas

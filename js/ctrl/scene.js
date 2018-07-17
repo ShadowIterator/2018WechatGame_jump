@@ -12,19 +12,7 @@ import Enemy from '../eles/enemy'
 import Stair from '../eles/stair'
 
 const NVy = new Point(0, 1);
-const AVE_STAIRS_PER_Y = 0.015;
-const AVE_STAIRS_LEN = 40;
-const VARIANCE_STAIRS_LEN = 1;
-const g = 5;
-const Ag = new Point(0, -g);
-const DEFAULT_EJECT_VY = 30;
-const DEFAULT_EJECT_H = DEFAULT_EJECT_VY * DEFAULT_EJECT_VY / (2 * g);
-const AVE_ENEMY_PER_Y = 0.005;
-const AVE_ENEMY_V = 2;
-const AVE_ENEMY_T = 100;
-const ENEMY_DX = 200;
-const ENEMY_DY = 100;
-const AVE_EMEMY_STP = 3;
+
 
 
 function getRandUniform(L, R) {
@@ -120,21 +108,35 @@ export default class Scene {
         this.highestY = 0;
         this.gameover = false;
 
+        this.AVE_STAIRS_PER_Y = 0.02;
+        this.AVE_STAIRS_LEN = 50 / 320 * this.W;//adj to canvas.width
+        this.VARIANCE_STAIRS_LEN = 1;
+        this.g = 0.1;
+        this.Ag = new Point(0, -this.g);
+        this.DEFAULT_EJECT_VY = 5;
+        this.DEFAULT_EJECT_H = this.DEFAULT_EJECT_VY * this.DEFAULT_EJECT_VY / (2 * this.g);
+        this.AVE_ENEMY_PER_Y = 0.001;
+        this.AVE_ENEMY_V = 1;
+        this.AVE_ENEMY_T = 100;
+        this.ENEMY_DX = 250 / 320 * this.W;
+        this.ENEMY_DY = 100 / 568 * this.H;
+        this.AVE_EMEMY_STP = 2;
+
         console.log('start construct stairs');
 
         // this.stairs.push(new Stair(new Segment(new Point(-100, 0), new Point(this.W + 100, 0)), new Point(0, 25)));
         // this.stairs.push(new Stair(new Segment(new Point(-100, -3), new Point(this.W + 100, -3)), new Point(0, 25)));
-        this.stairs.push(this.genStair_exact(this.hero.shape.O.x - getRandUniform(1, AVE_STAIRS_LEN / 2),
-            this.hero.shape.O.x + getRandUniform(1, AVE_STAIRS_LEN / 2),
+        this.stairs.push(this.genStair_exact(this.hero.shape.O.x - getRandUniform(1, this.AVE_STAIRS_LEN / 2),
+            this.hero.shape.O.x + getRandUniform(1, this.AVE_STAIRS_LEN / 2),
             0));
 
-        this.stairs.push(this.genStair_exact(this.hero.shape.O.x - getRandUniform(1, AVE_STAIRS_LEN / 2),
-            this.hero.shape.O.x + getRandUniform(1, AVE_STAIRS_LEN / 2),
+        this.stairs.push(this.genStair_exact(this.hero.shape.O.x - getRandUniform(1, this.AVE_STAIRS_LEN / 2),
+            this.hero.shape.O.x + getRandUniform(1, this.AVE_STAIRS_LEN / 2),
             15));
 
         console.log('exact stairs done');
-        this.appendStairs(10, this.H, DEFAULT_EJECT_H, AVE_STAIRS_PER_Y * 2);
-        this.appendEnemy(this.H / 2, this.H, AVE_ENEMY_PER_Y);
+        this.appendStairs(10, this.H, this.DEFAULT_EJECT_H, this.AVE_STAIRS_PER_Y * 2);
+        this.appendEnemy(this.H / 2, this.H, this.AVE_ENEMY_PER_Y);
         console.log('append stairs done');
     }
 
@@ -150,18 +152,19 @@ export default class Scene {
     }
 
     genStair(y) {
-        let len = getRandGauss(AVE_STAIRS_LEN - VARIANCE_STAIRS_LEN * 3,
-                    AVE_STAIRS_LEN + VARIANCE_STAIRS_LEN * 3, AVE_STAIRS_LEN,
-                    VARIANCE_STAIRS_LEN);
+        let len = getRandGauss(this.AVE_STAIRS_LEN - this.VARIANCE_STAIRS_LEN * 3,
+            this.AVE_STAIRS_LEN + this.VARIANCE_STAIRS_LEN * 3, this.AVE_STAIRS_LEN,
+            this.VARIANCE_STAIRS_LEN);
         // console.log('genStair: len',len);
         let lx = getRandUniform(0, this.W - len);
-        let rtn = new Stair(new Segment(new Point(lx, y), new Point(lx + len, y)), new Point(0, DEFAULT_EJECT_VY));
+        // let lx = getRandUniform(this.W / 2 - 20, this.W / 2);
+        let rtn = new Stair(new Segment(new Point(lx, y), new Point(lx + len, y)), new Point(0, this.DEFAULT_EJECT_VY));
         return rtn;
     }
 
     genStair_exact(lx, rx, y) {
         console.log('genStair_exact ',lx, rx, y);
-        let rtn = new Stair(new Segment(new Point(lx, y), new Point(rx, y)), new Point(0, DEFAULT_EJECT_VY));
+        let rtn = new Stair(new Segment(new Point(lx, y), new Point(rx, y)), new Point(0, this.DEFAULT_EJECT_VY));
         // console.log('genStair_exact ', rtn);
         return rtn;
     }
@@ -181,19 +184,24 @@ export default class Scene {
             console.log('gen stair done');
             this.stairs.push(stair);
             last_y = highest_y;
-            highest_y = stair.Vy.y * stair.Vy.y / (2 * g) + stair_y;
+            highest_y = stair.Vy.y * stair.Vy.y / (2 * this.g) + stair_y;
             // console.log(highest_y);
         }
         this.maxStairH = highest_y;
-        for(let k = rho * (H - L - 1); k >= 0; --k) {
-            stair_y = getRandUniform(L, H);
-            stair = this.genStair(stair_y);
-            this.stairs.push(stair);
+        // for(let k = rho * (H - L - 1); k > 0; --k) {
+        //     stair_y = getRandUniform(L, H);
+        //     stair = this.genStair(stair_y);
+        //     this.stairs.push(stair);
+        // }
+        for(let k = L; k < H; ++k){
+            if(DBcmp(Math.random(), rho) < 0) {
+                this.stairs.push(this.genStair(k));
+            }
         }
     }
 
     genRoutine(X) {
-        let t = mod(X) / AVE_ENEMY_V;
+        let t = mod(X) / this.AVE_ENEMY_V;
         _div(X, t);
         return {V: X, t: t};
     }
@@ -201,13 +209,13 @@ export default class Scene {
     genEnemy(y) {
         let x = getRandUniform(0, this.W);
         let rtn = new Enemy(new Circle(new Point(x, y), 15), new Point(0, 0));
-        let stp = getRandGauss(1, 3, AVE_EMEMY_STP, 2);
+        let stp = getRandGauss(1, 3, this.AVE_EMEMY_STP, 2);
         let maxy = y;
         let P = new Point(x, y);
         let P0 = new Point(x, y);
         for(; stp > 0; --stp) {
-            let dx = getRandUniform(-ENEMY_DX, ENEMY_DX);//getRandGauss(-ENEMY_DX, ENEMY_DX, 0, 30);
-            let dy = getRandUniform(-ENEMY_DY, ENEMY_DY);//getRandGauss(-ENEMY_DY, ENEMY_DY, 0, 30);
+            let dx = getRandUniform(-this.ENEMY_DX, this.ENEMY_DX);//getRandGauss(-ENEMY_DX, ENEMY_DX, 0, 30);
+            let dy = getRandUniform(-this.ENEMY_DY, this.ENEMY_DY);//getRandGauss(-ENEMY_DY, ENEMY_DY, 0, 30);
             let X = new Point(dx, dy);
             _add(P, X);
             maxy = Math.max(maxy, P.y);
@@ -237,7 +245,7 @@ export default class Scene {
     render(ctx) {
         ctx.fillStyle = '#f00';
         ctx.font = '10px Arial';
-        ctx.fillText(`your score is ${this.score}`, 0, 10);
+        ctx.fillText(`your score is ${parseInt(this.score)}`, 0, 10);
         this.hero.drawToCanvas(ctx, this.transPosition.bind(this));
         for(let i = this.stairs.length - 1; i >= 0; --i) {
             // console.log(this.stairs[i]);
@@ -323,7 +331,7 @@ export default class Scene {
         if(this.gameover) return ;
         this.moveHero(1);
         this.score = Math.max(this.hero.shape.O.y, this.score);
-        _add(this.hero.V, Ag);
+        _add(this.hero.V, this.Ag);
         this.update_screen();
         if(DBcmp(this.hero.shape.O.y, this.underliney) < 0) {
             this.gameover = true;
@@ -332,9 +340,16 @@ export default class Scene {
         for(let i = this.enemys.length -1; i >= 0; --i) {
             this.enemys[i].timePass(1);
             _add(this.enemys[i].shape.O, this.enemys[i].V);
-            if(i === 0)
-                console.log(this.enemys[i].shape.O);
+            //enemy loop
+            if(DBcmp(this.enemys[i].shape.O.x, 0) < 0)
+                this.enemys[i].shape.O.x += this.W;
+            if(DBcmp(this.enemys[i].shape.O.x, this.W) > 0)
+                this.enemys[i].shape.O.x -= this.W;
+            // if(i === 0)
+            //     console.log(this.enemys[i].shape.O);
         }
+        //enemy loop
+
     }
 
     update_screen() {
@@ -345,8 +360,9 @@ export default class Scene {
             let nceily = parseInt(this.hero.shape.O.y);
             let delta = nceily - this.ceilliney;
             this.appendStairs(this.H + this.underliney, this.H + this.underliney + delta,
-                this.maxStairH, AVE_STAIRS_PER_Y);
-            this.appendEnemy(this.H + this.underliney, this.H + this.underliney + delta);
+                this.maxStairH, this.AVE_STAIRS_PER_Y);
+            this.appendEnemy(this.H + this.underliney, this.H + this.underliney + delta,
+                this.AVE_ENEMY_PER_Y);
             this.clearStair(this.underliney + delta);
             this.clearEnemy(this.underliney + delta);
             this.underliney += delta;

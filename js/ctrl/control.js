@@ -12,11 +12,9 @@ import {DBcmp, add, _add, sub, _sub, mul, _mul,
 import Scene from './scene'
 
 const NVy = new Point(0, 1);
-const Vlx = new Point(-8, 0);
-const Vrx = new Point(8, 0);
 const Vzero = new Point(0, 0);
 
-const DEFAULT_BTN_R = 40;
+
 
 function _setx(V, Vx) {
     // console.log(V, Vx);
@@ -28,9 +26,14 @@ function _setx(V, Vx) {
 
 export default class Control {
     constructor(tW, tH, scene) {
+
+        this.Vlx = new Point(-1.7 / 320 * tW, 0);
+        this.Vrx = new Point(1.7 / 320 * tW, 0);
+        this.DEFAULT_BTN_R = 30 / 320 * tW;
+
         this.btn = [];
-        this.btn.push(new Button(new Circle(new Point(0 + DEFAULT_BTN_R, tH - DEFAULT_BTN_R), DEFAULT_BTN_R), 'jleft'));
-        this.btn.push(new Button(new Circle(new Point(tW - DEFAULT_BTN_R, tH - DEFAULT_BTN_R), DEFAULT_BTN_R), 'jright'));
+        this.btn.push(new Button(new Circle(new Point(0 + this.DEFAULT_BTN_R, tH - this.DEFAULT_BTN_R), this.DEFAULT_BTN_R), 'jleft'));
+        this.btn.push(new Button(new Circle(new Point(tW - this.DEFAULT_BTN_R, tH - this.DEFAULT_BTN_R), this.DEFAULT_BTN_R), 'jright'));
         this.target = scene;
 
         this.initEvent();
@@ -67,10 +70,10 @@ export default class Control {
                         // console.log(this.target.hero.V);
                         // _setx(this.target.hero.V, Vlx);
                         // console.log('out ',this.target.hero.V);
-                        this.target._setheroVx(Vlx);
+                        this.target._setheroVx(this.Vlx);
                     }
                     else {
-                        this.target._setheroVx(Vrx);
+                        this.target._setheroVx(this.Vrx);
                         // _setx(this.target.hero.V, Vrx);
                     }
                 }
@@ -85,25 +88,27 @@ export default class Control {
     touchend_hdr(e) {
         e.preventDefault();
         console.log('touchend');
-        let P = new Point(0, 0);
-        for(let i = 0; i < e.touches.length; ++i) {
-            P.x = e.touches[i].clientX;
-            P.y = e.touches[i].clientY;
-            for(let j = 0; j < this.btn.length; ++j) {
-                if( pointInCircle(P, this.btn[j].C)) {
-                    if(this.btn[j].desc === 'jleft') {
-                        // _add(this.target.hero.V, )
-                        // _setx(this.target.hero.V, Vzero);
-                        this.target._setheroVx(Vzero);
-
-                    }
-                    else {
-                        // _setx(this.target.hero.V, Vzero);
-                        this.target._setheroVx(Vzero);
-                    }
-                }
-            }
-        }
+        this.target._setheroVx(Vzero);
+        // console.log(e.identifier);
+        // let P = new Point(0, 0);
+        // for(let i = 0; i < e.touches.length; ++i) {
+        //     P.x = e.touches[i].clientX;
+        //     P.y = e.touches[i].clientY;
+        //     for(let j = 0; j < this.btn.length; ++j) {
+        //         if( pointInCircle(P, this.btn[j].C)) {
+        //             if(this.btn[j].desc === 'jleft') {
+        //                 // _add(this.target.hero.V, )
+        //                 // _setx(this.target.hero.V, Vzero);
+        //                 this.target._setheroVx(Vzero);
+        //
+        //             }
+        //             else {
+        //                 // _setx(this.target.hero.V, Vzero);
+        //                 this.target._setheroVx(Vzero);
+        //             }
+        //         }
+        //     }
+        // }
     }
 
 
