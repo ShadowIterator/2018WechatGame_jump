@@ -15,9 +15,9 @@ const NVy = new Point(0, 1);
 const Vzero = new Point(0, 0);
 
 function gravityScale(x) {
-  if(Math.abs(x)<0.1)
-    return 0;
-  else
+  // if(Math.abs(x)<0.1)
+  //   return 0;
+  // else
   {
     //(0.1,0.5), (1,8), (0,0)
     //c=0
@@ -38,6 +38,9 @@ function _setx(V, Vx) {
 export default class Control {
     constructor(tW, tH, scene) {
 
+        this.W = tW;
+        this.H = tH;
+
         this.Vlx = new Point(-1.7 / 320 * tW, 0);
         this.Vrx = new Point(1.7 / 320 * tW, 0);
         this.DEFAULT_BTN_R = 30 / 320 * tW;
@@ -53,12 +56,18 @@ export default class Control {
         this.initEvent();
     }
 
-    setVlx(V) {
-        this.Vlx = V;
+    setVlx(x) {
+        this.Vlx.x = x;
     }
 
-    setVrx(V) {
-        this.Vrx = V;
+    setVrx(x) {
+        this.Vrx.x = x;
+    }
+
+    init_all()
+    {
+        this.Vlx = new Point(-1.7 / 320 * this.W, 0);
+        this.Vrx = new Point(1.7 / 320 * this.W, 0);
     }
 
     initGravity()

@@ -18,6 +18,10 @@ export default class Prop extends Sprite{
         this.bind_checkDone = this.checkDone.bind(this);
     }
 
+    static init_all(){
+
+    }
+
     drawToCanvas(ctx, transPosition) {
         let P = transPosition(this.shape.O);
         ctx.beginPath();
@@ -36,11 +40,11 @@ export default class Prop extends Sprite{
     }
 
     toggle(scene) {
-
+        this.toggled = true;
     }
 
     effOver(scene) {
-
+        this.toggled = false;
     }
 
 }

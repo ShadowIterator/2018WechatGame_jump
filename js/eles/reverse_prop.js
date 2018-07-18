@@ -12,10 +12,10 @@ import Prop from './prop';
 
 let cnt = 0;
 
-export default class RocketProp extends Prop {
+export default class ReverseProp extends Prop {
     constructor(S) {
         super(S);
-        this.T = 150;
+        this.T = 500;
         this.t = 0;
         this.V = new Point(0, 5);
         // this.bind_timePass = this.timePass.bind(this);
@@ -26,14 +26,10 @@ export default class RocketProp extends Prop {
             let P = transPosition(this.shape.O);
             ctx.beginPath();
             ctx.arc(P.x, P.y, this.shape.R, 0, 2 * PI, false);
-            ctx.strokeStyle = '#ff0';
+            ctx.strokeStyle = '#f48';
             ctx.lineWidth = 2;
             ctx.stroke();
         }
-    }
-
-    static init_all() {
-        cnt = 0;
     }
 
     timePass(t, scene) {
@@ -43,16 +39,22 @@ export default class RocketProp extends Prop {
         // scene._setheroVy(this.V);
     }
 
+    static init_all() {
+        cnt = 0;
+    }
+
     toggle(scene) {
         if(this.toggled)
             return ;
         // this.toggled = true;
         this.done = false;
-        scene.hero.increaseEff();
+        // scene.hero.increaseEff();
         // scene.hero.V = this.V;
         // scene._setheroVy(this.V);
-        if(cnt === 0)
-            scene._setheroVy(this.V);
+        if(cnt === 0) {
+            scene.controller.setVlx(-scene.controller.Vlx.x);
+            scene.controller.setVrx(-scene.controller.Vrx.x);
+        }
         //     _add(scene.hero.V, this.V);
         ++cnt;
         scene.pushEffect({timePass: this.bind_timePass, effOver: this.bind_effOver, checkDone: this.bind_checkDone});
@@ -61,10 +63,12 @@ export default class RocketProp extends Prop {
     }
 
     effOver(scene) {
-        scene.hero.decreaseEff();
+        // scene.hero.decreaseEff();
         --cnt;
-        if(cnt === 0)
-            scene._setheroVy(new Point(0, 0));
+        if(cnt === 0) {
+            scene.controller.setVlx(-scene.controller.Vlx.x);
+            scene.controller.setVrx(-scene.controller.Vrx.x);
+        }
         super.effOver();
         // else
         //     _sub(scene.hero.V, this.V);

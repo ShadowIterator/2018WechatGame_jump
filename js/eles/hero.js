@@ -24,7 +24,24 @@ export default class Hero extends Sprite{
         this.dead = false;
         this.effCount = 0;
         this.status = 'normal';
+        this.whosyourdaddy = false;
         this.className = 'hero';
+    }
+
+    increaseLife() {
+        ++this.life;
+    }
+
+    decreaseLife() {
+        --this.life;
+    }
+
+    die() {
+        this.dead = true;
+    }
+
+    revive() {
+        this.dead = false;
     }
 
     increaseEff() {
