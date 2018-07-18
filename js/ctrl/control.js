@@ -98,9 +98,9 @@ export default class Control {
     
     
     initEvent() {
-        this.initButton();
+        // this.initButton();
 
-        //this.initGravity()
+        this.initGravity()
 
     }
 
