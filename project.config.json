@@ -4,7 +4,7 @@
 		"ignore": []
 	},
 	"setting": {
-		"urlCheck": true,
+		"urlCheck": false,
 		"es6": true,
 		"postcss": true,
 		"minified": true,
@@ -12,9 +12,9 @@
 	},
 	"compileType": "game",
 	"libVersion": "2.2.0",
-	"appid": "wx19da3cfb1f3d57eb",
+	"appid": "touristappid",
 	"projectname": "SIjump",
-	"isGameTourist": false,
+	"isGameTourist": true,
 	"condition": {
 		"search": {
 			"current": -1,

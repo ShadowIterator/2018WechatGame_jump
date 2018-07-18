@@ -46,7 +46,33 @@ export default class Control {
         canvas.addEventListener('touchmove', this.touchmove_hdr.bind(this));
 
         canvas.addEventListener('touchend', this.touchend_hdr.bind(this));
+
+      wx.startAccelerometer({
+        interval: 'game'
+      });
+
+      wx.onAccelerometerChange(this.gravity_change.bind(this));
+
     }
+
+  gravity_change(e)
+  {
+    // console.log('x:',e.x);
+    // console.log('y:',e.y);
+    // console.log('z:',e.z);
+    if(e.x>=0.3)
+    {
+      this.target._setheroVx(this.Vrx);
+    }
+    else if(e.x<=-0.3)
+    {
+      this.target._setheroVx(this.Vlx);
+    }
+    else
+    {
+      this.target._setheroVx(Vzero);
+    }
+  }
 
     removeEvent() {
         canvas.removeEventListener('touchstart', this.touchstart_hdr.bind(this));
@@ -54,6 +80,9 @@ export default class Control {
         canvas.removeEventListener('touchmove', this.touchmove_hdr.bind(this));
 
         canvas.removeEventListener('touchend', this.touchend_hdr.bind(this));
+
+        wx.stopAccelerometer();
+
     }
 
     touchstart_hdr(e) {
@@ -89,27 +118,10 @@ export default class Control {
         e.preventDefault();
         console.log('touchend');
         this.target._setheroVx(Vzero);
-        // console.log(e.identifier);
-        // let P = new Point(0, 0);
-        // for(let i = 0; i < e.touches.length; ++i) {
-        //     P.x = e.touches[i].clientX;
-        //     P.y = e.touches[i].clientY;
-        //     for(let j = 0; j < this.btn.length; ++j) {
-        //         if( pointInCircle(P, this.btn[j].C)) {
-        //             if(this.btn[j].desc === 'jleft') {
-        //                 // _add(this.target.hero.V, )
-        //                 // _setx(this.target.hero.V, Vzero);
-        //                 this.target._setheroVx(Vzero);
-        //
-        //             }
-        //             else {
-        //                 // _setx(this.target.hero.V, Vzero);
-        //                 this.target._setheroVx(Vzero);
-        //             }
-        //         }
-        //     }
-        // }
+
     }
+
+
 
 
     render(ctx) {
