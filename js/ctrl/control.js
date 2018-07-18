@@ -19,8 +19,11 @@ function gravityScale(x) {
     return 0;
   else
   {
-    //(0.1,1), (1,10)
-    
+    //(0.1,0.5), (1,8), (0,0)
+    //c=0
+    //0.1a+b=5
+    //a+b=8
+    return 3.33*x*x+4.67*Math.abs(x);
   }
 }
 
@@ -43,6 +46,9 @@ export default class Control {
         this.btn.push(new Button(new Circle(new Point(0 + this.DEFAULT_BTN_R, tH - this.DEFAULT_BTN_R), this.DEFAULT_BTN_R), 'jleft'));
         this.btn.push(new Button(new Circle(new Point(tW - this.DEFAULT_BTN_R, tH - this.DEFAULT_BTN_R), this.DEFAULT_BTN_R), 'jright'));
         this.target = scene;
+        
+        this.touchLeft=new Set();
+        this.touchRight=new Set();
 
         this.initEvent();
     }
@@ -68,6 +74,9 @@ export default class Control {
       canvas.addEventListener('touchmove', this.touchmove_hdr.bind(this));
       
       canvas.addEventListener('touchend', this.touchend_hdr.bind(this));
+      
+      this.touchLeft.clear();
+      this.touchRight.clear();
     }
     
     shutDownButton()
@@ -81,24 +90,34 @@ export default class Control {
     
     
     initEvent() {
-        //this.initButton();
+        this.initButton();
 
-        this.initGravity()
+        //this.initGravity()
 
     }
 
   gravity_change(e)
   {
-    // console.log('x:',e.x);
-    // console.log('y:',e.y);
-    // console.log('z:',e.z);
-    if(e.x>=0.1)
+    // if(e.x>=0.1)
+    // {
+    //   this.target._setheroVx(mul(this.Vrx, gravityScale(e.x)));
+    // }
+    // else if(e.x<=-0.1)
+    // {
+    //   this.target._setheroVx(mul(this.Vlx, gravityScale(e.x)));
+    // }
+    // else
+    // {
+    //   this.target._setheroVx(Vzero);
+    // }
+    
+    if(e.x>0)
     {
-      this.target._setheroVx(mul(this.Vrx, 10*Math.abs(e.x)));
+      this.target._setheroVx(mul(this.Vrx, gravityScale(e.x)));
     }
-    else if(e.x<=-0.1)
+    else if(e.x<0)
     {
-      this.target._setheroVx(mul(this.Vlx, 10*Math.abs(e.x)));
+      this.target._setheroVx(mul(this.Vlx, gravityScale(e.x)));
     }
     else
     {
@@ -118,25 +137,45 @@ export default class Control {
         e.preventDefault();
         console.log('touchstart');
         let P = new Point(0, 0);
-        for(let i = 0; i < e.touches.length; ++i) {
-            P.x = e.touches[i].clientX;
-            P.y = e.touches[i].clientY;
-            for(let j = 0; j < this.btn.length; ++j) {
-                if( pointInCircle(P, this.btn[j].C)) {
-                    if(this.btn[j].desc === 'jleft') {
-                        // _add(this.target.hero.V, )
-                        // console.log(this.target.hero.V);
-                        // _setx(this.target.hero.V, Vlx);
-                        // console.log('out ',this.target.hero.V);
-                        this.target._setheroVx(this.Vlx);
-                    }
-                    else {
-                        this.target._setheroVx(this.Vrx);
-                        // _setx(this.target.hero.V, Vrx);
-                    }
-                }
+        // for(let i = 0; i < e.touches.length; ++i) {
+        //     P.x = e.touches[i].clientX;
+        //     P.y = e.touches[i].clientY;
+        //     for(let j = 0; j < this.btn.length; ++j) {
+        //         if( pointInCircle(P, this.btn[j].C)) {
+        //             if(this.btn[j].desc === 'jleft') {
+        //                
+        //                 this.target._setheroVx(this.Vlx);
+        //                
+        //             }
+        //             else {
+        //                 this.target._setheroVx(this.Vrx);
+        //                 // _setx(this.target.hero.V, Vrx);
+        //             }
+        //         }
+        //     }
+        // }
+      for(let i=0; i<e.changedTouches.length; ++i)
+      {
+          P.x = e.changedTouches[i].clientX;
+          P.y = e.changedTouches[i].clientY;
+          for(let j = 0; j < this.btn.length; ++j) {
+            if( pointInCircle(P, this.btn[j].C)) {
+              if(this.btn[j].desc === 'jleft') {
+  
+                this.target._setheroVx(this.Vlx);
+                this.touchLeft.add(e.changedTouches[i].identifier);
+              
+              }
+              else {
+                this.target._setheroVx(this.Vrx);
+                this.touchRight.add(e.changedTouches[i].identifier);
+              // _setx(this.target.hero.V, Vrx);
+              }
             }
-        }
+          }
+      }
+      console.log('touchLeft', this.touchLeft.size);
+      console.log('touchRight', this.touchRight.size);
     }
 
     touchmove_hdr(e) {
@@ -146,8 +185,35 @@ export default class Control {
     touchend_hdr(e) {
         e.preventDefault();
         console.log('touchend');
-        this.target._setheroVx(Vzero);
-
+        for(let i=0; i<e.changedTouches.length; ++i)
+        {
+          if(this.touchLeft.has(e.changedTouches[i].identifier))
+          {
+            this.touchLeft.delete(e.changedTouches[i].identifier);
+            console.log('deleteLeft');
+          }
+          else if(this.touchRight.has(e.changedTouches[i].identifier))
+          {
+            this.touchRight.delete(e.changedTouches[i].identifier);
+            console.log('deleteRight');
+          }
+        }
+        console.log('touchLeft', this.touchLeft.size);
+        console.log('touchRight', this.touchRight.size);
+        if(this.touchLeft.size===0 && this.touchRight.size!==0)
+        {
+          this.target._setheroVx(this.Vrx);
+        }
+        else if(this.touchRight.size===0 && this.touchLeft.size!==0)
+        {
+          this.target._setheroVx(this.Vlx);
+        }
+        else if(this.touchLeft.size===0 && this.touchRight.size===0)
+        {
+          this.target._setheroVx(Vzero);
+        }
+        
+        
     }
 
 
