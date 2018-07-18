@@ -12,10 +12,11 @@ import {DBcmp, add, _add, sub, _sub, mul, _mul,
 
 const IMGSRC = '';
 
-export default class Stair{
+export default class Stair extends Sprite{
     constructor (S, Vy) {
         // super(IMGSRC);
-        this.shape = S;
+        super(S);
+        // this.shape = S;
         this.Vy = Vy;
         this.V = new Point(0, 0);
         this.className = 'stair'

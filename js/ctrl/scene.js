@@ -218,8 +218,8 @@ export default class Scene {
             this.VARIANCE_STAIRS_LEN);
         let lx = getRandUniform(0, this.W - len);
         let rtn = new ChangingStair(new Segment(new Point(lx, y), new Point(lx + len, y)), new Point(0, this.DEFAULT_EJECT_VY));
-        rtn.lV = new Point(-1, 0);
-        rtn.rV = new Point(1, 0);
+        rtn.lV = new Point(-0.5, 0);
+        rtn.rV = new Point(0.5, 0);
         rtn.lT = 80;
         rtn.rT = 80;
         return rtn;

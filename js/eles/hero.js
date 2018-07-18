@@ -14,10 +14,11 @@ const IMGSRC = '';
 const HERO_WIDTH = 10;
 const HERO_HEIGHT = 10;
 
-export default class Hero{
+export default class Hero extends Sprite{
     constructor (S, V) {
         // super(IMGSRC, HERO_WIDTH, HERO_HEIGHT);
-        this.shape = S;
+        // this.shape = S;
+        super(S);
         this.V = V;
         this.life = 1;
         this.status = 'normal';
