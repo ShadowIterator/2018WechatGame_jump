@@ -18,8 +18,14 @@ import DeadStair from '../eles/dead_stair'
 
 import Background from '../base/background'
 
+import Prop from '../eles/prop'
+import RocketProp from '../eles/rocket_prop'
+
 
 const NVy = new Point(0, 1);
+const NVx = new Point(1, 0);
+
+
 
 const DEFAULT_Pmoving = 0.2;
 const DEFAULT_Pchanging = 0.2;
@@ -102,11 +108,15 @@ function getRandGauss(L, R, mu, sigma) {
 
 function __sortStairByy(A, B) {
     // return -DBcmp(A.shape.P1.y, B.shape.P1.y);
-    return DBcmp(A.maxHeight(), B.maxHeight());
+    return -DBcmp(A.maxHeight(), B.maxHeight());
 }
 
 function __sortEnemyByy(A, B) {
     return -DBcmp(A.maxy, B.maxy);
+}
+
+function __sortPropByy(A, B) {
+    return -DBcmp(A.shape.getPos().y, B.shape.getPos().y);
 }
 
 export default class Scene {
@@ -115,6 +125,7 @@ export default class Scene {
         this.W = tW;
         this.Wd2 = tW / 2;
         this.Hd2 = tH / 2;
+        this.heroR = 5 / 320 * this.W;
         this.hero = new Hero(new Circle(new Point(this.Wd2, 7), 5), new Point(0,0));
 
         // this.hero.life = 1;
@@ -124,10 +135,13 @@ export default class Scene {
         this.underliney = 0;
         this.stairs = [];
         this.enemys = [];
+        this.props = [];
         this.score = 0;
         this.callback_gameover = callback_gameover;
         this.highestY = 0;
         this.gameover = false;
+        this.controller = {};
+        this.effList = [];
 
         this.background=new Background();
 
@@ -138,12 +152,13 @@ export default class Scene {
         this.Ag = new Point(0, -this.g);
         this.DEFAULT_EJECT_VY = 5;
         this.DEFAULT_EJECT_H = this.DEFAULT_EJECT_VY * this.DEFAULT_EJECT_VY / (2 * this.g);
-        this.AVE_ENEMY_PER_Y = 0.001;
+        this.AVE_ENEMY_PER_Y = 0;//0.001;
         this.AVE_ENEMY_V = 1;
         this.AVE_ENEMY_T = 100;
         this.ENEMY_DX = 250 / 320 * this.W;
         this.ENEMY_DY = 100 / 568 * this.H;
         this.AVE_EMEMY_STP = 2;
+        this.AVE_PROP_PER_Y = 0.005;
 
         console.log('start construct stairs');
 
@@ -153,13 +168,14 @@ export default class Scene {
             this.hero.shape.getPos().x + getRandUniform(1, this.AVE_STAIRS_LEN / 2),
             0));
 
-        this.stairs.push(this.genStair_exact(this.hero.shape.getPos().x - getRandUniform(1, this.AVE_STAIRS_LEN / 2),
-            this.hero.shape.getPos().x + getRandUniform(1, this.AVE_STAIRS_LEN / 2),
-            15));
+        // this.stairs.push(this.genStair_exact(this.hero.shape.getPos().x - getRandUniform(1, this.AVE_STAIRS_LEN / 2),
+        //     this.hero.shape.getPos().x + getRandUniform(1, this.AVE_STAIRS_LEN / 2),
+        //     15));
 
         console.log('exact stairs done');
         this.appendStairs(10, this.H, this.DEFAULT_EJECT_H, this.AVE_STAIRS_PER_Y * 2);
         this.appendEnemy(this.H / 2, this.H, this.AVE_ENEMY_PER_Y);
+        this.appendProp(10, this.H, this.AVE_PROP_PER_Y);
         console.log('append stairs done');
     }
 
@@ -172,6 +188,30 @@ export default class Scene {
         this.hero.V = mul(NVy, conj);
         _add(this.hero.V, Vx);
         console.log('_setheroVx ',this.hero.V);
+    }
+
+    _setheroVy(Vy) {
+        let conj = dot(this.hero.V, NVx);
+        this.hero.V = mul(NVx, conj);
+        _add(this.hero.V, Vy);
+
+    }
+
+    genRocketProp(y) {
+        let x = getRandUniform(0, this.W);
+        let rtn = new RocketProp(new Circle(new Point(x, y), 15));
+        return rtn;
+    }
+
+    genProp(y) {
+        return this.genRocketProp(y);
+    }
+
+    appendProp(L, H, rho) {
+        for(let i = L; i < H; ++i) {
+            if(DBcmp(Math.random(), rho) < 0)
+                this.props.push(this.genProp(i));
+        }
     }
 
     genNormalStair(y) {
@@ -334,6 +374,7 @@ export default class Scene {
         ctx.fillStyle = '#f00';
         ctx.font = '10px Arial';
         ctx.fillText(`your score is ${parseInt(this.score)}`, 0, 10);
+        ctx.fillText(`you life is ${this.hero.life}`, this.W - 70, 10);
         this.hero.drawToCanvas(ctx, this.transPosition.bind(this));
         for(let i = this.stairs.length - 1; i >= 0; --i) {
             // console.log(this.stairs[i]);
@@ -341,6 +382,9 @@ export default class Scene {
         }
         for(let i = this.enemys.length - 1; i >= 0; --i) {
             this.enemys[i].drawToCanvas(ctx, this.transPosition.bind(this));
+        }
+        for(let i = this.props.length - 1; i >= 0; --i) {
+            this.props[i].drawToCanvas(ctx, this.transPosition.bind(this));
         }
 
     }
@@ -362,7 +406,7 @@ export default class Scene {
         // if(this.gameover) return ;
         // console.log('t', t);
         // console.log(this.hero);
-        if(this.gameover)
+        if(this.gameover || this.hero.dead)
             return ;
         if(DBcmp(t, 0) === 0) return ;
         if(isZero(this.hero.V)) return ;
@@ -382,16 +426,43 @@ export default class Scene {
             if(CirColliCir(this.hero.shape, this.hero.V, this.enemys[i].shape, tres)) {
                 if(DBcmp(t, tres.d  / herov) > 0) {
                     // this.gameover = true;
-                    this.hero.life = 0;
+                    // this.hero.life = 0;
                     // this.callback_gameover(this.score);
+                    --this.hero.life;
+                    this.hero.dead = true;
                     return;
                 }
             }
             if(CircleOnCircle(this.hero.shape, this.enemys[i].shape)) {
                 // this.gameover = true;
-                this.hero.life = 0;
+                --this.hero.life;
+                this.hero.dead = true;
                 // this.callback_gameover(this.score);
                 return;
+            }
+        }
+
+        for(let i = this.props.length - 1; i >= 0; --i) {
+            let flag = false;
+            if(CirColliCir(this.hero.shape, this.hero.V, this.props[i].shape, tres)) {
+                if(DBcmp(t, tres.d  / herov) > 0) {
+                    // this.gameover = true;
+                    // this.hero.life = 0;
+                    // this.callback_gameover(this.score);
+                    // --this.hero.life;
+                    // this.hero.dead = true;
+                    // return;
+                    flag = true;
+                    this.props[i].toggle(this);
+                }
+            }
+            if(CircleOnCircle(this.hero.shape, this.props[i].shape) && (!flag)) {
+                // this.gameover = true;
+                // --this.hero.life;
+                // this.hero.dead = true;
+                // this.callback_gameover(this.score);
+                // return;
+                this.props[i].toggle(this);
             }
         }
 
@@ -405,40 +476,79 @@ export default class Scene {
             }
         }
         let rt = res.d / herov;
-        // console.log(rt, t);
         if(DBcmp(t, rt) > 0) {
             this.hero.shape.O = Object.create(res.P);
             res_stair.setHero(this.hero);
-            // _sub(this.hero.V, mul(Ag, rt));
-            // this.heroLoop();
             this.objectLoop(this.hero.shape);
             this.moveHero(t - rt);
             return ;
         }
         else {
             _add(this.hero.shape.getPos(), this.hero.V);
-            // _sub(this.hero.V, mul(Ag, t));
             this.heroLoop();
-            // return ;
         }
         return ;
     }
 
+    revive() {
+        this.hero.shape.setPos(new Point(this.Wd2, this.underliney + this.heroR + 2));
+
+        this.stairs.push(this.genStair_exact(0,
+            this.W,
+            this.underliney));
+
+        this.hero.dead = false;
+    }
+
+    pushEffect(eff) {
+        this.effList.push(eff);
+    }
+
+    update_effList() {
+        let neffList = [];
+        for(let i = 0; i < this.effList.length; ++i) {
+            if(!this.effList[i].checkDone()) {
+                neffList.push(this.effList[i]);
+            }
+            else
+                this.effList[i].effOver(this);
+        }
+        this.effList = neffList;
+    }
+
     update() {
         // if(this.gameover) return ;
-        if(this.gameover === true) return ;
+        if(this.gameover) return ;
+        if(this.hero.dead && this.hero.life > 0) {
+            this.revive();
+            return ;
+        }
+
         if(this.hero.life === 0) {
             this.gameover = true;
             this.callback_gameover(this.score);
             return ;
         }
+
         this.moveHero(1);
+
+        if(this.hero.status === 'normal') {
+            _add(this.hero.V, this.Ag);
+        }
+        else if(this.hero.status ==='super') {
+            for(let i = 0; i < this.effList.length; ++i) {
+                this.effList[i].timePass(1, this);
+            }
+            this.update_effList();
+        }
+
         this.score = Math.max(this.hero.shape.getPos().y, this.score);
-        _add(this.hero.V, this.Ag);
+
         this.update_screen();
         if(DBcmp(this.hero.shape.getPos().y, this.underliney) < 0) {
             // this.gameover = true;
-            this.hero.life = 0;
+            --this.hero.life;
+            this.hero.dead = true;
             // this.callback_gameover(this.score);
         }
 
@@ -476,7 +586,7 @@ export default class Scene {
     update_screen() {
         //move screen
         // if(this.gameover) return ;
-        if(this.gameover) return ;
+        if(this.gameover || this.hero.dead) return ;
         if(DBcmp(this.hero.shape.getPos().y, this.ceilliney) > 0) {
             let nceily = parseInt(this.hero.shape.getPos().y);
             let delta = nceily - this.ceilliney;
@@ -484,8 +594,13 @@ export default class Scene {
                 this.maxStairH, this.AVE_STAIRS_PER_Y);
             this.appendEnemy(this.H + this.underliney, this.H + this.underliney + delta,
                 this.AVE_ENEMY_PER_Y);
+            this.appendProp(this.H + this.underliney, this.H + this.underliney + delta,
+                this.AVE_PROP_PER_Y);
+
             this.clearStair(this.underliney + delta);
             this.clearEnemy(this.underliney + delta);
+            this.clearProp(this.underliney + delta);
+
             this.underliney += delta;
             this.ceilliney = nceily;
             this.centerP.y += delta;
@@ -510,5 +625,14 @@ export default class Scene {
             if(DBcmp(this.enemys[k].maxy, H) < 0)
                 break;
         this.enemys = this.enemys.slice(0, k);
+    }
+
+    clearProp(H) {
+        this.props.sort(__sortPropByy);
+        let k = 0;
+        for(k = 0; k < this.props.length; ++k)
+            if(DBcmp(this.props[k].shape.getPos().y, H) < 0)
+                break;
+        this.props = this.props.slice(0, k);
     }
 }

@@ -64,8 +64,11 @@ export default class Main {
         this.frame = 0;
         this.scene = new Scene(canvas.width, canvas.height, this.gameover.bind(this));
         this.control = new Control(canvas.width, canvas.height, this.scene);
+
         this.control.shutDownGravity();
         this.control.initButton();
+
+        this.scene.controller = this.control;
 
         this.status = 'gaming';
         console.log('construct scene done');

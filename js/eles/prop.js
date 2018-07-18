@@ -1,4 +1,3 @@
-
 import Sprite from '../base/sprite'
 import {PI, INF, EPS} from  '../libs/geometry'
 import {Point, Circle, Segment, Colli} from '../libs/geometry'
@@ -9,42 +8,39 @@ import {DBcmp, add, _add, sub, _sub, mul, _mul,
     pointOnSegment, pointInCircle,
     CircleOnCircle} from '../libs/geometry'
 
-
-const IMGSRC = '';
-const HERO_WIDTH = 10;
-const HERO_HEIGHT = 10;
-
-export default class Hero extends Sprite{
-    constructor (S, V) {
-        // super(IMGSRC, HERO_WIDTH, HERO_HEIGHT);
-        // this.shape = S;
+export default class Prop extends Sprite{
+    constructor(S) {
         super(S);
-        this.V = V;
-        this.life = 3;
-        this.dead = false;
-        this.effCount = 0;
-        this.status = 'normal';
-        this.className = 'hero';
-    }
-
-    increaseEff() {
-        if(this.status === 'normal')
-            this.status = 'super';
-        ++this.effCount;
-    }
-
-    decreaseEff() {
-        --this.effCount;
-        if(this.effCount === 0)
-            this.status = 'normal';
+        this.toggled = false;
+        this.done = true;
+        this.bind_timePass = this.timePass.bind(this);
+        this.bind_effOver = this.effOver.bind(this);
+        this.bind_checkDone = this.checkDone.bind(this);
     }
 
     drawToCanvas(ctx, transPosition) {
         let P = transPosition(this.shape.O);
         ctx.beginPath();
         ctx.arc(P.x, P.y, this.shape.R, 0, 2 * PI, false);
-        ctx.strokeStyle = '#00f';
+        ctx.strokeStyle = '#ff0';
         ctx.lineWidth = 2;
         ctx.stroke();
     }
+
+    checkDone() {
+        return this.done;
+    }
+
+    timePass(t, scene) {
+
+    }
+
+    toggle(scene) {
+
+    }
+
+    effOver(scene) {
+
+    }
+
 }

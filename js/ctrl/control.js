@@ -47,6 +47,14 @@ export default class Control {
         this.initEvent();
     }
 
+    setVlx(V) {
+        this.Vlx = V;
+    }
+
+    setVrx(V) {
+        this.Vrx = V;
+    }
+
     initGravity()
     {
       wx.startAccelerometer({
