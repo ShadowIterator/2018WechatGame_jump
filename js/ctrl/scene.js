@@ -327,10 +327,11 @@ export default class Scene {
     }
 
     render(ctx) {
+        this.background.drawToCanvas(ctx);
         ctx.fillStyle = '#f00';
         ctx.font = '10px Arial';
         ctx.fillText(`your score is ${parseInt(this.score)}`, 0, 10);
-        this.background.drawToCanvas(ctx);
+
         this.hero.drawToCanvas(ctx, this.transPosition.bind(this));
         for(let i = this.stairs.length - 1; i >= 0; --i) {
             // console.log(this.stairs[i]);

@@ -14,7 +14,15 @@ import Scene from './scene'
 const NVy = new Point(0, 1);
 const Vzero = new Point(0, 0);
 
-
+function gravityScale(x) {
+  if(Math.abs(x)<0.1)
+    return 0;
+  else
+  {
+    //(0.1,1), (1,10)
+    
+  }
+}
 
 function _setx(V, Vx) {
     // console.log(V, Vx);
@@ -39,19 +47,43 @@ export default class Control {
         this.initEvent();
     }
 
-
-    initEvent() {
-        canvas.addEventListener('touchstart', this.touchstart_hdr.bind(this));
-
-        canvas.addEventListener('touchmove', this.touchmove_hdr.bind(this));
-
-        canvas.addEventListener('touchend', this.touchend_hdr.bind(this));
-
+    initGravity()
+    {
       wx.startAccelerometer({
         interval: 'game'
       });
 
       wx.onAccelerometerChange(this.gravity_change.bind(this));
+    }
+    
+    shutDownGravity()
+    {
+      wx.stopAccelerometer();
+    }
+    
+    initButton()
+    {
+      canvas.addEventListener('touchstart', this.touchstart_hdr.bind(this));
+      
+      canvas.addEventListener('touchmove', this.touchmove_hdr.bind(this));
+      
+      canvas.addEventListener('touchend', this.touchend_hdr.bind(this));
+    }
+    
+    shutDownButton()
+    {
+      canvas.removeEventListener('touchstart', this.touchstart_hdr.bind(this));
+
+      canvas.removeEventListener('touchmove', this.touchmove_hdr.bind(this));
+
+      canvas.removeEventListener('touchend', this.touchend_hdr.bind(this));
+    }
+    
+    
+    initEvent() {
+        //this.initButton();
+
+        this.initGravity()
 
     }
 
@@ -75,13 +107,10 @@ export default class Control {
   }
 
     removeEvent() {
-        canvas.removeEventListener('touchstart', this.touchstart_hdr.bind(this));
+        
+        this.shutDownButton();
 
-        canvas.removeEventListener('touchmove', this.touchmove_hdr.bind(this));
-
-        canvas.removeEventListener('touchend', this.touchend_hdr.bind(this));
-
-        wx.stopAccelerometer();
+        this.shutDownGravity();
 
     }
 
