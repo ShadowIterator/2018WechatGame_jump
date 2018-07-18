@@ -21,9 +21,9 @@ import Background from '../base/background'
 
 const NVy = new Point(0, 1);
 
-const Pmoving = 0.2;
-const Pchanging = 0.2 + Pmoving;
-const Pdead = 0.2 + Pchanging;
+const DEFAULT_Pmoving = 0.2;
+const DEFAULT_Pchanging = 0.2;
+const DEFAULT_Pdead = 0.2;
 const AVE_STAIR_STP = 3;
 // const AVE_STAIR_V = 0.5;
 const STAIR_DX = 200;
@@ -101,7 +101,8 @@ function getRandGauss(L, R, mu, sigma) {
 }
 
 function __sortStairByy(A, B) {
-    return -DBcmp(A.shape.P1.y, B.shape.P1.y);
+    // return -DBcmp(A.shape.P1.y, B.shape.P1.y);
+    return DBcmp(A.maxHeight(), B.maxHeight());
 }
 
 function __sortEnemyByy(A, B) {
@@ -234,7 +235,9 @@ export default class Scene {
         return rtn;
     }
 
-    genStair(y) {
+    genStair(y, Pmoving, Pchanging, Pdead) {
+        Pchanging += Pmoving;
+        Pdead +=Pchanging;
         let num = Math.random();
         if(DBcmp(num, Pmoving) < 0)
             return this.genMovingStair(y);
@@ -264,7 +267,7 @@ export default class Scene {
             //console.log(last_y);
             //console.log(highest_y);
             stair_y = getRandUniform(last_y, highest_y - 5) + 1;
-            stair = this.genStair(stair_y);
+            stair = this.genStair(stair_y, DEFAULT_Pmoving, DEFAULT_Pchanging, 0);
             console.log('gen stair done');
             this.stairs.push(stair);
             last_y = highest_y;
@@ -279,7 +282,7 @@ export default class Scene {
         // }
         for(let k = L; k < H; ++k){
             if(DBcmp(Math.random(), rho) < 0) {
-                this.stairs.push(this.genStair(k));
+                this.stairs.push(this.genStair(k, 0, 0, DEFAULT_Pdead));
             }
         }
     }
@@ -327,10 +330,10 @@ export default class Scene {
     }
 
     render(ctx) {
+        this.background.drawToCanvas(ctx);
         ctx.fillStyle = '#f00';
         ctx.font = '10px Arial';
         ctx.fillText(`your score is ${parseInt(this.score)}`, 0, 10);
-        this.background.drawToCanvas(ctx);
         this.hero.drawToCanvas(ctx, this.transPosition.bind(this));
         for(let i = this.stairs.length - 1; i >= 0; --i) {
             // console.log(this.stairs[i]);
@@ -495,7 +498,7 @@ export default class Scene {
         this.stairs.sort(__sortStairByy);
         let k = 0;
         for(k = 0; k < this.stairs.length; ++k)
-            if(DBcmp(this.stairs[k].shape.P1.y, H) < 0)
+            if(DBcmp(this.stairs[k].maxHeight(), H) < 0)
                 break;
         this.stairs = this.stairs.slice(0, k);
     }
