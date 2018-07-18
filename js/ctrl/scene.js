@@ -10,6 +10,7 @@ import {DBcmp, add, _add, sub, _sub, mul, _mul, div, _div,
 import Hero from '../eles/hero'
 import Enemy from '../eles/enemy'
 import Stair from '../eles/stair'
+import Background from '../base/background'
 
 const NVy = new Point(0, 1);
 
@@ -108,6 +109,8 @@ export default class Scene {
         this.highestY = 0;
         this.gameover = false;
 
+        this.background=new Background();
+
         this.AVE_STAIRS_PER_Y = 0.02;
         this.AVE_STAIRS_LEN = 50 / 320 * this.W;//adj to canvas.width
         this.VARIANCE_STAIRS_LEN = 1;
@@ -163,22 +166,22 @@ export default class Scene {
     }
 
     genStair_exact(lx, rx, y) {
-        console.log('genStair_exact ',lx, rx, y);
+        //console.log('genStair_exact ',lx, rx, y);
         let rtn = new Stair(new Segment(new Point(lx, y), new Point(rx, y)), new Point(0, this.DEFAULT_EJECT_VY));
         // console.log('genStair_exact ', rtn);
         return rtn;
     }
 
     appendStairs(L, H, first_y, rho) {
-        console.log(H);
+        //console.log(H);
         let highest_y = first_y;
         let last_y = L;
         let stair = {};
         let stair_y = 0;
         // let gen_ys = [];
         while (highest_y < H) {
-            console.log(last_y);
-            console.log(highest_y);
+            //console.log(last_y);
+            //console.log(highest_y);
             stair_y = getRandUniform(last_y, highest_y - 5) + 1;
             stair = this.genStair(stair_y);
             console.log('gen stair done');
@@ -246,6 +249,7 @@ export default class Scene {
         ctx.fillStyle = '#f00';
         ctx.font = '10px Arial';
         ctx.fillText(`your score is ${parseInt(this.score)}`, 0, 10);
+        this.background.drawToCanvas(ctx);
         this.hero.drawToCanvas(ctx, this.transPosition.bind(this));
         for(let i = this.stairs.length - 1; i >= 0; --i) {
             // console.log(this.stairs[i]);
@@ -368,6 +372,8 @@ export default class Scene {
             this.underliney += delta;
             this.ceilliney = nceily;
             this.centerP.y += delta;
+
+          this.background.moveWith(delta);
         }
     }
 
