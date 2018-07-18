@@ -20,6 +20,7 @@ export default class Hero{
         this.shape = S;
         this.V = V;
         this.life = 1;
+        this.status = 'normal';
         this.className = 'hero';
     }
 

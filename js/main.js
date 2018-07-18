@@ -52,6 +52,10 @@ export default class Main {
 
     }
 
+    touchstart_hdr_nothing(e) {
+        e.preventDefault();
+    }
+
     restart() {
         let dpr = wx.getSystemInfoSync().pixelRatio;
         // canvas.width *= dpr;
@@ -66,6 +70,11 @@ export default class Main {
         canvas.removeEventListener(
             'touchstart',
             this.bind_touchstart_hdr
+        );
+        
+        canvas.addEventListener(
+            'touchstart',
+            this.touchstart_hdr_nothing.bind(this)
         );
 
         this.bindLoop = this.loop.bind(this);
