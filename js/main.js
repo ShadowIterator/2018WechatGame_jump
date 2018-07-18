@@ -20,6 +20,7 @@ let ctx = canvas.getContext('2d')
 export default class Main {
     constructor() {
         // 维护当前requestAnimationFrame的id
+
         this.aniId = 0;
         this.frame = 0;
         this.score = 0;
@@ -28,8 +29,9 @@ export default class Main {
         this.status = 'onConstruction';
         console.log('start construct scene');
 
-         this.restart();
-         this.gameover();
+        wx.setKeepScreenOn({keepScreenOn: true});
+        this.restart();
+        this.gameover();
     }
 
     gameover(score) {

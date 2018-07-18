@@ -60,11 +60,11 @@ export default class Control {
     // console.log('x:',e.x);
     // console.log('y:',e.y);
     // console.log('z:',e.z);
-    if(e.x>=0.3)
+    if(e.x>=0.1)
     {
       this.target._setheroVx(this.Vrx);
     }
-    else if(e.x<=-0.3)
+    else if(e.x<=-0.1)
     {
       this.target._setheroVx(this.Vlx);
     }
