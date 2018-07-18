@@ -52,6 +52,10 @@ export default class Main {
 
     }
 
+    touchstart_hdr_nothing(e) {
+        e.preventDefault();
+    }
+
     restart() {
         let dpr = wx.getSystemInfoSync().pixelRatio;
         // canvas.width *= dpr;
@@ -60,12 +64,23 @@ export default class Main {
         this.frame = 0;
         this.scene = new Scene(canvas.width, canvas.height, this.gameover.bind(this));
         this.control = new Control(canvas.width, canvas.height, this.scene);
+
+        this.control.shutDownGravity();
+        this.control.initButton();
+
+        this.scene.controller = this.control;
+
         this.status = 'gaming';
         console.log('construct scene done');
 
         canvas.removeEventListener(
             'touchstart',
             this.bind_touchstart_hdr
+        );
+
+        canvas.addEventListener(
+            'touchstart',
+            this.touchstart_hdr_nothing.bind(this)
         );
 
         this.bindLoop = this.loop.bind(this);

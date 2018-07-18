@@ -14,10 +14,11 @@ const IMGSRC = '';
 const ENEMY_WIDTH = 10;
 const ENEMY_HEIGHT = 10;
 
-export default class Enemy{
+export default class Enemy extends Sprite{
     constructor (S) {
         // super(IMGSRC, ENEMY_WIDTH, ENEMY_HEIGHT);
-        this.shape = S;
+        // this.shape = S;
+        super(S);
         this.V = new Point(0, 0);
         this.index = 0;
         this.t = 0;

@@ -9,7 +9,7 @@ const BG_HEIGHT    = 512;
 
 export default class Background extends Sprite {
   constructor() {
-    super(BG_IMG_SRC, BG_WIDTH, BG_HEIGHT);
+    super({},BG_IMG_SRC, BG_WIDTH, BG_HEIGHT);
 
     //this.render(ctx);
 

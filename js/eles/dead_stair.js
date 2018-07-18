@@ -23,7 +23,8 @@ export default class ChangingStairs extends Stair{
     }
 
     setHero(hero) {
-        hero.life = 0;
+        --hero.life;
+        // hero.dead = true;
         // this.prototype.setHero.apply(this, hero);
         super.setHero(hero);
     }
