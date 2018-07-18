@@ -62,11 +62,11 @@ export default class Control {
     // console.log('z:',e.z);
     if(e.x>=0.1)
     {
-      this.target._setheroVx(this.Vrx);
+      this.target._setheroVx(mul(this.Vrx, 10*Math.abs(e.x)));
     }
     else if(e.x<=-0.1)
     {
-      this.target._setheroVx(this.Vlx);
+      this.target._setheroVx(mul(this.Vlx, 10*Math.abs(e.x)));
     }
     else
     {
