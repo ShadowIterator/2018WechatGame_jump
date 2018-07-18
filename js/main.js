@@ -51,7 +51,9 @@ export default class Main {
     }
 
     restart() {
-
+        let dpr = wx.getSystemInfoSync().pixelRatio;
+        // canvas.width *= dpr;
+        // canvas.height *= dpr;
         this.score = 0;
         this.frame = 0;
         this.scene = new Scene(canvas.width, canvas.height, this.gameover.bind(this));

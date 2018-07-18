@@ -19,6 +19,7 @@ export default class Hero{
         // super(IMGSRC, HERO_WIDTH, HERO_HEIGHT);
         this.shape = S;
         this.V = V;
+        this.life = 1;
         this.className = 'hero';
     }
 

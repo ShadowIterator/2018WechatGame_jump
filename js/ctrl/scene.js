@@ -10,8 +10,22 @@ import {DBcmp, add, _add, sub, _sub, mul, _mul, div, _div,
 import Hero from '../eles/hero'
 import Enemy from '../eles/enemy'
 import Stair from '../eles/stair'
+import NormalStair from '../eles/normal_stair'
+import MovingStair from '../eles/moving_stair'
+import ChangingStair from '../eles/changing_stairs'
+import DeadStair from '../eles/dead_stair'
 
 const NVy = new Point(0, 1);
+
+const Pmoving = 0.2;
+const Pchanging = 0.2 + Pmoving;
+const Pdead = 0.2 + Pchanging;
+const AVE_STAIR_STP = 3;
+// const AVE_STAIR_V = 0.5;
+const STAIR_DX = 200;
+const STAIR_DY = 100;
+const AVE_STAIR_V = 1;
+
 
 
 
@@ -97,6 +111,8 @@ export default class Scene {
         this.Wd2 = tW / 2;
         this.Hd2 = tH / 2;
         this.hero = new Hero(new Circle(new Point(this.Wd2, 7), 5), new Point(0,0));
+
+        // this.hero.life = 1;
         this.centerP = new Point(this.Wd2, this.Hd2);
         this.ceilliney = this.H / 3;
         this.maxStairH = 0;
@@ -126,12 +142,12 @@ export default class Scene {
 
         // this.stairs.push(new Stair(new Segment(new Point(-100, 0), new Point(this.W + 100, 0)), new Point(0, 25)));
         // this.stairs.push(new Stair(new Segment(new Point(-100, -3), new Point(this.W + 100, -3)), new Point(0, 25)));
-        this.stairs.push(this.genStair_exact(this.hero.shape.O.x - getRandUniform(1, this.AVE_STAIRS_LEN / 2),
-            this.hero.shape.O.x + getRandUniform(1, this.AVE_STAIRS_LEN / 2),
+        this.stairs.push(this.genStair_exact(this.hero.shape.getPos().x - getRandUniform(1, this.AVE_STAIRS_LEN / 2),
+            this.hero.shape.getPos().x + getRandUniform(1, this.AVE_STAIRS_LEN / 2),
             0));
 
-        this.stairs.push(this.genStair_exact(this.hero.shape.O.x - getRandUniform(1, this.AVE_STAIRS_LEN / 2),
-            this.hero.shape.O.x + getRandUniform(1, this.AVE_STAIRS_LEN / 2),
+        this.stairs.push(this.genStair_exact(this.hero.shape.getPos().x - getRandUniform(1, this.AVE_STAIRS_LEN / 2),
+            this.hero.shape.getPos().x + getRandUniform(1, this.AVE_STAIRS_LEN / 2),
             15));
 
         console.log('exact stairs done');
@@ -151,15 +167,77 @@ export default class Scene {
         console.log('_setheroVx ',this.hero.V);
     }
 
-    genStair(y) {
+    genNormalStair(y) {
         let len = getRandGauss(this.AVE_STAIRS_LEN - this.VARIANCE_STAIRS_LEN * 3,
             this.AVE_STAIRS_LEN + this.VARIANCE_STAIRS_LEN * 3, this.AVE_STAIRS_LEN,
             this.VARIANCE_STAIRS_LEN);
-        // console.log('genStair: len',len);
         let lx = getRandUniform(0, this.W - len);
-        // let lx = getRandUniform(this.W / 2 - 20, this.W / 2);
-        let rtn = new Stair(new Segment(new Point(lx, y), new Point(lx + len, y)), new Point(0, this.DEFAULT_EJECT_VY));
+        let rtn = new NormalStair(new Segment(new Point(lx, y), new Point(lx + len, y)), new Point(0, this.DEFAULT_EJECT_VY));
         return rtn;
+    }
+
+    genMovingStair(y) {
+        let len = getRandGauss(this.AVE_STAIRS_LEN - this.VARIANCE_STAIRS_LEN * 3,
+            this.AVE_STAIRS_LEN + this.VARIANCE_STAIRS_LEN * 3, this.AVE_STAIRS_LEN,
+            this.VARIANCE_STAIRS_LEN);
+        let lx = getRandUniform(0, this.W - len);
+
+        let rtn = new MovingStair(new Segment(new Point(lx, y), new Point(lx + len, y)), new Point(0, this.DEFAULT_EJECT_VY));
+
+        let maxy = y;
+        let stp = getRandGauss(2, 4, AVE_STAIR_STP, 2);
+
+        let x = lx;
+        let P = new Point(x, y);
+        let P0 = new Point(x, y);
+        for(; stp > 0; --stp) {
+            let dx = getRandUniform(-STAIR_DX, STAIR_DX);//getRandGauss(-ENEMY_DX, ENEMY_DX, 0, 30);
+            let dy = getRandUniform(-STAIR_DY, STAIR_DY);//getRandGauss(-ENEMY_DY, ENEMY_DY, 0, 30);
+            let X = new Point(dx, dy);
+            _add(P, X);
+            maxy = Math.max(maxy, P.y);
+            rtn.addroutine(this.genRoutine(X, AVE_STAIR_V));
+        }
+        _sub(P0, P);
+        rtn.addroutine(this.genRoutine(P0, AVE_STAIR_V));
+        rtn.maxy = maxy;
+
+        return rtn;
+    }
+
+    genChangingStair(y) {
+        let len = getRandGauss(this.AVE_STAIRS_LEN - this.VARIANCE_STAIRS_LEN * 3,
+            this.AVE_STAIRS_LEN + this.VARIANCE_STAIRS_LEN * 3, this.AVE_STAIRS_LEN,
+            this.VARIANCE_STAIRS_LEN);
+        let lx = getRandUniform(0, this.W - len);
+        let rtn = new ChangingStair(new Segment(new Point(lx, y), new Point(lx + len, y)), new Point(0, this.DEFAULT_EJECT_VY));
+        rtn.lV = new Point(-1, 0);
+        rtn.rV = new Point(1, 0);
+        rtn.lT = 80;
+        rtn.rT = 80;
+        return rtn;
+
+    }
+
+    genDeadStair(y) {
+        let len = getRandGauss(this.AVE_STAIRS_LEN - this.VARIANCE_STAIRS_LEN * 3,
+            this.AVE_STAIRS_LEN + this.VARIANCE_STAIRS_LEN * 3, this.AVE_STAIRS_LEN,
+            this.VARIANCE_STAIRS_LEN);
+        let lx = getRandUniform(0, this.W - len);
+        let rtn = new DeadStair(new Segment(new Point(lx, y), new Point(lx + len, y)), new Point(0, this.DEFAULT_EJECT_VY));
+        return rtn;
+    }
+
+    genStair(y) {
+        let num = Math.random();
+        if(DBcmp(num, Pmoving) < 0)
+            return this.genMovingStair(y);
+        else if(DBcmp(num, Pchanging) < 0)
+            return this.genChangingStair(y);
+        else if(DBcmp(num, Pdead) < 0)
+            return this.genDeadStair(y);
+        else
+            return this.genNormalStair(y);
     }
 
     genStair_exact(lx, rx, y) {
@@ -184,7 +262,7 @@ export default class Scene {
             console.log('gen stair done');
             this.stairs.push(stair);
             last_y = highest_y;
-            highest_y = stair.Vy.y * stair.Vy.y / (2 * this.g) + stair_y;
+            highest_y = stair.maxHeight(this.g);
             // console.log(highest_y);
         }
         this.maxStairH = highest_y;
@@ -200,8 +278,8 @@ export default class Scene {
         }
     }
 
-    genRoutine(X) {
-        let t = mod(X) / this.AVE_ENEMY_V;
+    genRoutine(X, modV) {
+        let t = mod(X) / modV;
         _div(X, t);
         return {V: X, t: t};
     }
@@ -219,10 +297,10 @@ export default class Scene {
             let X = new Point(dx, dy);
             _add(P, X);
             maxy = Math.max(maxy, P.y);
-            rtn.addroutine(this.genRoutine(X));
+            rtn.addroutine(this.genRoutine(X, this.AVE_ENEMY_V));
         }
         _sub(P0, P);
-        rtn.addroutine(this.genRoutine(P0));
+        rtn.addroutine(this.genRoutine(P0, this.AVE_ENEMY_V));
         rtn.maxy = maxy;
         return rtn;
     }
@@ -257,15 +335,25 @@ export default class Scene {
 
     }
 
+    objectLoop(shape) {
+        let P = shape.getPos();
+        if(DBcmp(P.x, 0) < 0)
+            shape.setPos(new Point(P.x + this.W, P.y));
+        if(DBcmp(P.x, this.W) > 0)
+            shape.setPos(new Point(P.x - this.W, P.y));
+    }
+
     heroLoop() {
-        if(this.hero.shape.O.x < 0) this.hero.shape.O.x += this.W;
-        if(this.hero.shape.O.x > this.W) this.hero.shape.O.x -= this.W;
+        if(this.hero.shape.getPos().x < 0) this.hero.shape.getPos().x += this.W;
+        if(this.hero.shape.getPos().x > this.W) this.hero.shape.getPos().x -= this.W;
     }
 
     moveHero(t) {
-        if(this.gameover) return ;
+        // if(this.gameover) return ;
         // console.log('t', t);
         // console.log(this.hero);
+        if(this.gameover)
+            return ;
         if(DBcmp(t, 0) === 0) return ;
         if(isZero(this.hero.V)) return ;
 
@@ -283,14 +371,16 @@ export default class Scene {
         for(let i = this.enemys.length - 1; i >= 0; --i) {
             if(CirColliCir(this.hero.shape, this.hero.V, this.enemys[i].shape, tres)) {
                 if(DBcmp(t, tres.d  / herov) > 0) {
-                    this.gameover = true;
-                    this.callback_gameover(this.score);
+                    // this.gameover = true;
+                    this.hero.life = 0;
+                    // this.callback_gameover(this.score);
                     return;
                 }
             }
             if(CircleOnCircle(this.hero.shape, this.enemys[i].shape)) {
-                this.gameover = true;
-                this.callback_gameover(this.score);
+                // this.gameover = true;
+                this.hero.life = 0;
+                // this.callback_gameover(this.score);
                 return;
             }
         }
@@ -308,18 +398,15 @@ export default class Scene {
         // console.log(rt, t);
         if(DBcmp(t, rt) > 0) {
             this.hero.shape.O = Object.create(res.P);
-            let VN = res_stair.Vy;
-            let VH = rotate(VN, -PI / 2);
-            _normalize(VH);
-            _mul(VH, dot(VH, this.hero.V));
-            this.hero.V = add(VH, VN);
+            res_stair.setHero(this.hero);
             // _sub(this.hero.V, mul(Ag, rt));
-            this.heroLoop();
+            // this.heroLoop();
+            this.objectLoop(this.hero.shape);
             this.moveHero(t - rt);
             return ;
         }
         else {
-            _add(this.hero.shape.O, this.hero.V);
+            _add(this.hero.shape.getPos(), this.hero.V);
             // _sub(this.hero.V, mul(Ag, t));
             this.heroLoop();
             // return ;
@@ -328,36 +415,60 @@ export default class Scene {
     }
 
     update() {
-        if(this.gameover) return ;
-        this.moveHero(1);
-        this.score = Math.max(this.hero.shape.O.y, this.score);
-        _add(this.hero.V, this.Ag);
-        this.update_screen();
-        if(DBcmp(this.hero.shape.O.y, this.underliney) < 0) {
+        // if(this.gameover) return ;
+        if(this.gameover === true) return ;
+        if(this.hero.life === 0) {
             this.gameover = true;
             this.callback_gameover(this.score);
+            return ;
         }
+        this.moveHero(1);
+        this.score = Math.max(this.hero.shape.getPos().y, this.score);
+        _add(this.hero.V, this.Ag);
+        this.update_screen();
+        if(DBcmp(this.hero.shape.getPos().y, this.underliney) < 0) {
+            // this.gameover = true;
+            this.hero.life = 0;
+            // this.callback_gameover(this.score);
+        }
+
         for(let i = this.enemys.length -1; i >= 0; --i) {
             this.enemys[i].timePass(1);
-            _add(this.enemys[i].shape.O, this.enemys[i].V);
+            _add(this.enemys[i].shape.getPos(), this.enemys[i].V);
+            this.objectLoop(this.enemys[i].shape);
             //enemy loop
-            if(DBcmp(this.enemys[i].shape.O.x, 0) < 0)
-                this.enemys[i].shape.O.x += this.W;
-            if(DBcmp(this.enemys[i].shape.O.x, this.W) > 0)
-                this.enemys[i].shape.O.x -= this.W;
-            // if(i === 0)
-            //     console.log(this.enemys[i].shape.O);
+            // if(DBcmp(this.enemys[i].shape.getPos().x, 0) < 0)
+            //     this.enemys[i].shape.getPos().x += this.W;
+            // if(DBcmp(this.enemys[i].shape.getPos().x, this.W) > 0)
+            //     this.enemys[i].shape.getPos().x -= this.W;
         }
-        //enemy loop
+
+        for(let i = this.stairs.length - 1; i >= 0; --i) {
+            this.stairs[i].timePass(1);
+            _add(this.stairs[i].shape.P1, this.stairs[i].V);
+            _add(this.stairs[i].shape.P2, this.stairs[i].V);
+            this.objectLoop(this.stairs[i].shape);
+            //
+            // if(DBcmp(this.stairs[i].shape.getPos().x, 0) < 0) {
+            //     this.stairs[i].shape.P1.x += this.W;
+            //     this.stairs[i].shape.P2.x += this.W;
+            // }
+            // if(DBcmp(this.stairs[i].shape.getPos().x, this.W) > 0) {
+            //     this.stairs[i].shape.P1.x -= this.W;
+            //     this.stairs[i].shape.P2.x -= this.W;
+            // }
+
+        }
+
 
     }
 
     update_screen() {
         //move screen
+        // if(this.gameover) return ;
         if(this.gameover) return ;
-
-        if(DBcmp(this.hero.shape.O.y, this.ceilliney) > 0) {
-            let nceily = parseInt(this.hero.shape.O.y);
+        if(DBcmp(this.hero.shape.getPos().y, this.ceilliney) > 0) {
+            let nceily = parseInt(this.hero.shape.getPos().y);
             let delta = nceily - this.ceilliney;
             this.appendStairs(this.H + this.underliney, this.H + this.underliney + delta,
                 this.maxStairH, this.AVE_STAIRS_PER_Y);

@@ -13,12 +13,29 @@ export class Point {
         this.x = tx;
         this.y = ty;
     }
+
+    getPos() {
+        return this;
+    }
+
+    setPos(P) {
+        this.x = P.x;
+        this.y = P.y;
+    }
 }
 
 export class Circle {
     constructor(tO, tR) {
         this.O = tO;
         this.R = tR;
+    }
+
+    getPos() {
+        return this.O;
+    }
+
+    setPos(P) {
+        this.O = P;
     }
 }
 
@@ -28,6 +45,16 @@ export class Segment {
         this.P2 = tP2;
         // console.log('Segment constructor: P1', this.P1);
         // console.log('Segment constructor: P2', this.P2);
+    }
+
+    getPos() {
+        return div(add(this.P1, this.P2), 2);
+    }
+
+    setPos(P) {
+        _sub(P, this.getPos());
+        _add(this.P1, P);
+        _add(this.P2, P);
     }
 }
 

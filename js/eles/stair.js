@@ -17,7 +17,25 @@ export default class Stair{
         // super(IMGSRC);
         this.shape = S;
         this.Vy = Vy;
+        this.V = new Point(0, 0);
         this.className = 'stair'
+    }
+
+    maxHeight(g) {
+        return this.Vy.y * this.Vy.y / (2 * g) + this.shape.P1.y;
+    }
+
+
+    setHero(hero) {
+        let VN = this.Vy;
+        let VH = rotate(VN, -PI / 2);
+        _normalize(VH);
+        _mul(VH, dot(VH, hero.V));
+        hero.V = add(VH, VN);
+    }
+
+    timePass(t) {
+
     }
 
     drawToCanvas(ctx, transPosition) {
