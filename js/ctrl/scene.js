@@ -123,8 +123,8 @@ const glb_DEFAULT_EJECT_VY = 5;
     // DEFAULT_AVE_STAIRS_LEN: 50 / 320 * this.W,
     // DEFAULT_VARIANCE_STAIRS_LEN:  1,
     // DEFAULT_EJECT_VY: 5,
-    // DEFAULT_MOVE_X: (mod(this.controller.Vlx)) * this.probabilities.DEFAULT_EJECT_VY / this.probabilities.g,
-    // DEFAULT_EJECT_H: this.probabilities.DEFAULT_EJECT_VY * this.probabilities.DEFAULT_EJECT_VY / (2 * this.probabilities.g),
+    // DEFAULT_MOVE_X: (mod(this.controller.Vlx)) * this.params.DEFAULT_EJECT_VY / this.params.g,
+    // DEFAULT_EJECT_H: this.params.DEFAULT_EJECT_VY * this.params.DEFAULT_EJECT_VY / (2 * this.params.g),
     // DEFAULT_AVE_ENEMY_PER_Y: 0.001,
     // DEFAULT_AVE_ENEMY_V: 1,
     // DEFAULT_AVE_ENEMY_T: 100,
@@ -159,7 +159,7 @@ export default class Scene {
         this.controller = {};
         this.effList = [];
 
-        this.probabilities = {};
+        this.params = {};
 
         this.background = {};//new Background();
 
@@ -250,7 +250,7 @@ export default class Scene {
         // const DEFAULT_Preverse_prop = 0.1;
 
 
-        this.probabilities = {
+        this.params = {
             movingStair_random_default: 0.2,
             changingStair_random_default: 0.2,
             deadStair_random_default: 0.2,
@@ -321,16 +321,16 @@ export default class Scene {
         };
         console.log('start construct stairs');
 
-        this.stairs.push(this.genStair_exact(this.hero.shape.getPos().x - getRandUniform(1, this.probabilities.CURRENT_AVE_STAIRS_LEN / 2),
-            this.hero.shape.getPos().x + getRandUniform(1, this.probabilities.CURRENT_AVE_STAIRS_LEN / 2),
+        this.stairs.push(this.genStair_exact(this.hero.shape.getPos().x - getRandUniform(1, this.params.CURRENT_AVE_STAIRS_LEN / 2),
+            this.hero.shape.getPos().x + getRandUniform(1, this.params.CURRENT_AVE_STAIRS_LEN / 2),
             0));
 
 
 
         console.log('exact stairs done');
-        this.appendStairs(10, this.H, this.probabilities.CURRENT_EJECT_H, this.minx, this.maxx, this.probabilities.CURRENT_AVE_STAIRS_PER_Y * 2);
-        this.appendEnemy(this.H / 2, this.H, this.probabilities.CURRENT_AVE_ENEMY_PER_Y);
-        this.appendProp(10, this.H, this.probabilities.CURRENT_AVE_PROP_PER_Y);
+        this.appendStairs(10, this.H, this.params.CURRENT_EJECT_H, this.minx, this.maxx, this.params.CURRENT_AVE_STAIRS_PER_Y * 2);
+        this.appendEnemy(this.H / 2, this.H, this.params.CURRENT_AVE_ENEMY_PER_Y);
+        this.appendProp(10, this.H, this.params.CURRENT_AVE_PROP_PER_Y);
         console.log('append stairs done');
     }
 
@@ -411,12 +411,12 @@ export default class Scene {
         //     {generator: this.bind_genSpringProp, P: DEFAULT_Pspring_prop},
         //     {generator: this.bind_genReverseProp, P: DEFAULT_Pspring_prop},
         //     {generator: this.bind_genWhosyourdaddyProp, P: DEFAULT_Pwhosyourdaddy_prop}], x, y);
-        return this.genRandObjByy([{generator: this.bind_genLifeProp, P: this.probabilities.lifeProp_current},
-            {generator: this.bind_genScoreProp, P: this.probabilities.scoreProp_current},
-            {generator: this.bind_genRocketProp, P: this.probabilities.rocketProp_current},
-            {generator: this.bind_genSpringProp, P: this.probabilities.springProp_current},
-            {generator: this.bind_genReverseProp, P: this.probabilities.reverseProp_current},
-            {generator: this.bind_genWhosyourdaddyProp, P: this.probabilities.whosyourdaddyProp_current}], x, y);
+        return this.genRandObjByy([{generator: this.bind_genLifeProp, P: this.params.lifeProp_current},
+            {generator: this.bind_genScoreProp, P: this.params.scoreProp_current},
+            {generator: this.bind_genRocketProp, P: this.params.rocketProp_current},
+            {generator: this.bind_genSpringProp, P: this.params.springProp_current},
+            {generator: this.bind_genReverseProp, P: this.params.reverseProp_current},
+            {generator: this.bind_genWhosyourdaddyProp, P: this.params.whosyourdaddyProp_current}], x, y);
     }
 
     appendProp(L, H, rho) {
@@ -427,34 +427,34 @@ export default class Scene {
     }
 
     genNormalStair(x, y) {
-        let len = getRandGauss(this.probabilities.CURRENT_AVE_STAIRS_LEN - this.probabilities.CURRENT_VARIANCE_STAIRS_LEN * 3,
-            this.probabilities.CURRENT_AVE_STAIRS_LEN + this.probabilities.CURRENT_VARIANCE_STAIRS_LEN * 3, this.probabilities.CURRENT_AVE_STAIRS_LEN,
-            this.probabilities.CURRENT_VARIANCE_STAIRS_LEN);
+        let len = getRandGauss(this.params.CURRENT_AVE_STAIRS_LEN - this.params.CURRENT_VARIANCE_STAIRS_LEN * 3,
+            this.params.CURRENT_AVE_STAIRS_LEN + this.params.CURRENT_VARIANCE_STAIRS_LEN * 3, this.params.CURRENT_AVE_STAIRS_LEN,
+            this.params.CURRENT_VARIANCE_STAIRS_LEN);
         let lx = x;
-        let rtn = new NormalStair(new Segment(new Point(lx, y), new Point(lx + len, y)), new Point(0, this.probabilities.CURRENT_EJECT_VY));
+        let rtn = new NormalStair(new Segment(new Point(lx, y), new Point(lx + len, y)), new Point(0, this.params.CURRENT_EJECT_VY));
         return rtn;
     }
 
     genMovingStair(tx, y) {
-        let len = getRandGauss(this.probabilities.CURRENT_AVE_STAIRS_LEN - this.probabilities.CURRENT_VARIANCE_STAIRS_LEN * 3,
-            this.probabilities.CURRENT_AVE_STAIRS_LEN + this.probabilities.CURRENT_VARIANCE_STAIRS_LEN * 3, this.probabilities.CURRENT_AVE_STAIRS_LEN,
-            this.probabilities.CURRENT_VARIANCE_STAIRS_LEN);
+        let len = getRandGauss(this.params.CURRENT_AVE_STAIRS_LEN - this.params.CURRENT_VARIANCE_STAIRS_LEN * 3,
+            this.params.CURRENT_AVE_STAIRS_LEN + this.params.CURRENT_VARIANCE_STAIRS_LEN * 3, this.params.CURRENT_AVE_STAIRS_LEN,
+            this.params.CURRENT_VARIANCE_STAIRS_LEN);
         let lx = tx;
 
-        let rtn = new MovingStair(new Segment(new Point(lx, y), new Point(lx + len, y)), new Point(0, this.probabilities.CURRENT_EJECT_VY));
+        let rtn = new MovingStair(new Segment(new Point(lx, y), new Point(lx + len, y)), new Point(0, this.params.CURRENT_EJECT_VY));
 
         let maxy = y;
         rtn.minx = lx;
         rtn.maxx = lx + len;
-        let stp = getRandGauss(2, 4, this.probabilities.AVE_STAIR_STP, 2);
+        let stp = getRandGauss(2, 4, this.params.AVE_STAIR_STP, 2);
 
         let x = lx;
         let P = new Point(x, y);
         let P0 = new Point(x, y);
 
         for(; stp > 0; --stp) {
-            let dx = getRandUniform(-this.probabilities.STAIR_DX, this.probabilities.STAIR_DX);//getRandGauss(-ENEMY_DX, ENEMY_DX, 0, 30);
-            let dy = getRandUniform(-this.probabilities.STAIR_DY, this.probabilities.STAIR_DY);//getRandGauss(-ENEMY_DY, ENEMY_DY, 0, 30);
+            let dx = getRandUniform(-this.params.STAIR_DX, this.params.STAIR_DX);//getRandGauss(-ENEMY_DX, ENEMY_DX, 0, 30);
+            let dy = getRandUniform(-this.params.STAIR_DY, this.params.STAIR_DY);//getRandGauss(-ENEMY_DY, ENEMY_DY, 0, 30);
             let X = new Point(dx, dy);
             _add(P, X);
             // maxy = Math.max(maxy, P.y);
@@ -463,21 +463,21 @@ export default class Scene {
                 rtn.minx = P.x;
                 rtn.maxx = P.x + len;
             }
-            rtn.addroutine(this.genRoutine(X, this.probabilities.AVE_STAIR_V));
+            rtn.addroutine(this.genRoutine(X, this.params.AVE_STAIR_V));
         }
         _sub(P0, P);
-        rtn.addroutine(this.genRoutine(P0, this.probabilities.AVE_STAIR_V));
+        rtn.addroutine(this.genRoutine(P0, this.params.AVE_STAIR_V));
         rtn.maxy = maxy;
 
         return rtn;
     }
 
     genChangingStair(x, y) {
-        let len = getRandGauss(this.probabilities.CURRENT_AVE_STAIRS_LEN - this.probabilities.CURRENT_VARIANCE_STAIRS_LEN * 3,
-            this.probabilities.CURRENT_AVE_STAIRS_LEN + this.probabilities.CURRENT_VARIANCE_STAIRS_LEN * 3, this.probabilities.CURRENT_AVE_STAIRS_LEN,
-            this.probabilities.CURRENT_VARIANCE_STAIRS_LEN);
+        let len = getRandGauss(this.params.CURRENT_AVE_STAIRS_LEN - this.params.CURRENT_VARIANCE_STAIRS_LEN * 3,
+            this.params.CURRENT_AVE_STAIRS_LEN + this.params.CURRENT_VARIANCE_STAIRS_LEN * 3, this.params.CURRENT_AVE_STAIRS_LEN,
+            this.params.CURRENT_VARIANCE_STAIRS_LEN);
         let lx = x;
-        let rtn = new ChangingStair(new Segment(new Point(lx, y), new Point(lx + len, y)), new Point(0, this.probabilities.CURRENT_EJECT_VY));
+        let rtn = new ChangingStair(new Segment(new Point(lx, y), new Point(lx + len, y)), new Point(0, this.params.CURRENT_EJECT_VY));
         rtn.lV = new Point(-0.3, 0);
         rtn.rV = new Point(0.3, 0);
         rtn.lT = 80;
@@ -487,11 +487,11 @@ export default class Scene {
     }
 
     genDeadStair(x, y) {
-        let len = getRandGauss(this.probabilities.CURRENT_AVE_STAIRS_LEN - this.probabilities.CURRENT_VARIANCE_STAIRS_LEN * 3,
-            this.probabilities.CURRENT_AVE_STAIRS_LEN + this.probabilities.CURRENT_VARIANCE_STAIRS_LEN * 3, this.probabilities.CURRENT_AVE_STAIRS_LEN,
-            this.probabilities.CURRENT_VARIANCE_STAIRS_LEN);
+        let len = getRandGauss(this.params.CURRENT_AVE_STAIRS_LEN - this.params.CURRENT_VARIANCE_STAIRS_LEN * 3,
+            this.params.CURRENT_AVE_STAIRS_LEN + this.params.CURRENT_VARIANCE_STAIRS_LEN * 3, this.params.CURRENT_AVE_STAIRS_LEN,
+            this.params.CURRENT_VARIANCE_STAIRS_LEN);
         let lx = x;
-        let rtn = new DeadStair(new Segment(new Point(lx, y), new Point(lx + len, y)), new Point(0, this.probabilities.CURRENT_EJECT_VY));
+        let rtn = new DeadStair(new Segment(new Point(lx, y), new Point(lx + len, y)), new Point(0, this.params.CURRENT_EJECT_VY));
         return rtn;
     }
 
@@ -511,7 +511,7 @@ export default class Scene {
 
     genStair_exact(lx, rx, y) {
         //console.log('genStair_exact ',lx, rx, y);
-        let rtn = new Stair(new Segment(new Point(lx, y), new Point(rx, y)), new Point(0, this.CURRENT_EJECT_VY));
+        let rtn = new Stair(new Segment(new Point(lx, y), new Point(rx, y)), new Point(0, this.params.CURRENT_EJECT_VY));
         // console.log('genStair_exact ', rtn);
         return rtn;
     }
@@ -524,10 +524,10 @@ export default class Scene {
                 //         {generator: this.bind_genChangingStair, P: DEFAULT_Pchanging},
                 //         {generator: this.bind_genNormalStair, P: 1}],
                 //     getRandUniform(0, this.W), k));
-                this.stairs.push( this.genRandObjByy([{generator: this.bind_genDeadStair, P: this.probabilities.deadStair_random_current},
-                        {generator: this.bind_genMovingStair, P: this.probabilities.movingStair_random_current},
-                        {generator: this.bind_genChangingStair, P: this.probabilities.changingStair_random_current},
-                        {generator: this.bind_genNormalStair, P: this.probabilities.normalStair_random_current}],
+                this.stairs.push( this.genRandObjByy([{generator: this.bind_genDeadStair, P: this.params.deadStair_random_current},
+                        {generator: this.bind_genMovingStair, P: this.params.movingStair_random_current},
+                        {generator: this.bind_genChangingStair, P: this.params.changingStair_random_current},
+                        {generator: this.bind_genNormalStair, P: this.params.normalStair_random_current}],
                     getRandUniform(0, this.W), k));
             }
         }
@@ -540,18 +540,13 @@ export default class Scene {
         let stair_x = 0;
         let stair_y = 0;
         while (highest_y < H) {
-            stair_x = getRandUniform(Math.max(minx - this.probabilities.CURRENT_MOVE_X, 0), Math.min(maxx + this.probabilities.CURRENT_MOVE_X, this.W));
+            stair_x = getRandUniform(Math.max(minx - this.params.CURRENT_MOVE_X, 0), Math.min(maxx + this.params.CURRENT_MOVE_X, this.W));
             stair_y = getRandUniform(last_y, highest_y - 5) + 1;
-            // stair = this.genRandObjByy([{generator: this.bind_genMovingStair, P: 0},
-            //         {generator: this.bind_genMovingStair, P: DEFAULT_Pmoving},
-            //         {generator: this.bind_genChangingStair, P: DEFAULT_Pchanging},
-            //         {generator: this.bind_genNormalStair, P: 1}],
-            //                             stair_x, stair_y);
 
             stair = this.genRandObjByy([
-                    {generator: this.bind_genMovingStair, P: this.probabilities.movingStair_key_current},
-                    {generator: this.bind_genChangingStair, P: this.probabilities.changingStair_key_current},
-                    {generator: this.bind_genNormalStair, P: this.probabilities.normalStair_key_current}],
+                    {generator: this.bind_genMovingStair, P: this.params.movingStair_key_current},
+                    {generator: this.bind_genChangingStair, P: this.params.changingStair_key_current},
+                    {generator: this.bind_genNormalStair, P: this.params.normalStair_key_current}],
                 stair_x, stair_y);
 
             console.log('gen stair done');
@@ -577,20 +572,20 @@ export default class Scene {
     genEnemy(x, y) {
         // let x = getRandUniform(0, this.W);
         let rtn = new Enemy(new Circle(new Point(x, y), 15), new Point(0, 0));
-        let stp = getRandGauss(1, 3, this.probabilities.CURRENT_AVE_ENEMY_STP, 2);
+        let stp = getRandGauss(1, 3, this.params.CURRENT_AVE_ENEMY_STP, 2);
         let maxy = y;
         let P = new Point(x, y);
         let P0 = new Point(x, y);
         for(; stp > 0; --stp) {
-            let dx = getRandUniform(-this.probabilities.CURRENT_ENEMY_DX, this.probabilities.CURRENT_ENEMY_DX);//getRandGauss(-ENEMY_DX, ENEMY_DX, 0, 30);
-            let dy = getRandUniform(-this.probabilities.CURRENT_ENEMY_DY, this.probabilities.CURRENT_ENEMY_DY);//getRandGauss(-ENEMY_DY, ENEMY_DY, 0, 30);
+            let dx = getRandUniform(-this.params.CURRENT_ENEMY_DX, this.params.CURRENT_ENEMY_DX);//getRandGauss(-ENEMY_DX, ENEMY_DX, 0, 30);
+            let dy = getRandUniform(-this.params.CURRENT_ENEMY_DY, this.params.CURRENT_ENEMY_DY);//getRandGauss(-ENEMY_DY, ENEMY_DY, 0, 30);
             let X = new Point(dx, dy);
             _add(P, X);
             maxy = Math.max(maxy, P.y);
-            rtn.addroutine(this.genRoutine(X, this.probabilities.CURRENT_AVE_ENEMY_V));
+            rtn.addroutine(this.genRoutine(X, this.params.CURRENT_AVE_ENEMY_V));
         }
         _sub(P0, P);
-        rtn.addroutine(this.genRoutine(P0, this.probabilities.CURRENT_AVE_ENEMY_V));
+        rtn.addroutine(this.genRoutine(P0, this.params.CURRENT_AVE_ENEMY_V));
         rtn.maxy = maxy;
         return rtn;
     }
@@ -793,7 +788,7 @@ export default class Scene {
         this.moveHero(1);
 
         if(this.hero.status === 'normal') {
-            _add(this.hero.V, this.probabilities.Ag);
+            _add(this.hero.V, this.params.Ag);
         }
 
         for(let i = 0; i < this.effList.length; ++i) {
@@ -830,11 +825,11 @@ export default class Scene {
             let nceily = parseInt(this.hero.shape.getPos().y);
             let delta = nceily - this.ceilliney;
             this.appendStairs(this.H + this.underliney, this.H + this.underliney + delta,
-                this.maxStairH, this.minx, this.maxx, this.probabilities.CURRENT_AVE_STAIRS_PER_Y);
+                this.maxStairH, this.minx, this.maxx, this.params.CURRENT_AVE_STAIRS_PER_Y);
             this.appendEnemy(this.H + this.underliney, this.H + this.underliney + delta,
-                this.probabilities.CURRENT_AVE_ENEMY_PER_Y);
+                this.params.CURRENT_AVE_ENEMY_PER_Y);
             this.appendProp(this.H + this.underliney, this.H + this.underliney + delta,
-                this.probabilities.CURRENT_AVE_PROP_PER_Y);
+                this.params.CURRENT_AVE_PROP_PER_Y);
 
             this.clearStair(this.underliney + delta);
             this.clearEnemy(this.underliney + delta);
