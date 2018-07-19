@@ -223,7 +223,7 @@ export default class Scene {
 
         this.background=new Background();
 
-        this.AVE_STAIRS_PER_Y = 0;//0.02;
+        this.AVE_STAIRS_PER_Y = 0.02;
         this.AVE_STAIRS_LEN = 50 / 320 * this.W;//adj to canvas.width
         this.VARIANCE_STAIRS_LEN = 1;
         this.g = 0.2;
