@@ -135,7 +135,7 @@ export default class Main {
         this.frame++;
         this.render();
         // if(this.status === 'gaming' && (this.frame) % 3 === 0) {
-            this.scene.update();
+        if(this.status === 'gaming')    this.scene.update();
         // }
         this.aniId = window.requestAnimationFrame(
             this.bindLoop,

@@ -27,12 +27,12 @@ export default class Stair extends Sprite{
     }
 
 
-    setHero(hero) {
+    toggle(scene) {
         let VN = this.Vy;
         let VH = rotate(VN, -PI / 2);
         _normalize(VH);
-        _mul(VH, dot(VH, hero.V));
-        hero.V = add(VH, VN);
+        _mul(VH, dot(VH, scene.hero.V));
+        scene.hero.V = add(VH, VN);
     }
 
     getMinx() {
