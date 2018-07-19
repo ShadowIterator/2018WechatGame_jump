@@ -13,6 +13,7 @@ export default class Prop extends Sprite{
         super(S);
         this.toggled = false;
         this.done = true;
+        // this.deleted = false;
         this.bind_timePass = this.timePass.bind(this);
         this.bind_effOver = this.effOver.bind(this);
         this.bind_checkDone = this.checkDone.bind(this);

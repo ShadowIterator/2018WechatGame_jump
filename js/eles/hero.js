@@ -33,14 +33,23 @@ export default class Hero extends Sprite{
     }
 
     decreaseLife() {
-        --this.life;
+        if(!this.whosyourdaddy && !this.dead)
+            --this.life;
     }
 
-    die() {
-        this.dead = true;
+    die(force = false) {
+        if(force) {
+            this.dead = true;
+        }
+        else {
+            if (!this.whosyourdaddy)
+                this.dead = true;
+        }
     }
 
     revive() {
+        this.status = 'normal';
+        this.whosyourdaddy = false;
         this.dead = false;
     }
 

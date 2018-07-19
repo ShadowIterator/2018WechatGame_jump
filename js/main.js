@@ -69,6 +69,7 @@ export default class Main {
         this.control.initButton();
 
         this.scene.controller = this.control;
+        this.scene.init();
 
         this.status = 'gaming';
         console.log('construct scene done');

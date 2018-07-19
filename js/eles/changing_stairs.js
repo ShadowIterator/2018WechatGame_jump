@@ -22,6 +22,14 @@ export default class ChangingStairs extends Stair{
         this.rt = 0;
     }
 
+    getMinx() {
+        return this.shape.P1.x + this.lT * this.lV.x;
+    }
+
+    getMaxx() {
+        return this.shape.P2.x + this.rT * this.rV.x;
+    }
+
     changeL(t) {
         let rt = t;
         if(DBcmp(t + this.lt, this.lT) > 0)

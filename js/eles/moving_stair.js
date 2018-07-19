@@ -19,6 +19,8 @@ export default class MovingStair extends Stair {
         this.t = 0;
         this.totT = 0;
         this.routine = [];
+        this.minx = 0;
+        this.maxx = 0;
     }
 
     timePass(t) {
@@ -31,6 +33,14 @@ export default class MovingStair extends Stair {
         }
         this.V = this.routine[this.index].V;
 
+    }
+
+    getMinx() {
+        return this.minx;
+    }
+
+    getMaxx() {
+        return this.maxx;
     }
 
     addroutine(RT) {

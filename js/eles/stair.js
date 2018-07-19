@@ -35,6 +35,14 @@ export default class Stair extends Sprite{
         hero.V = add(VH, VN);
     }
 
+    getMinx() {
+        return this.shape.P1.x;
+    }
+
+    getMaxx(){
+        return this.shape.P2.x;
+    }
+
     timePass(t) {
 
     }

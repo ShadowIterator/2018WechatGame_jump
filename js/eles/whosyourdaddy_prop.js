@@ -12,13 +12,11 @@ import Prop from './prop';
 
 let cnt = 0;
 
-export default class ReverseProp extends Prop {
+export default class WhosyourdaddyProp extends Prop {
     constructor(S) {
         super(S);
-        this.T = 500;
+        this.T = 150;
         this.t = 0;
-        this.V = new Point(0, 5);
-        // this.bind_timePass = this.timePass.bind(this);
     }
 
     drawToCanvas(ctx, transPosition) {
@@ -26,7 +24,7 @@ export default class ReverseProp extends Prop {
             let P = transPosition(this.shape.O);
             ctx.beginPath();
             ctx.arc(P.x, P.y, this.shape.R, 0, 2 * PI, false);
-            ctx.strokeStyle = '#f48';
+            ctx.strokeStyle = '#448';
             ctx.lineWidth = 2;
             ctx.stroke();
         }
@@ -36,7 +34,6 @@ export default class ReverseProp extends Prop {
         --this.t;
         if(this.t === 0)
             this.done = true;
-        // scene._setheroVy(this.V);
     }
 
     static init_all() {
@@ -46,14 +43,9 @@ export default class ReverseProp extends Prop {
     toggle(scene) {
         if(this.toggled)
             return ;
-        // this.toggled = true;
         this.done = false;
-        // scene.hero.increaseEff();
-        // scene.hero.V = this.V;
-        // scene._setheroVy(this.V);
         if(cnt === 0) {
-            scene.controller.setVlx(-scene.controller.Vlx.x);
-            scene.controller.setVrx(-scene.controller.Vrx.x);
+            scene.hero.whosyourdaddy = true;
         }
         //     _add(scene.hero.V, this.V);
         ++cnt;
@@ -63,11 +55,9 @@ export default class ReverseProp extends Prop {
     }
 
     effOver(scene) {
-        // scene.hero.decreaseEff();
         --cnt;
         if(cnt === 0) {
-            scene.controller.setVlx(-scene.controller.Vlx.x);
-            scene.controller.setVrx(-scene.controller.Vrx.x);
+            scene.hero.whosyourdaddy = false;
         }
         // super.effOver();
         // else
