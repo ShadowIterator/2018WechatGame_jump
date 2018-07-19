@@ -234,11 +234,6 @@ export default class Scene {
 
         this.background=new Background();
 
-
-
-
-
-
         // const DEFAULT_Pmoving = 0.2;
         // const DEFAULT_Pchanging = 0.2;
         // const DEFAULT_Pdead = 0.2;
