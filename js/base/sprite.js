@@ -20,8 +20,8 @@ export default class Sprite {
 
     ctx.drawImage(
       this.img,
-      this.x,
-      this.y,
+      this.shape.getPos().x,
+      this.shape.getPos().y,
       this.width,
       this.height
     )
