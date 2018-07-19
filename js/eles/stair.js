@@ -26,8 +26,14 @@ export default class Stair extends Sprite{
         return this.Vy.y * this.Vy.y / (2 * g) + this.shape.P1.y;
     }
 
+    getHeight() {
+        return this.shape.getPos().y;
+    }
+
 
     toggle(scene) {
+        if(scene.hero.status !== 'normal')
+            return ;
         let VN = this.Vy;
         let VH = rotate(VN, -PI / 2);
         _normalize(VH);

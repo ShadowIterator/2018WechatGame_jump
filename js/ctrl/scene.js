@@ -25,6 +25,7 @@ import LifeProp from  '../eles/life_prop'
 import ScoreProp from '../eles/score_prop'
 import ReverseProp from '../eles/reverse_prop'
 import WhosyourdaddyProp from  '../eles/whosyourdaddy_prop'
+import SectionLine from '../eles/section_line'
 
 const NVy = new Point(0, 1);
 const NVx = new Point(1, 0);
@@ -84,6 +85,12 @@ function getRandGauss(L, R, mu, sigma) {
     return rtn;
 }
 
+function genFunctionWithoutParam(f, recv, ...args) {
+    return function () {
+        f.apply(recv, args);
+    }
+}
+
 export default class Scene {
     constructor(tW, tH, callback_gameover) {
         this.H = tH;
@@ -98,6 +105,7 @@ export default class Scene {
         this.ceilliney = 0;//this.Hd2;
         this.maxStairH = 0;
         this.underliney = 0;
+        this.pause = false;
         this.stairs = [];
         this.enemys = [];
         this.props = [];
@@ -141,6 +149,8 @@ export default class Scene {
         this.enemys = [];
         this.props = [];
         this.score = 0;
+
+        // this.hero.whosyourdaddy = true;
 
         this.gameover = false;
 
@@ -188,12 +198,13 @@ export default class Scene {
 
             g: glb_DEFAULT_g,
             Ag: new Point(0, -glb_DEFAULT_g),
+            DEFAULT_MOVE_X: (mod(this.controller.Vlx)) * glb_DEFAULT_EJECT_VY / glb_DEFAULT_g,
+            DEFAULT_EJECT_H: glb_DEFAULT_EJECT_VY * glb_DEFAULT_EJECT_VY / (2 * glb_DEFAULT_g),
+
             DEFAULT_AVE_STAIRS_PER_Y: 0.02,
             DEFAULT_AVE_STAIRS_LEN: 50 / 320 * this.W,
             DEFAULT_VARIANCE_STAIRS_LEN:  1,
             DEFAULT_EJECT_VY: 5,
-            DEFAULT_MOVE_X: (mod(this.controller.Vlx)) * glb_DEFAULT_EJECT_VY / glb_DEFAULT_g,
-            DEFAULT_EJECT_H: glb_DEFAULT_EJECT_VY * glb_DEFAULT_EJECT_VY / (2 * glb_DEFAULT_g),
             DEFAULT_AVE_ENEMY_PER_Y: 0.001,
             DEFAULT_AVE_ENEMY_V: 1,
             DEFAULT_AVE_ENEMY_T: 100,
@@ -202,13 +213,13 @@ export default class Scene {
             DEFAULT_AVE_ENEMY_STP: 2,
             DEFAULT_AVE_PROP_PER_Y: 0.002,
 
-            CURRENT_AVE_STAIRS_PER_Y: 0.02,
+            CURRENT_AVE_STAIRS_PER_Y: 0.05,
             CURRENT_AVE_STAIRS_LEN: 50 / 320 * this.W,
             CURRENT_VARIANCE_STAIRS_LEN:  1,
             CURRENT_EJECT_VY: 5,
             CURRENT_MOVE_X: (mod(this.controller.Vlx)) * glb_DEFAULT_EJECT_VY / glb_DEFAULT_g,
             CURRENT_EJECT_H: glb_DEFAULT_EJECT_VY * glb_DEFAULT_EJECT_VY / (2 * glb_DEFAULT_g),
-            CURRENT_AVE_ENEMY_PER_Y: 0.001,
+            CURRENT_AVE_ENEMY_PER_Y: 0,//0.001,
             CURRENT_AVE_ENEMY_V: 1,
             CURRENT_AVE_ENEMY_T: 100,
             CURRENT_ENEMY_DX: 250 / 320 * this.W,
@@ -224,14 +235,65 @@ export default class Scene {
             0));
 
         console.log('exact stairs done');
-        // this._setParams({CURRENT_AVE_ENEMY_PER_Y: 0.0});
+
+        this._setParams({CURRENT_AVE_ENEMY_PER_Y: 0.0});
+        // this.stairs.push(new SectionLine(500,{CURRENT_AVE_ENEMY_PER_Y: 0.1}));
+        this.stairs.push(new SectionLine(500,
+            {
+                g: -this.params.g
+                ,Ag: new Point(0, this.params.g)
+                ,CURRENT_MOVE_X: (mod(this.controller.Vlx)) * this.params.CURRENT_EJECT_VY / Math.abs(-this.params.g)
+                ,CURRENT_EJECT_VY: -this.params.CURRENT_EJECT_VY
+                ,CURRENT_EJECT_H: this.params.CURRENT_EJECT_VY * this.params.CURRENT_EJECT_VY / (2 * (-this.params.g))
+                ,CURRENT_AVE_STAIRS_PER_Y: 0.02
+                // ,CURRENT_AVE_ENEMY_PER_Y: 0.02
+            }
+            ,[
+                this.clearAllStairs.bind(this)
+                ,genFunctionWithoutParam(this.appendStairs, this, 520, this.centerP.y + this.Hd2, 0, 0, 0, this.params.CURRENT_AVE_STAIRS_PER_Y * 2)
+            ]
+            ));
+
+        this.stairs.push(new SectionLine(2500,
+            {
+                g: this.params.g
+                ,Ag: new Point(0, -this.params.g)
+                ,CURRENT_AVE_STAIRS_PER_Y: 0.05
+                ,CURRENT_MOVE_X: (mod(this.controller.Vlx)) * this.params.CURRENT_EJECT_VY / Math.abs(this.params.g)
+                ,CURRENT_EJECT_VY: this.params.CURRENT_EJECT_VY
+                ,CURRENT_EJECT_H: this.params.CURRENT_EJECT_VY * this.params.CURRENT_EJECT_VY / (2 * (this.params.g))
+            }
+            ,[
+                this.clearAllStairs.bind(this)
+                ,genFunctionWithoutParam(this.appendStairs, this, this.underliney, this.centerP.y + this.Hd2, this.underliney, 0, this.W, this.params.CURRENT_AVE_STAIRS_PER_Y * 2)
+            ]));
+
+        // this.stairs.push(new NormalStair(new Segment(new Point(-INF, 2500), new Point())))
+
 
         this.appendStairs(10, this.H, this.params.CURRENT_EJECT_H, this.minx, this.maxx, this.params.CURRENT_AVE_STAIRS_PER_Y * 2);
+        // let fx = genFunctionWithoutParam(this.appendStairs, this, 10, this.H, this.params.CURRENT_EJECT_H, this.minx, this.maxx, this.params.CURRENT_AVE_STAIRS_PER_Y * 2);
+        // fx();
         this.appendEnemy(this.H / 2, this.H, this.params.CURRENT_AVE_ENEMY_PER_Y);
         this.appendProp(10, this.H, this.params.CURRENT_AVE_PROP_PER_Y);
         console.log('append stairs done');
 
 
+    }
+
+    clearAllStairs() {
+        // this.stairs = [];
+        let nstairs = [];
+        for(let i = 0; i < this.stairs.length; ++i)
+            if(this.stairs[i].className === 'sectionline')
+                nstairs.push(this.stairs[i]);
+        this.stairs = nstairs;
+    }
+
+    reverseAllStairs() {
+        for(let i = this.stairs.length - 1; i >= 0; --i) {
+            this.stairs[i].Vy.y = -this.stairs[i].Vy.y;
+        }
     }
 
     _setParams(Obj) {
@@ -241,7 +303,7 @@ export default class Scene {
     }
 
     __sortStairByy(A, B) {
-        return -DBcmp(A.maxHeight(this.g), B.maxHeight(this.g));
+        return -DBcmp(A.getHeight(), B.getHeight());
     }
 
     __sortEnemyByy(A, B) {
@@ -309,12 +371,13 @@ export default class Scene {
     }
 
     genProp(x, y) {
-        return this.genRandObjByy([{generator: this.bind_genLifeProp, P: this.params.lifeProp_current},
-            {generator: this.bind_genScoreProp, P: this.params.scoreProp_current},
-            {generator: this.bind_genRocketProp, P: this.params.rocketProp_current},
-            {generator: this.bind_genSpringProp, P: this.params.springProp_current},
-            {generator: this.bind_genReverseProp, P: this.params.reverseProp_current},
-            {generator: this.bind_genWhosyourdaddyProp, P: this.params.whosyourdaddyProp_current}], x, y);
+        return this.genRocketProp(x, y);
+        // return this.genRandObjByy([{generator: this.bind_genLifeProp, P: this.params.lifeProp_current},
+        //     {generator: this.bind_genScoreProp, P: this.params.scoreProp_current},
+        //     {generator: this.bind_genRocketProp, P: this.params.rocketProp_current},
+        //     {generator: this.bind_genSpringProp, P: this.params.springProp_current},
+        //     {generator: this.bind_genReverseProp, P: this.params.reverseProp_current},
+        //     {generator: this.bind_genWhosyourdaddyProp, P: this.params.whosyourdaddyProp_current}], x, y);
     }
 
     appendProp(L, H, rho) {
@@ -403,41 +466,50 @@ export default class Scene {
     randamAppendStairs(L, H, rho) {
         for(let k = L; k < H; ++k){
             if(DBcmp(Math.random(), rho) < 0) {
-                this.stairs.push( this.genRandObjByy([{generator: this.bind_genDeadStair, P: this.params.deadStair_random_current},
+                let stair = this.genRandObjByy([{generator: this.bind_genDeadStair, P: this.params.deadStair_random_current},
                         {generator: this.bind_genMovingStair, P: this.params.movingStair_random_current},
                         {generator: this.bind_genChangingStair, P: this.params.changingStair_random_current},
                         {generator: this.bind_genNormalStair, P: this.params.normalStair_random_current}],
-                    getRandUniform(0, this.W), k));
+                    getRandUniform(0, this.W), k);
+                this.stairs.push(stair);
+                // let stair_y = stair.maxHeight(this.params.g);
+                // if(DBcmp(this.maxStairH, stair_y) < 0) {
+                //     this.maxStairH = stair_y;
+                //     this.minx = stair.getMinx();
+                //     this.maxx = stair.getMaxx();
+                // }
             }
         }
     }
 
     appendStairs(L, H, first_y, minx, maxx, rho) {
-        let highest_y = first_y;
-        let last_y = L;
-        let stair = {};
-        let stair_x = 0;
-        let stair_y = 0;
-        while (highest_y < H) {
-            stair_x = getRandUniform(Math.max(minx - this.params.CURRENT_MOVE_X, 0), Math.min(maxx + this.params.CURRENT_MOVE_X, this.W));
-            stair_y = getRandUniform(last_y, highest_y - 5) + 1;
+        if(DBcmp(this.params.g, 0) > 0) {
+            let highest_y = first_y;
+            let last_y = L;
+            let stair = {};
+            let stair_x = 0;
+            let stair_y = 0;
+            while (highest_y < H) {
+                stair_x = getRandUniform(Math.max(minx - this.params.CURRENT_MOVE_X, 0), Math.min(maxx + this.params.CURRENT_MOVE_X, this.W));
+                stair_y = getRandUniform(last_y, highest_y - 5) + 1;
 
-            stair = this.genRandObjByy([
-                    {generator: this.bind_genMovingStair, P: this.params.movingStair_key_current},
-                    {generator: this.bind_genChangingStair, P: this.params.changingStair_key_current},
-                    {generator: this.bind_genNormalStair, P: this.params.normalStair_key_current}],
-                stair_x, stair_y);
+                stair = this.genRandObjByy([
+                        {generator: this.bind_genMovingStair, P: this.params.movingStair_key_current},
+                        {generator: this.bind_genChangingStair, P: this.params.changingStair_key_current},
+                        {generator: this.bind_genNormalStair, P: this.params.normalStair_key_current}],
+                    stair_x, stair_y);
 
-            console.log('gen stair done');
-            this.stairs.push(stair);
-            last_y = highest_y;
-            minx = stair.getMinx();
-            maxx = stair.getMaxx();
-            highest_y = stair.maxHeight(this.params.g);
+                console.log('gen stair done');
+                this.stairs.push(stair);
+                last_y = highest_y;
+                minx = stair.getMinx();
+                maxx = stair.getMaxx();
+                highest_y = stair.maxHeight(this.params.g);
+            }
+            this.maxStairH = highest_y;
+            this.minx = minx;
+            this.maxx = maxx;
         }
-        this.maxStairH = highest_y;
-        this.minx = minx;
-        this.maxx = maxx;
 
         this.randamAppendStairs(L, H , rho);
     }
@@ -557,16 +629,17 @@ export default class Scene {
             }
         }
 
-        if(this.hero.status === 'normal') {
-            for (let i = this.stairs.length - 1; i >= 0; --i) {
-                if (!CircolliSeg(this.hero.shape, this.hero.V, this.stairs[i].shape, tres))
-                    continue;
-                if (DBcmp(res.d, tres.d) > 0 && DBcmp(dot(this.stairs[i].Vy, tres.N), 0) > 0) {
-                    res = new Colli(tres);
-                    res_stair = this.stairs[i];
-                }
+
+        for (let i = this.stairs.length - 1; i >= 0; --i) {
+            if(this.hero.status !== 'normal' && this.stairs[i].className !== 'sectionline') continue;
+            if (!CircolliSeg(this.hero.shape, this.hero.V, this.stairs[i].shape, tres))
+                continue;
+            if (DBcmp(res.d, tres.d) > 0 && DBcmp(dot(this.stairs[i].Vy, tres.N), 0) > 0) {
+                res = new Colli(tres);
+                res_stair = this.stairs[i];
             }
         }
+
         let rt = res.d / herov;
         if(DBcmp(t, rt) > 0) {
             this.hero.shape.O = Object.create(res.P);
@@ -584,7 +657,10 @@ export default class Scene {
 
     revive() {
 
-        this.hero.shape.setPos(new Point(this.Wd2, this.underliney + this.heroR + 2));
+        if(DBcmp(this.params.g, 0) > 0)
+            this.hero.shape.setPos(new Point(this.Wd2, this.underliney + this.heroR + 2));
+        else
+            this.hero.shape.setPos(new Point(this.Wd2, this.underliney + this.H / 3));
 
         this.effList = [];
         ReverseProp.init_all();
@@ -617,7 +693,7 @@ export default class Scene {
     }
 
     update() {
-
+        if(this.pause) return ;
         if(this.gameover) return ;
         if(this.hero.dead && this.hero.life > 0) {
             this.revive();
@@ -692,7 +768,7 @@ export default class Scene {
         this.stairs.sort(this.__bind_sortStairByy);
         let k = 0;
         for(k = 0; k < this.stairs.length; ++k)
-            if(DBcmp(this.stairs[k].maxHeight(this.g), H) < 0)
+            if(DBcmp(this.stairs[k].getHeight(), H) < 0)
                 break;
         this.stairs = this.stairs.slice(0, k);
     }

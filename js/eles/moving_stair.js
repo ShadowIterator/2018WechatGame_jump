@@ -53,4 +53,8 @@ export default class MovingStair extends Stair {
         // return this.Vy.y * this.Vy.y / (2 * g) + this.shape.P1.y;
         return this.Vy.y * this.Vy.y / (2 * g) + this.maxy;
     }
+
+    getHeight() {
+        return this.maxy;
+    }
 }
