@@ -9,6 +9,7 @@ import {DBcmp, add, _add, sub, _sub, mul, _mul, div, _div,
 
 import Stair from './stair'
 
+<<<<<<< HEAD
 const deadStairSrc='images/deadstair.png';
 
 export default class DeadStairs extends Stair{
@@ -23,6 +24,12 @@ export default class DeadStairs extends Stair{
         // this.lt = 0;
         // this.rt = 0;
         this.setImg(deadStairSrc);
+=======
+export default class DeadStairs extends Stair{
+    constructor(S, Vy) {
+        super(S, Vy);
+
+>>>>>>> 67626e77c67183186fa26f2844ecf8efcdf758ec
     }
 
     toggle(scene) {

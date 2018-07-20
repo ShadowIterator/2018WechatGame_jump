@@ -23,12 +23,28 @@ export class Point {
         this.x = P.x;
         this.y = P.y;
     }
+
+    getWidth() {
+        return 5;
+    }
+
+    getHeight() {
+        return 5;
+    }
 }
 
 export class Circle {
     constructor(tO, tR) {
         this.O = tO;
         this.R = tR;
+    }
+
+    getWidth() {
+        return 2 * this.R;
+    }
+
+    getHeight() {
+        return 2 * this.R;
     }
 
     getPos() {
@@ -66,6 +82,7 @@ export class Segment {
         _add(this.P2, P);
     }
 
+<<<<<<< HEAD
     getWidth()
     {
         return Math.abs(this.P2.x-this.P1.x);
@@ -76,6 +93,15 @@ export class Segment {
       return segHeight;
     }
 
+=======
+    getWidth() {
+        return Math.abs(this.P1.x - this.P2.x);
+    }
+
+    getHeight() {
+        return 10;
+    }
+>>>>>>> 67626e77c67183186fa26f2844ecf8efcdf758ec
 }
 
 export class Colli {
