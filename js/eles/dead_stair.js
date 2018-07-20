@@ -9,27 +9,14 @@ import {DBcmp, add, _add, sub, _sub, mul, _mul, div, _div,
 
 import Stair from './stair'
 
-<<<<<<< HEAD
 const deadStairSrc='images/deadstair.png';
 
 export default class DeadStairs extends Stair{
     constructor(S, Vy) {
         super(S, Vy);
-        // this.lV = new Point(0, 0);
-        // this.rV = new Point(0, 0);
-        // this.lT = 1;
-        // this.rT = 1;
-        // this.lS = 0;
-        // this.rS = 0;
-        // this.lt = 0;
-        // this.rt = 0;
-        this.setImg(deadStairSrc);
-=======
-export default class DeadStairs extends Stair{
-    constructor(S, Vy) {
-        super(S, Vy);
 
->>>>>>> 67626e77c67183186fa26f2844ecf8efcdf758ec
+        this.setImg(deadStairSrc);
+
     }
 
     toggle(scene) {

@@ -82,7 +82,7 @@ export class Segment {
         _add(this.P2, P);
     }
 
-<<<<<<< HEAD
+
     getWidth()
     {
         return Math.abs(this.P2.x-this.P1.x);
@@ -93,15 +93,6 @@ export class Segment {
       return segHeight;
     }
 
-=======
-    getWidth() {
-        return Math.abs(this.P1.x - this.P2.x);
-    }
-
-    getHeight() {
-        return 10;
-    }
->>>>>>> 67626e77c67183186fa26f2844ecf8efcdf758ec
 }
 
 export class Colli {
