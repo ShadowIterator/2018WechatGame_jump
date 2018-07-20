@@ -15,7 +15,7 @@ const IMGSRC = '';
 export default class Stair extends Sprite{
     constructor (S, Vy) {
         // super(IMGSRC);
-        super(S);
+        super(S, IMGSRC, S.getWidth(), S.getHeight());
         // this.shape = S;
         this.Vy = Vy;
         this.V = new Point(0, 0);
@@ -49,13 +49,7 @@ export default class Stair extends Sprite{
 
     drawToCanvas(ctx, transPosition) {
         let P1 = transPosition(this.shape.P1);
-        let P2 = transPosition(this.shape.P2);
-        ctx.beginPath();
-        ctx.moveTo(P1.x, P1.y);
-        ctx.lineTo(P2.x, P2.y);
-        ctx.strokeStyle = '#0ff';
-        ctx.lineWidth = 2;
-        ctx.stroke();
+        ctx.drawImage(this.img, P1.x, P1.y, this.shape.getWidth(), this.shape.getHeight());
     }
 
 }

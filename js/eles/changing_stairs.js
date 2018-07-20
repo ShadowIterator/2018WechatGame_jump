@@ -8,6 +8,7 @@ import {DBcmp, add, _add, sub, _sub, mul, _mul, div, _div,
     CircleOnCircle} from '../libs/geometry'
 
 import Stair from './stair'
+const changingStairSrc='images/normalstair.png';
 
 export default class ChangingStairs extends Stair{
     constructor(S, Vy) {
@@ -20,6 +21,7 @@ export default class ChangingStairs extends Stair{
         this.rS = 0;
         this.lt = 0;
         this.rt = 0;
+        this.setImg(changingStairSrc);
     }
 
     getMinx() {
@@ -83,4 +85,6 @@ export default class ChangingStairs extends Stair{
        this.changeL(t);
        this.changeR(t);
     }
+
+
 }

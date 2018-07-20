@@ -129,7 +129,7 @@ export default class Scene {
 
     init() {
         this.heroR = 5 / 320 * this.W;
-        this.hero = new Hero(new Circle(new Point(this.Wd2, 7), 5), new Point(0,0));
+        this.hero = new Hero(new Circle(new Point(this.Wd2, 7), 15), new Point(0,0));
         this.minx = this.hero.shape.getPos().x;
         this.maxx = this.hero.shape.getPos().x;
         this.hero.whosyourdaddy = false;
@@ -149,6 +149,7 @@ export default class Scene {
         this.background=new Background();
 
         this.params = {
+
             movingStair_random_default: 0.2,
             changingStair_random_default: 0.2,
             deadStair_random_default: 0.2,
@@ -214,7 +215,7 @@ export default class Scene {
             CURRENT_ENEMY_DX: 250 / 320 * this.W,
             CURRENT_ENEMY_DY: 100 / 568 * this.H,
             CURRENT_AVE_ENEMY_STP: 2,
-            CURRENT_AVE_PROP_PER_Y: 0.002,
+            CURRENT_AVE_PROP_PER_Y: 0.012,
 
         };
         console.log('start construct stairs');
@@ -315,6 +316,7 @@ export default class Scene {
             {generator: this.bind_genSpringProp, P: this.params.springProp_current},
             {generator: this.bind_genReverseProp, P: this.params.reverseProp_current},
             {generator: this.bind_genWhosyourdaddyProp, P: this.params.whosyourdaddyProp_current}], x, y);
+        //return this.bind_genRocketProp(x, y);
     }
 
     appendProp(L, H, rho) {

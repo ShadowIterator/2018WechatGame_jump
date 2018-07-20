@@ -9,17 +9,20 @@ import {DBcmp, add, _add, sub, _sub, mul, _mul, div, _div,
 
 import Stair from './stair'
 
-export default class ChangingStairs extends Stair{
+const deadStairSrc='images/deadstair.png';
+
+export default class DeadStairs extends Stair{
     constructor(S, Vy) {
         super(S, Vy);
-        this.lV = new Point(0, 0);
-        this.rV = new Point(0, 0);
-        this.lT = 1;
-        this.rT = 1;
-        this.lS = 0;
-        this.rS = 0;
-        this.lt = 0;
-        this.rt = 0;
+        // this.lV = new Point(0, 0);
+        // this.rV = new Point(0, 0);
+        // this.lT = 1;
+        // this.rT = 1;
+        // this.lS = 0;
+        // this.rS = 0;
+        // this.lt = 0;
+        // this.rt = 0;
+        this.setImg(deadStairSrc);
     }
 
     toggle(scene) {
@@ -31,14 +34,5 @@ export default class ChangingStairs extends Stair{
     }
 
 
-    drawToCanvas(ctx, transPosition) {
-        let P1 = transPosition(this.shape.P1);
-        let P2 = transPosition(this.shape.P2);
-        ctx.beginPath();
-        ctx.moveTo(P1.x, P1.y);
-        ctx.lineTo(P2.x, P2.y);
-        ctx.strokeStyle = '#f00';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-    }
+
 }

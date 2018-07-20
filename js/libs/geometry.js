@@ -1,6 +1,7 @@
 export const EPS = 0.00000001;
 export const PI = Math.PI;
 export const INF = 99888000;
+const segHeight=10;
 
 export function DBcmp(a, b) {
     if(a - b > EPS) return 1;
@@ -37,6 +38,14 @@ export class Circle {
     setPos(P) {
         this.O = P;
     }
+
+    getWidth()  {
+        return 2*this.R;
+    }
+
+    getHeight() {
+        return 2*this.R;
+    }
 }
 
 export class Segment {
@@ -56,6 +65,17 @@ export class Segment {
         _add(this.P1, P);
         _add(this.P2, P);
     }
+
+    getWidth()
+    {
+        return Math.abs(this.P2.x-this.P1.x);
+    }
+
+    getHeight()
+    {
+      return segHeight;
+    }
+
 }
 
 export class Colli {

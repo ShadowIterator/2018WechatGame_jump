@@ -10,7 +10,7 @@ import {DBcmp, add, _add, sub, _sub, mul, _mul,
     CircleOnCircle} from '../libs/geometry'
 
 
-const IMGSRC = '';
+const IMGSRC = 'images/hero.png';
 const HERO_WIDTH = 10;
 const HERO_HEIGHT = 10;
 
@@ -18,7 +18,8 @@ export default class Hero extends Sprite{
     constructor (S, V) {
         // super(IMGSRC, HERO_WIDTH, HERO_HEIGHT);
         // this.shape = S;
-        super(S);
+
+        super(S, IMGSRC, S.getWidth(), S.getHeight());
         this.V = V;
         this.life = 3;
         this.dead = false;
@@ -67,10 +68,11 @@ export default class Hero extends Sprite{
 
     drawToCanvas(ctx, transPosition) {
         let P = transPosition(this.shape.O);
-        ctx.beginPath();
-        ctx.arc(P.x, P.y, this.shape.R, 0, 2 * PI, false);
-        ctx.strokeStyle = '#00f';
-        ctx.lineWidth = 2;
-        ctx.stroke();
+        // ctx.beginPath();
+        // ctx.arc(P.x, P.y, this.shape.R, 0, 2 * PI, false);
+        // ctx.strokeStyle = '#00f';
+        // ctx.lineWidth = 2;
+        // ctx.stroke();
+        ctx.drawImage(this.img, P.x-this.shape.R, P.y-this.shape.R, this.width, this.height);
     }
 }

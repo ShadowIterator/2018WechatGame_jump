@@ -27,4 +27,8 @@ export default class Sprite {
     )
   }
 
+  setImg(src='')  {
+    this.img.src = src;
+  }
+
 }

@@ -10,6 +10,10 @@ import {DBcmp, add, _add, sub, _sub, mul, _mul,
 
 import Prop from './prop';
 
+const rocketSrc='images/digivice.png';
+const withRocketSrc='images/metal.png';
+const oringinSrc='images/hero.png';
+
 let cnt = 0;
 
 export default class RocketProp extends Prop {
@@ -19,16 +23,15 @@ export default class RocketProp extends Prop {
         this.t = 0;
         this.V = new Point(0, 5);
         // this.bind_timePass = this.timePass.bind(this);
+      this.setImg(rocketSrc);
     }
 
     drawToCanvas(ctx, transPosition) {
         if(!this.toggled) {
             let P = transPosition(this.shape.O);
-            ctx.beginPath();
-            ctx.arc(P.x, P.y, this.shape.R, 0, 2 * PI, false);
-            ctx.strokeStyle = '#ff0';
-            ctx.lineWidth = 2;
-            ctx.stroke();
+            ctx.drawImage(this.img, P.x-this.shape.R, P.y-this.shape.R, this.shape.getWidth(), this.shape.getHeight());
+
+
         }
     }
 
@@ -57,6 +60,8 @@ export default class RocketProp extends Prop {
         ++cnt;
         scene.pushEffect({timePass: this.bind_timePass, effOver: this.bind_effOver, checkDone: this.bind_checkDone});
         this.t = this.T;
+        scene.hero.setImg(withRocketSrc);
+
         super.toggle();
     }
 
@@ -64,7 +69,11 @@ export default class RocketProp extends Prop {
         scene.hero.decreaseEff();
         --cnt;
         if(cnt === 0)
-            scene._setheroVy(new Point(0, 0));
+        {
+          scene._setheroVy(new Point(0, 0));
+          scene.hero.setImg(oringinSrc);
+        }
+
         super.effOver();
         // else
         //     _sub(scene.hero.V, this.V);

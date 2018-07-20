@@ -9,6 +9,7 @@ import {DBcmp, add, _add, sub, _sub, mul, _mul, div, _div,
 
 import Stair from './stair'
 
+const movingStairSrc='images/movingstair.png';
 
 export default class MovingStair extends Stair {
     constructor(S, Vy) {
@@ -21,6 +22,7 @@ export default class MovingStair extends Stair {
         this.routine = [];
         this.minx = 0;
         this.maxx = 0;
+        this.setImg(movingStairSrc);
     }
 
     timePass(t) {
@@ -53,4 +55,6 @@ export default class MovingStair extends Stair {
         // return this.Vy.y * this.Vy.y / (2 * g) + this.shape.P1.y;
         return this.Vy.y * this.Vy.y / (2 * g) + this.maxy;
     }
+
+
 }
