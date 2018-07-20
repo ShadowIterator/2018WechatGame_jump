@@ -9,17 +9,10 @@ import {DBcmp, add, _add, sub, _sub, mul, _mul, div, _div,
 
 import Stair from './stair'
 
-export default class ChangingStairs extends Stair{
+export default class DeadStairs extends Stair{
     constructor(S, Vy) {
         super(S, Vy);
-        this.lV = new Point(0, 0);
-        this.rV = new Point(0, 0);
-        this.lT = 1;
-        this.rT = 1;
-        this.lS = 0;
-        this.rS = 0;
-        this.lt = 0;
-        this.rt = 0;
+
     }
 
     toggle(scene) {
