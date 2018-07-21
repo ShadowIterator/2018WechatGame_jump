@@ -68,11 +68,16 @@ export default class Hero extends Sprite{
 
     drawToCanvas(ctx, transPosition) {
         let P = transPosition(this.shape.O);
-        // ctx.beginPath();
-        // ctx.arc(P.x, P.y, this.shape.R, 0, 2 * PI, false);
-        // ctx.strokeStyle = '#00f';
-        // ctx.lineWidth = 2;
-        // ctx.stroke();
+
+        if(this.whosyourdaddy===true)
+        {
+          ctx.globalAlpha=0.3;
+          ctx.beginPath();
+          ctx.arc(P.x, P.y, this.shape.R+5, 0, 2 * PI, false);
+          ctx.fillStyle = '#90ee00';
+          ctx.fill();
+        }
+        ctx.globalAlpha=1;
         ctx.drawImage(this.img, P.x-this.shape.R, P.y-this.shape.R, this.width, this.height);
     }
 }

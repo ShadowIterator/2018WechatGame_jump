@@ -10,23 +10,26 @@ import {DBcmp, add, _add, sub, _sub, mul, _mul,
 
 import Prop from './prop';
 
+const lifeSrc='images/life.png';
+
 export default class LifeProp extends Prop {
     constructor(S) {
         super(S);
+        this.setImg(lifeSrc);
         // this.V = new Point(0, 15);
         // this.life = 200;
     }
 
-    drawToCanvas(ctx, transPosition) {
-        if(!this.toggled) {
-            let P = transPosition(this.shape.O);
-            ctx.beginPath();
-            ctx.arc(P.x, P.y, this.shape.R, 0, 2 * PI, false);
-            ctx.strokeStyle = '#faf';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-        }
-    }
+    // drawToCanvas(ctx, transPosition) {
+    //     if(!this.toggled) {
+    //         let P = transPosition(this.shape.O);
+    //         ctx.beginPath();
+    //         ctx.arc(P.x, P.y, this.shape.R, 0, 2 * PI, false);
+    //         ctx.strokeStyle = '#faf';
+    //         ctx.lineWidth = 2;
+    //         ctx.stroke();
+    //     }
+    // }
 
 
     toggle(scene) {

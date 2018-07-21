@@ -10,23 +10,25 @@ import {DBcmp, add, _add, sub, _sub, mul, _mul,
 
 import Prop from './prop';
 
+const springSrc='images/spring.png';
 export default class SpringProp extends Prop {
     constructor(S) {
         super(S);
+        this.setImg(springSrc);
         this.V = new Point(0, 15);
 
     }
 
-    drawToCanvas(ctx, transPosition) {
-        if(!this.toggled) {
-            let P = transPosition(this.shape.O);
-            ctx.beginPath();
-            ctx.arc(P.x, P.y, this.shape.R, 0, 2 * PI, false);
-            ctx.strokeStyle = '#0af';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-        }
-    }
+    // drawToCanvas(ctx, transPosition) {
+    //     if(!this.toggled) {
+    //         let P = transPosition(this.shape.O);
+    //         ctx.beginPath();
+    //         ctx.arc(P.x, P.y, this.shape.R, 0, 2 * PI, false);
+    //         ctx.strokeStyle = '#0af';
+    //         ctx.lineWidth = 2;
+    //         ctx.stroke();
+    //     }
+    // }
 
 
     toggle(scene) {

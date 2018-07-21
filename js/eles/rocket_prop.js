@@ -26,14 +26,13 @@ export default class RocketProp extends Prop {
       this.setImg(rocketSrc);
     }
 
-    drawToCanvas(ctx, transPosition) {
-        if(!this.toggled) {
-            let P = transPosition(this.shape.O);
-            ctx.drawImage(this.img, P.x-this.shape.R, P.y-this.shape.R, this.shape.getWidth(), this.shape.getHeight());
-
-
-        }
-    }
+    // drawToCanvas(ctx, transPosition) {
+    //     if(!this.toggled) {
+    //         let P = transPosition(this.shape.O);
+    //         ctx.drawImage(this.img, P.x-this.shape.R, P.y-this.shape.R, this.shape.getWidth(), this.shape.getHeight());
+    //
+    //     }
+    // }
 
     static init_all() {
         cnt = 0;

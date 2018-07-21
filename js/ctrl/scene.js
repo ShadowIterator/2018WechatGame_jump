@@ -409,7 +409,8 @@ export default class Scene {
             {generator: this.bind_genSpringProp, P: this.params.springProp_current},
             {generator: this.bind_genReverseProp, P: this.params.reverseProp_current},
             {generator: this.bind_genWhosyourdaddyProp, P: this.params.whosyourdaddyProp_current}], x, y);
-        //return this.bind_genRocketProp(x, y);
+        // return this.bind_genWhosyourdaddyProp(x, y);
+
     }
 
     appendProp(L, H, rho) {

@@ -11,27 +11,30 @@ import {DBcmp, add, _add, sub, _sub, mul, _mul,
 import Prop from './prop';
 
 let cnt = 0;
+const dadySrc='images/shield.png';
 
 export default class WhosyourdaddyProp extends Prop {
     constructor(S) {
         super(S);
         this.T = 150;
         this.t = 0;
+        this.setImg(dadySrc);
     }
 
-    drawToCanvas(ctx, transPosition) {
-        if(!this.toggled) {
-            let P = transPosition(this.shape.O);
-            ctx.beginPath();
-            ctx.arc(P.x, P.y, this.shape.R, 0, 2 * PI, false);
-            ctx.strokeStyle = '#448';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-        }
-    }
+    // drawToCanvas(ctx, transPosition) {
+    //     if(!this.toggled) {
+    //         let P = transPosition(this.shape.O);
+    //         ctx.beginPath();
+    //         ctx.arc(P.x, P.y, this.shape.R, 0, 2 * PI, false);
+    //         ctx.strokeStyle = '#448';
+    //         ctx.lineWidth = 2;
+    //         ctx.stroke();
+    //     }
+    // }
 
     timePass(t, scene) {
         --this.t;
+
         if(this.t === 0)
             this.done = true;
     }

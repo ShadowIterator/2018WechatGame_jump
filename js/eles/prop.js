@@ -25,11 +25,15 @@ export default class Prop extends Sprite{
 
     drawToCanvas(ctx, transPosition) {
         let P = transPosition(this.shape.O);
-        ctx.beginPath();
-        ctx.arc(P.x, P.y, this.shape.R, 0, 2 * PI, false);
-        ctx.strokeStyle = '#ff0';
-        ctx.lineWidth = 2;
-        ctx.stroke();
+        // ctx.beginPath();
+        // ctx.arc(P.x, P.y, this.shape.R, 0, 2 * PI, false);
+        // ctx.strokeStyle = '#ff0';
+        // ctx.lineWidth = 2;
+        // ctx.stroke();
+      if(!this.toggled) {
+        let P = transPosition(this.shape.O);
+        ctx.drawImage(this.img, P.x-this.shape.R, P.y-this.shape.R, this.shape.getWidth(), this.shape.getHeight());
+      }
     }
 
     checkDone() {

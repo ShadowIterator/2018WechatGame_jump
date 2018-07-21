@@ -10,6 +10,8 @@ import {DBcmp, add, _add, sub, _sub, mul, _mul, div, _div,
 import Stair from './stair'
 import NormalStair from './normal_stair';
 
+const cloudSrc='images/cloudline.png';
+
 export default class SectionLine extends Stair{
     constructor(y, sceneParam, op_funcs = null) {
         super(new Segment(new Point(-INF, y), new Point(INF, y)), new Point(0, -1));
@@ -17,6 +19,7 @@ export default class SectionLine extends Stair{
         this.y = y;
         this.op_funcs = op_funcs;
         this.className = 'sectionline';
+        this.setImg(cloudSrc);
     }
 
     toggle(scene) {
@@ -41,12 +44,13 @@ export default class SectionLine extends Stair{
 
     drawToCanvas(ctx, transPosition) {
         let P1 = transPosition(this.shape.P1);
-        let P2 = transPosition(this.shape.P2);
-        ctx.beginPath();
-        ctx.moveTo(P1.x, P1.y);
-        ctx.lineTo(P2.x, P2.y);
-        ctx.strokeStyle = '#f00';
-        ctx.lineWidth = 2;
-        ctx.stroke();
+        // let P2 = transPosition(this.shape.P2);
+        // ctx.beginPath();
+        // ctx.moveTo(P1.x, P1.y);
+        // ctx.lineTo(P2.x, P2.y);
+        // ctx.strokeStyle = '#f00';
+        // ctx.lineWidth = 2;
+        // ctx.stroke();
+        ctx.drawImage(this.img, -10, P1.y, window.innerWidth+10, 30);
     }
 }

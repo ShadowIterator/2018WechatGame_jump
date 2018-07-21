@@ -11,6 +11,7 @@ import {DBcmp, add, _add, sub, _sub, mul, _mul,
 import Prop from './prop';
 
 let cnt = 0;
+const reverseSrc='images/reverse.png';
 
 export default class ReverseProp extends Prop {
     constructor(S) {
@@ -19,18 +20,19 @@ export default class ReverseProp extends Prop {
         this.t = 0;
         this.V = new Point(0, 5);
         // this.bind_timePass = this.timePass.bind(this);
+      this.setImg(reverseSrc);
     }
 
-    drawToCanvas(ctx, transPosition) {
-        if(!this.toggled) {
-            let P = transPosition(this.shape.O);
-            ctx.beginPath();
-            ctx.arc(P.x, P.y, this.shape.R, 0, 2 * PI, false);
-            ctx.strokeStyle = '#f48';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-        }
-    }
+    // drawToCanvas(ctx, transPosition) {
+    //     if(!this.toggled) {
+    //         let P = transPosition(this.shape.O);
+    //         ctx.beginPath();
+    //         ctx.arc(P.x, P.y, this.shape.R, 0, 2 * PI, false);
+    //         ctx.strokeStyle = '#f48';
+    //         ctx.lineWidth = 2;
+    //         ctx.stroke();
+    //     }
+    // }
 
     timePass(t, scene) {
         --this.t;
