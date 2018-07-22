@@ -261,47 +261,66 @@ export default class Scene {
     }
 
     setSections() {
+        // this.stairs.push(new SectionLine(500,
+        //     {
+        //         g: -this.params.g
+        //         ,Ag: new Point(0, this.params.g)
+        //         ,CURRENT_MOVE_X: (mod(this.controller.Vlx)) * this.params.CURRENT_EJECT_VY / Math.abs(-this.params.g)
+        //         ,CURRENT_EJECT_VY: -this.params.CURRENT_EJECT_VY
+        //         ,CURRENT_EJECT_H: this.params.CURRENT_EJECT_VY * this.params.CURRENT_EJECT_VY / (2 * (-this.params.g))
+        //         ,CURRENT_AVE_STAIRS_PER_Y: 0.01
+        //         // ,CURRENT_AVE_ENEMY_PER_Y: 0.02
+        //     }
+        //     ,[
+        //         this.clearAllStairs.bind(this)
+        //         ,genFunctionWithoutParam(this.appendStairs, this, 520, this.centerP.y + this.Hd2, 0, 0, 0, this.params.CURRENT_AVE_STAIRS_PER_Y * 2)
+        //     ]
+        // ));
+        //
+        // this.stairs.push(new SectionLine(2500,
+        //     {
+        //         g: this.params.g
+        //         ,Ag: new Point(0, -this.params.g)
+        //         ,CURRENT_AVE_STAIRS_PER_Y: 0.05
+        //         ,CURRENT_MOVE_X: (mod(this.controller.Vlx)) * this.params.CURRENT_EJECT_VY / Math.abs(this.params.g)
+        //         ,CURRENT_EJECT_VY: this.params.CURRENT_EJECT_VY
+        //         ,CURRENT_EJECT_H: this.params.CURRENT_EJECT_VY * this.params.CURRENT_EJECT_VY / (2 * (this.params.g))
+        //     }
+        //     ,[
+        //         this.clearAllStairs.bind(this)
+        //         ,genFunctionWithoutParam(this.appendStairs, this, this.underliney, this.centerP.y + this.Hd2, this.underliney + 10, 0, this.W, this.params.CURRENT_AVE_STAIRS_PER_Y * 2)
+        //     ]));
+        //
+        // this.stairs.push(new SectionLine(7500,
+        //     {
+        //         g: 0.1
+        //         ,Ag: new Point(0, -0.1)
+        //         ,CURRENT_AVE_STAIRS_PER_Y: 0
+        //         ,CURRENT_EJECT_VY: 5
+        //     }
+        //     ,[
+        //         this.clearAllStairs.bind(this)
+        //         ,genFunctionWithoutParam(this.appendStairs, this, this.underliney, this.centerP.y + this.Hd2, this.underliney + 10, 0, this.W, this.params.CURRENT_AVE_STAIRS_PER_Y * 2)
+        //     ]));
+
         this.stairs.push(new SectionLine(500,
-            {
-                g: -this.params.g
-                ,Ag: new Point(0, this.params.g)
-                ,CURRENT_MOVE_X: (mod(this.controller.Vlx)) * this.params.CURRENT_EJECT_VY / Math.abs(-this.params.g)
-                ,CURRENT_EJECT_VY: -this.params.CURRENT_EJECT_VY
-                ,CURRENT_EJECT_H: this.params.CURRENT_EJECT_VY * this.params.CURRENT_EJECT_VY / (2 * (-this.params.g))
-                ,CURRENT_AVE_STAIRS_PER_Y: 0.01
-                // ,CURRENT_AVE_ENEMY_PER_Y: 0.02
-            }
+            {}
             ,[
-                this.clearAllStairs.bind(this)
-                ,genFunctionWithoutParam(this.appendStairs, this, 520, this.centerP.y + this.Hd2, 0, 0, 0, this.params.CURRENT_AVE_STAIRS_PER_Y * 2)
+                this._reversex.bind(this)
             ]
-        ));
+            ));
 
-        this.stairs.push(new SectionLine(2500,
-            {
-                g: this.params.g
-                ,Ag: new Point(0, -this.params.g)
-                ,CURRENT_AVE_STAIRS_PER_Y: 0.05
-                ,CURRENT_MOVE_X: (mod(this.controller.Vlx)) * this.params.CURRENT_EJECT_VY / Math.abs(this.params.g)
-                ,CURRENT_EJECT_VY: this.params.CURRENT_EJECT_VY
-                ,CURRENT_EJECT_H: this.params.CURRENT_EJECT_VY * this.params.CURRENT_EJECT_VY / (2 * (this.params.g))
-            }
+        this.stairs.push(new SectionLine(5000,
+            {}
             ,[
-                this.clearAllStairs.bind(this)
-                ,genFunctionWithoutParam(this.appendStairs, this, this.underliney, this.centerP.y + this.Hd2, this.underliney + 10, 0, this.W, this.params.CURRENT_AVE_STAIRS_PER_Y * 2)
-            ]));
+                this._reversex.bind(this)
+            ]
+            ));
+    }
 
-        this.stairs.push(new SectionLine(7500,
-            {
-                g: 0.1
-                ,Ag: new Point(0, -0.1)
-                ,CURRENT_AVE_STAIRS_PER_Y: 0
-                ,CURRENT_EJECT_VY: 5
-            }
-            ,[
-                this.clearAllStairs.bind(this)
-                ,genFunctionWithoutParam(this.appendStairs, this, this.underliney, this.centerP.y + this.Hd2, this.underliney + 10, 0, this.W, this.params.CURRENT_AVE_STAIRS_PER_Y * 2)
-            ]));
+    _reversex() {
+        this.controller.Vlx.x = -this.controller.Vlx.x;
+        this.controller.Vrx.x = -this.controller.Vrx.x;
     }
 
     __normalizex(a) {
@@ -328,9 +347,13 @@ export default class Scene {
     }
 
     _setParams(Obj) {
-        for(const [key, value] of Object.entries(Obj)) {
-            this.params[key] = value;
+        // for(const [key, value] of Object.entries(Obj)) {
+        //     this.params[key] = value;
+        // }
+        for(const key in Obj) {
+            this.params[key] = Obj[key];
         }
+
     }
 
     __sortStairByy(A, B) {
