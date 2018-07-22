@@ -13,6 +13,7 @@ import Prop from './prop';
 const rocketSrc='images/digivice.png';
 const withRocketSrc='images/metal.png';
 const oringinSrc='images/hero.png';
+const rocketAudio='audio/rocket.mp3';
 
 let cnt = 0;
 
@@ -24,6 +25,7 @@ export default class RocketProp extends Prop {
         this.V = new Point(0, 5);
         // this.bind_timePass = this.timePass.bind(this);
       this.setImg(rocketSrc);
+      this.setAudio(rocketAudio);
     }
 
     // drawToCanvas(ctx, transPosition) {
@@ -60,7 +62,7 @@ export default class RocketProp extends Prop {
         scene.pushEffect({timePass: this.bind_timePass, effOver: this.bind_effOver, checkDone: this.bind_checkDone});
         this.t = this.T;
         scene.hero.setImg(withRocketSrc);
-
+        this.audio.play();
         super.toggle();
     }
 
@@ -72,7 +74,7 @@ export default class RocketProp extends Prop {
           scene._setheroVy(new Point(0, 0));
           scene.hero.setImg(oringinSrc);
         }
-
+        this.audio.pause();
         super.effOver();
         // else
         //     _sub(scene.hero.V, this.V);

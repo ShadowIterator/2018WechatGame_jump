@@ -11,6 +11,8 @@ import {DBcmp, add, _add, sub, _sub, mul, _mul,
 
 
 const IMGSRC = '';
+const stairAudio='audio/stair.mp3';
+
 
 export default class Stair extends Sprite{
     constructor (S, Vy) {
@@ -20,6 +22,7 @@ export default class Stair extends Sprite{
         this.Vy = Vy;
         this.V = new Point(0, 0);
         this.className = 'stair'
+        this.setAudio(stairAudio);
     }
 
     maxHeight(g) {

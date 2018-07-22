@@ -6,6 +6,9 @@ export default class Sprite {
     this.img     = new Image();
     this.img.src = imgSrc;
 
+    this.audio=new Audio();
+    this.audio.src='';
+
     this.width  = width;
     this.height = height;
 
@@ -29,6 +32,10 @@ export default class Sprite {
 
   setImg(src='')  {
     this.img.src = src;
+  }
+
+  setAudio(src='')  {
+    this.audio.src=src;
   }
 
 }
