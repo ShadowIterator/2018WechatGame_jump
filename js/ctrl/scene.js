@@ -428,7 +428,6 @@ export default class Scene {
             {generator: this.bind_genSpringProp, P: this.params.springProp_current},
             {generator: this.bind_genReverseProp, P: this.params.reverseProp_current},
             {generator: this.bind_genWhosyourdaddyProp, P: this.params.whosyourdaddyProp_current}], x, y);
-        // return this.bind_genWhosyourdaddyProp(x, y);
 
     }
 
@@ -689,6 +688,7 @@ export default class Scene {
             if (DBcmp(res.d, tres.d) > 0 && DBcmp(dot(this.stairs[i].Vy, tres.N), 0) > 0) {
                 res = new Colli(tres);
                 res_stair = this.stairs[i];
+                //this.stairs[i].audio.play();
             }
         }
 
