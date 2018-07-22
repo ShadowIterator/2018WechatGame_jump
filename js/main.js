@@ -173,13 +173,6 @@ export default class Main {
       let startBtnImage=new Image();
       startBtnImage.src='images/startbtn.png';
       ctx.drawImage(startBtnImage,C.O.x-C.R, C.O.y-C.R, 2*C.R, 2*C.R);
-      // ctx.beginPath();
-      // let C = this.btn[0].C;
-      // ctx.arc(C.O.x, C.O.y, C.R, 0, 2 * PI, false);
-      //
-      // ctx.strokeStyle = '#0f0';
-      // ctx.lineWidth = 2;
-      // ctx.stroke();
     }
 
     render() {
