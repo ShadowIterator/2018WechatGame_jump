@@ -303,7 +303,7 @@ export default class Scene {
         //         ,genFunctionWithoutParam(this.appendStairs, this, this.underliney, this.centerP.y + this.Hd2, this.underliney + 10, 0, this.W, this.params.CURRENT_AVE_STAIRS_PER_Y * 2)
         //     ]));
 
-        this.stairs.push(new SectionLine(1000,
+        this.stairs.push(new SectionLine(500,
             {}
             ,[
                 this._reversex.bind(this)
@@ -347,9 +347,13 @@ export default class Scene {
     }
 
     _setParams(Obj) {
-        for(const [key, value] of Object.entries(Obj)) {
-            this.params[key] = value;
+        // for(const [key, value] of Object.entries(Obj)) {
+        //     this.params[key] = value;
+        // }
+        for(const key in Obj) {
+            this.params[key] = Obj[key];
         }
+
     }
 
     __sortStairByy(A, B) {
