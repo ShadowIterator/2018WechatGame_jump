@@ -32,7 +32,7 @@ function _setx(V, Vx) {
     let conj = dot(V, NVy);
     V = mul(NVy, conj);
     _add(V, Vx);
-    console.log('_setx, V ', V);
+    // console.log('_setx, V ', V);
 }
 
 export default class Control {
@@ -191,8 +191,8 @@ export default class Control {
             }
           }
       }
-      console.log('touchLeft', this.touchLeft.size);
-      console.log('touchRight', this.touchRight.size);
+      // console.log('touchLeft', this.touchLeft.size);
+      // console.log('touchRight', this.touchRight.size);
     }
 
     touchmove_hdr(e) {
@@ -201,22 +201,22 @@ export default class Control {
 
     touchend_hdr(e) {
         e.preventDefault();
-        console.log('touchend');
+        // console.log('touchend');
         for(let i=0; i<e.changedTouches.length; ++i)
         {
           if(this.touchLeft.has(e.changedTouches[i].identifier))
           {
             this.touchLeft.delete(e.changedTouches[i].identifier);
-            console.log('deleteLeft');
+            // console.log('deleteLeft');
           }
           else if(this.touchRight.has(e.changedTouches[i].identifier))
           {
             this.touchRight.delete(e.changedTouches[i].identifier);
-            console.log('deleteRight');
+            // console.log('deleteRight');
           }
         }
-        console.log('touchLeft', this.touchLeft.size);
-        console.log('touchRight', this.touchRight.size);
+        // console.log('touchLeft', this.touchLeft.size);
+        // console.log('touchRight', this.touchRight.size);
         if(this.touchLeft.size===0 && this.touchRight.size!==0)
         {
           this.target._setheroVx(this.Vrx);

@@ -64,13 +64,14 @@ function CircolliSeg(C, V, S, res) {
         return false;
     let h = mod(V3);
     let d = h / abs_sinT - C.R / abs_sinT;
+    if(DBcmp(d, 0) < 0) return false;
     _mul(V1, d);
     res.P = add(C.O, V1);
     let P2 = calH(S, res.P);
     if(!pointOnSegment(P2, S))
         return false;
     res.N = sub(res.P, P2);
-    res.d = d;
+    res.d = Math.max(d, 0);
     return true;
 }
 
@@ -114,6 +115,7 @@ export default class Scene {
         this.controller = {};
         this.effList = [];
         this.params = {};
+        this.heroVx = new Point(0, 0);
 
         this.background = {};
 
@@ -136,8 +138,9 @@ export default class Scene {
     }
 
     init() {
-        this.heroR = 5 / 320 * this.W;
-        this.hero = new Hero(new Circle(new Point(this.Wd2, 7), 15), new Point(0,0));
+        this.heroR = 15; //15 / 320 * this.W;
+        this.hero = new Hero(new Circle(new Point(this.Wd2, 17), this.heroR), new Point(0,0));
+        this.hero_nextV = new Point(this.hero.V.x, this.hero.V.y);
         this.minx = this.hero.shape.getPos().x;
         this.maxx = this.hero.shape.getPos().x;
         this.hero.whosyourdaddy = false;
@@ -377,17 +380,29 @@ export default class Scene {
         }
     }
 
-    _setheroVx(Vx) {
+    __setheroVx(Vx) {
         let conj = dot(this.hero.V, NVy);
         this.hero.V = mul(NVy, conj);
         _add(this.hero.V, Vx);
-        console.log('_setheroVx ',this.hero.V);
+    }
+
+    _setheroVx(Vx) {
+        // let conj = dot(this.hero.V, NVy);
+        // this.hero.V = mul(NVy, conj);
+        // this.hero_nextV = mul(NVy, conj);
+        // _add(this.hero.V, Vx);
+        // _add(this.hero_nextV, Vx);
+        // console.log('_setheroVx ',this.hero.V);
+        //this.heroVx = Vx;
+        this.__setheroVx(Vx);
     }
 
     _setheroVy(Vy) {
         let conj = dot(this.hero.V, NVx);
+        // this.hero.V = mul(NVx, conj);
+        // _add(this.hero.V, Vy);
         this.hero.V = mul(NVx, conj);
-        _add(this.hero.V, Vy);
+        _add(this.hero_nextV, Vy);
     }
 
 
@@ -705,7 +720,7 @@ export default class Scene {
             return ;
         }
         else {
-            _add(this.hero.shape.getPos(), this.hero.V);
+            _add(this.hero.shape.getPos(), mul(this.hero.V, t));
             this.heroLoop();
         }
         return ;
@@ -766,7 +781,13 @@ export default class Scene {
 
         if(this.hero.status === 'normal') {
             _add(this.hero.V, this.params.Ag);
+            // _add(this.hero_nextV, this.params.Ag);
         }
+
+        // this.hero.V.x = this.hero_nextV.x;
+        // this.hero.V.y = this.hero_nextV.y;
+        // _add(this.hero.V, this.heroVx);
+        // this.__setheroVx(this.heroVx);
 
         for(let i = 0; i < this.effList.length; ++i) {
             this.effList[i].timePass(1, this);
