@@ -9,8 +9,16 @@
 
 import Scene from  './ctrl/scene'
 import Control from './ctrl/control'
+import {Point, Circle, PI} from './libs/geometry'
+import {pointInCircle} from './libs/geometry'
+import Button from "./ctrl/button";
 
-let ctx = canvas.getContext('2d')
+let ctx = canvas.getContext('2d');
+let screenWidth=canvas.width;
+let screenHeight=canvas.height;
+let buttonRadius=30 / 320 * screenWidth;
+let buttonY=screenHeight-3*buttonRadius;
+
 // let databus = new DataBus()
 
 /**
@@ -27,11 +35,22 @@ export default class Main {
         this.scene = {};
         this.control = {};
         this.status = 'onConstruction';
+        this.btn=[];
         console.log('start construct scene');
 
         wx.setKeepScreenOn({keepScreenOn: true});
         this.restart();
-        this.gameover();
+        //this.gameover();
+        this.gameInit();
+    }
+
+    gameInit()
+    {
+      this.status='init';
+      this.btn.push(new Button(new Circle(new Point(screenWidth/2, buttonY), buttonRadius), 'startBtn'));
+      this.bind_touchstart_hdr = this.touchstart_hdr.bind(this)
+      canvas.addEventListener('touchstart', this.bind_touchstart_hdr);
+      this.control.removeEvent();
     }
 
     gameover(score) {
@@ -45,10 +64,25 @@ export default class Main {
     touchstart_hdr(e) {
 
         console.log('touchEventHandler');
-
-        e.preventDefault()
-
-        this.restart()
+        e.preventDefault();
+        let P = new Point(0, 0);
+        P.x = e.changedTouches[0].clientX;
+        P.y = e.changedTouches[0].clientY;
+        if(this.status==='init')
+        {
+          if( pointInCircle(P, this.btn[0].C))
+          {
+            this.restart();
+          }
+        }
+        else if(this.status==='over')
+        {
+          e.preventDefault();
+          this.restart();
+        }
+        // e.preventDefault()
+        //
+        // this.restart()
 
     }
 
@@ -57,6 +91,7 @@ export default class Main {
     }
 
     restart() {
+
         let dpr = wx.getSystemInfoSync().pixelRatio;
         // canvas.width *= dpr;
         // canvas.height *= dpr;
@@ -70,6 +105,8 @@ export default class Main {
 
         this.scene.controller = this.control;
         this.scene.init();
+
+        this.btn.pop();
 
         this.status = 'gaming';
         console.log('construct scene done');
@@ -111,8 +148,9 @@ export default class Main {
         ctx.fillStyle = '#0ff';
         ctx.font = '20px Arial';
         // ctx.beginPath();
-        ctx.fillText(`game over, touch screen to restart`, 10, canvas.height / 2);
-        ctx.fillText(`your score is ${parseInt(this.score)}`, 10, 20 + canvas.height / 2)
+        ctx.textAlign='center';
+        ctx.fillText(`game over, touch screen to restart`, screenWidth/2, canvas.height / 2);
+        ctx.fillText(`your score is ${parseInt(this.score)}`, screenWidth/2, 20 + canvas.height / 2)
         // ctx.stroke();
         // ctx.closePath();
         // ctx.restore();
@@ -124,10 +162,24 @@ export default class Main {
         // ctx.stroke();
     }
 
+    render_init()
+    {
+      ctx.fillStyle = '#0ff';
+      ctx.font = '20px Arial';
+      ctx.textAlign='center';
+      ctx.fillText(`Doodle jump`, screenWidth/2, canvas.height / 2);
+
+      let C = this.btn[0].C;
+      let startBtnImage=new Image();
+      startBtnImage.src='images/startbtn.png';
+      ctx.drawImage(startBtnImage,C.O.x-C.R, C.O.y-C.R, 2*C.R, 2*C.R);
+    }
+
     render() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         if(this.status === 'gaming') this.render_gaming();
         else if(this.status === 'over') this.render_over();
+        else if(this.status==='init') this.render_init();
     }
     // // 实现游戏帧循环
     loop() {

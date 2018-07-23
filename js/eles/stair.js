@@ -42,6 +42,7 @@ export default class Stair extends Sprite{
         _normalize(VH);
         _mul(VH, dot(VH, scene.hero.V));
         scene.hero.V = add(VH, VN);
+        this.audio.play();
     }
 
     getMinx() {
