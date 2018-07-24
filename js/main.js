@@ -7,19 +7,29 @@
 
 // import Stone from './stone/stone'
 
+//TODO:
+//BUG when get a spring prop (_setheroVy)
+//ranklist: sort, blur(pixelratio), refractor index.js && render in main.js, add a button to show ranklist
+//refractor scene.js
+
 import Scene from  './ctrl/scene'
 import Control from './ctrl/control'
 import {Point, Circle, PI} from './libs/geometry'
 import {pointInCircle} from './libs/geometry'
-import Button from "./ctrl/button";
+import Button from './ctrl/button'
+// import drawRanklistToSharedCanvas from 'openDataContext/index'
+
 
 let ctx = canvas.getContext('2d');
+// let shctx = sharedCanvas.getContext('2d');
 let screenWidth=canvas.width;
 let screenHeight=canvas.height;
 let buttonRadius=30 / 320 * screenWidth;
 let buttonY=screenHeight-3*buttonRadius;
 
 // let databus = new DataBus()
+let openDataContext = wx.getOpenDataContext();
+
 
 /**
  * 游戏主函数
@@ -34,9 +44,23 @@ export default class Main {
         this.score = 0;
         this.scene = {};
         this.control = {};
-        this.status = 'onConstruction';
+        this.status = 'over';//'onConstruction';
         this.btn=[];
         console.log('start construct scene');
+
+        openDataContext.postMessage({
+            op: 'init',
+        });
+
+        wx.setUserCloudStorage({
+            KVDataList: [{
+               key: 'siscore',
+               value: '10086'
+            }],
+            success: (res => {
+                console.log('setData, sucess');
+            })
+        });
 
         wx.setKeepScreenOn({keepScreenOn: true});
         this.restart();
@@ -46,7 +70,7 @@ export default class Main {
 
     gameInit()
     {
-      this.status='init';
+      this.status = 'ranklist';//'init';
       this.btn.push(new Button(new Circle(new Point(screenWidth/2, buttonY), buttonRadius), 'startBtn'));
       this.bind_touchstart_hdr = this.touchstart_hdr.bind(this)
       canvas.addEventListener('touchstart', this.bind_touchstart_hdr);
@@ -131,35 +155,29 @@ export default class Main {
         );
     }
 
+    render_ranklist() {
+        // drawRanklistToSharedCanvas();
+        openDataContext.postMessage({
+            op: 'render',
+            // text: 'hello',
+            // year: (new Date()).getFullYear()
+        });
+        ctx.drawImage(sharedCanvas, 0, 0, screenWidth, screenHeight);
+    }
+
     render_gaming() {
         this.scene.render(ctx);
         this.control.render(ctx);
     }
 
     render_over() {
-        // context.strokeStyle = Obj.sS;
-        // context.font = Obj.font;
-        // context.beginPath();
-        // context.fillText(`${Obj.text.toFixed(0)}%`, Obj.px, Obj.py);
-        // context.stroke();
-        // // context.closePath();
-        // context.restore();
-        // ctx.save();
+
         ctx.fillStyle = '#0ff';
         ctx.font = '20px Arial';
-        // ctx.beginPath();
         ctx.textAlign='center';
         ctx.fillText(`game over, touch screen to restart`, screenWidth/2, canvas.height / 2);
-        ctx.fillText(`your score is ${parseInt(this.score)}`, screenWidth/2, 20 + canvas.height / 2)
-        // ctx.stroke();
-        // ctx.closePath();
-        // ctx.restore();
+        ctx.fillText(`your score is ${parseInt(this.score)}`, screenWidth/2, 20 + canvas.height / 2);
 
-        // ctx.beginPath();
-        // ctx.arc(canvas.width / 2, canvas.height / 2, 30, 0, 6.28, false);
-        // ctx.strokeStyle = '#0ff';
-        // ctx.lineWidth = 2;
-        // ctx.stroke();
     }
 
     render_init()
@@ -179,7 +197,8 @@ export default class Main {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         if(this.status === 'gaming') this.render_gaming();
         else if(this.status === 'over') this.render_over();
-        else if(this.status==='init') this.render_init();
+        else if(this.status === 'init') this.render_init();
+        else if(this.status === 'ranklist') this.render_ranklist();
     }
     // // 实现游戏帧循环
     loop() {
