@@ -70,6 +70,29 @@ wx.onMessage(data => {
       year: 2018
     } */
 });
+
+function dataDort(gameData) {
+  return gameData.sort((a,b) => {
+    let scoreA=0;
+    let scoreB=0;
+    for(let i=0; i<a.KVDataList.length; i++)
+    {
+      if(a.KVDataList[i].key==='siscore')
+      {
+        scoreA=parseInt(a.KVDataList[i].value || 0);
+      }
+    }
+    for(let i=0; i<b.KVDataList.length; i++)
+    {
+      if(b.KVDataList[i].key==='siscore')
+      {
+        scoreB=parseInt(b.KVDataList[i].value || 0);
+      }
+    }
+    return scoreA > scoreB ? -1 : scoreA < scoreB ? 1 : 0;
+  });
+}
+
 // context.scale(ratio, ratio);// 因为sharedCanvas在主域放大了ratio倍
 // //为了便于计算尺寸，在将context 缩放到750宽的设计稿尺寸，
 // let scales = screenWidth / 750;
