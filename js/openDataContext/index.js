@@ -17,18 +17,21 @@ function getData_success(res) {
     // shctx.textAlign='center';
     // shctx.fillText(`game over, touch screen to restart`, W / 2, 220);
     // console.log('sucess');
-    console.log(res);
+
+    //console.log(res);
     let y = 20;
+
     for(let i = 0; i < res.data.length; ++i) {
         // shctx.drawImage(res.data[i].avatarUrl, 0, y, 40, 40);
         shctx.fillStyle = '#0ff';
         shctx.font = '20px Arial';
-        shctx.fillText(res.data[i].nickname, 45, y);
-        console.log(res.data[i].nickname);
+        //shctx.fillText(res.data[i].nickname, 100, y);
+        //console.log(res.data[i].nickname);
         // shctx.fill(`${res[i].KVData.siscore}`, 200, y);
         for(let j = 0; j < res.data[i].KVDataList.length; ++j) {
             if(res.data[i].KVDataList[j].key === 'siscore') {
-                shctx.fillText(`${res.data[i].KVDataList[j].value}`, 200, y);
+                shctx.textAlign='center';
+                shctx.fillText(`${res.data[i].nickname}   ${res.data[i].KVDataList[j].value}`, sharedCanvas.width/(2*ratio), y);
                 // console.log(res.data[i].KVDataList[j].value);
             }
         }
@@ -40,7 +43,9 @@ wx.onMessage(data => {
     if(data.op === 'init') {
         // sharedCanvas.width = screenWidth * ratio;
         // sharedCanvas.height = screenHeight * ratio;
-        // shctx.scale(ratio, ratio);
+        console.log(sharedCanvas.width);
+        shctx.scale(ratio, ratio);
+        console.log(sharedCanvas.width);
         // let scales = screenWidth /750;
         // shctx.scale(scales, scales);
         // console.log(sharedCanvas.width, sharedCanvas.height);

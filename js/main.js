@@ -19,6 +19,7 @@ import {pointInCircle} from './libs/geometry'
 import Button from './ctrl/button'
 // import drawRanklistToSharedCanvas from 'openDataContext/index'
 
+const ratio = wx.getSystemInfoSync().pixelRatio;
 
 let ctx = canvas.getContext('2d');
 // let shctx = sharedCanvas.getContext('2d');
@@ -71,8 +72,11 @@ export default class Main {
     gameInit()
     {
       this.status = 'ranklist';//'init';
+       sharedCanvas.width=screenWidth*ratio;
+       sharedCanvas.height=screenHeight*ratio;
+
       this.btn.push(new Button(new Circle(new Point(screenWidth/2, buttonY), buttonRadius), 'startBtn'));
-      this.bind_touchstart_hdr = this.touchstart_hdr.bind(this)
+      this.bind_touchstart_hdr = this.touchstart_hdr.bind(this);
       canvas.addEventListener('touchstart', this.bind_touchstart_hdr);
       this.control.removeEvent();
     }
@@ -157,12 +161,16 @@ export default class Main {
 
     render_ranklist() {
         // drawRanklistToSharedCanvas();
+
         openDataContext.postMessage({
             op: 'render',
-            // text: 'hello',
-            // year: (new Date()).getFullYear()
         });
         ctx.drawImage(sharedCanvas, 0, 0, screenWidth, screenHeight);
+
+      // ctx.fillStyle = '#0ff';
+      // ctx.font = '20px Arial';
+      // ctx.textAlign='center';
+      // ctx.fillText('sherlockcooper', canvas.width/2, 50);
     }
 
     render_gaming() {
