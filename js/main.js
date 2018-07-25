@@ -47,6 +47,9 @@ export default class Main {
         this.control = {};
         this.status = 'over';//'onConstruction';
         this.btn=[];
+
+        sharedCanvas.width=screenWidth*ratio;
+        sharedCanvas.height=screenHeight*ratio;
         console.log('start construct scene');
 
         openDataContext.postMessage({
@@ -72,8 +75,7 @@ export default class Main {
     gameInit()
     {
       this.status = 'ranklist';//'init';
-       sharedCanvas.width=screenWidth*ratio;
-       sharedCanvas.height=screenHeight*ratio;
+
 
       this.btn.push(new Button(new Circle(new Point(screenWidth/2, buttonY), buttonRadius), 'startBtn'));
       this.bind_touchstart_hdr = this.touchstart_hdr.bind(this);
