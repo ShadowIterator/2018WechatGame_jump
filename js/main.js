@@ -52,19 +52,32 @@ export default class Main {
         sharedCanvas.height=screenHeight*ratio;
         console.log('start construct scene');
 
+        // wx.setUserCloudStorage({
+        //     KVDataList: [{
+        //         key: 'curScore',
+        //         value: '2'
+        //     }],
+        //     success: (res => {
+        //         console.log('1 setData, sucess');
+        //     })
+        // });
+
         openDataContext.postMessage({
             op: 'init',
         });
 
-        wx.setUserCloudStorage({
-            KVDataList: [{
-               key: 'siscore',
-               value: '10086'
-            }],
-            success: (res => {
-                console.log('setData, sucess');
-            })
+        openDataContext.postMessage({
+            op: 'updateScore',
+            score: '12300'
         });
+
+        // openDataContext.postMessage({
+        //     op: 'updateScore',
+        //     score: '1234'
+        // });
+
+
+
 
         wx.setKeepScreenOn({keepScreenOn: true});
         this.restart();
@@ -165,8 +178,9 @@ export default class Main {
         // drawRanklistToSharedCanvas();
 
         openDataContext.postMessage({
-            op: 'render',
+            op: 'rend',
         });
+
         ctx.drawImage(sharedCanvas, 0, 0, screenWidth, screenHeight);
 
       // ctx.fillStyle = '#0ff';

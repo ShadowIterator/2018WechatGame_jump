@@ -18,7 +18,7 @@ function getData_success(res) {
     // shctx.fillText(`game over, touch screen to restart`, W / 2, 220);
     // console.log('sucess');
 
-    //console.log(res);
+    // console.log(res);
     let y = 20;
 
     for(let i = 0; i < res.data.length; ++i) {
@@ -27,19 +27,26 @@ function getData_success(res) {
         shctx.font = '20px Arial';
         //shctx.fillText(res.data[i].nickname, 100, y);
         //console.log(res.data[i].nickname);
-        // shctx.fill(`${res[i].KVData.siscore}`, 200, y);
-        for(let j = 0; j < res.data[i].KVDataList.length; ++j) {
-            if(res.data[i].KVDataList[j].key === 'siscore') {
-                shctx.textAlign='center';
-                shctx.fillText(`${res.data[i].nickname}   ${res.data[i].KVDataList[j].value}`, sharedCanvas.width/(2*ratio), y);
-                // console.log(res.data[i].KVDataList[j].value);
-            }
-        }
+        // shctx.fill(`${res[i].KVData.curScore}`, 200, y);
+        // for(let j = 0; j < res.data[i].KVDataList.length; ++j) {
+        //     if(res.data[i].KVDataList[j].key === 'maxScore') {
+        //         shctx.textAlign='center';
+        //         shctx.fillText(`${res.data[i].nickname}   ${res.data[i].KVDataList[j].value}`, sharedCanvas.width/(2*ratio), y);
+        //         // console.log(res.data[i].KVDataList[j].value);
+        //     }
+        // shctx.textAlign='center';
+        // shctx.fillText(`${res.data[i].nickname}   ${res.data[i].KVDataList[0].value}`, sharedCanvas.width/(2*ratio), y);
+        // }
+        shctx.textAlign='center';
+        if(res.data[i].KVDataList.length !== 0)
+            shctx.fillText(`${res.data[i].nickname}   ${res.data[i].KVDataList[0].value}`, sharedCanvas.width/(2*ratio), y);
+
         y += 50;
     }
 }
 
 wx.onMessage(data => {
+    // console.log(data.op);
     if(data.op === 'init') {
         // sharedCanvas.width = screenWidth * ratio;
         // sharedCanvas.height = screenHeight * ratio;
@@ -51,12 +58,16 @@ wx.onMessage(data => {
         // console.log(sharedCanvas.width, sharedCanvas.height);
         return ;
     }
-
-    wx.getFriendCloudStorage({
-        keyList: ['siscore'],
-        success: getData_success
-    })
-
+    else if(data.op === 'rend') {
+        wx.getFriendCloudStorage({
+            keyList: ['maxScore'],
+            success: getData_success
+        })
+    }
+    else if(data.op === 'updateScore') {
+        console.log(data.op, data.score);
+        updateScore(data.score);
+    }
     // shctx.fillStyle = '#0ff';
     // shctx.font = '20px Arial';
     // shctx.textAlign='center';
@@ -67,14 +78,68 @@ wx.onMessage(data => {
       year: 2018
     } */
 });
-// context.scale(ratio, ratio);// 因为sharedCanvas在主域放大了ratio倍
-// //为了便于计算尺寸，在将context 缩放到750宽的设计稿尺寸，
-// let scales = screenWidth / 750;
-// context.scale(scales, scales);
-// // 接下来你每绘制的一个元素的尺寸，都应该按钮750宽的设计稿/
-// // 比如
-// // 画标题
-// context.fillStyle = '#fff';
-// context.font = '50px Arial';
-// context.textAlign = 'center';
-// context.fillText('好友排行榜', 750 / 2, 220); // 750的尺寸
+
+function updateScore (score) {
+    // console.log(':updataScore');
+    wx.setUserCloudStorage({
+        KVDataList: [{
+           key: 'curScore',
+           value: score
+        }],
+        success: (res => {
+            console.log('set curScore, sucess', res);
+        })
+    });
+    // wx.setUserCloudStorage({
+    //     KVDataList: [{
+    //         key: 'curScore',
+    //         value: score
+    //     }],
+    //     success: (res => {
+    //         console.log('save cur success');
+    //         // console.log('save max success', res);
+    //     }),
+    //     fail: (res => {
+    //         console.log('save max failed', res);
+    //     })
+    // });
+
+    wx.getUserCloudStorage({
+        keyList: ['curScore', 'maxScore'],
+        success: res => {
+            console.log('getUserCloudStorage, success');
+            let data = res;
+            let curScore = data.KVDataList[0].value;
+            console.log(data);
+            console.log(curScore);
+            // if (!data.KVDataList[1]){
+            //     saveMaxScore(lastScore);
+            //     myScore = lastScore;
+            // } else if (lastScore > data.KVDataList[1].value) {
+            //     saveMaxScore(lastScore);
+            //     myScore = lastScore;
+            // } else {
+            //     myScore = data.KVDataList[1].value;
+            // }
+            if(!data.KVDataList[1] || (Number(curScore) > Number(data.KVDataList[1].value))) {
+                saveMaxScore(curScore);
+            }
+        }
+    });
+}
+
+function saveMaxScore(maxScore) {
+    console.log('saveMax ', maxScore);
+    wx.setUserCloudStorage({
+        KVDataList: [{
+            key: 'maxScore',
+            value: maxScore
+        }],
+        success: res => {
+            console.log('save max success', res);
+        },
+        fail: res => {
+            console.log('save max failed', res);
+        }
+    });
+}
