@@ -5,6 +5,7 @@ let shctx = sharedCanvas.getContext('2d');
 
 let W = sharedCanvas.width;
 let H = sharedCanvas.height;
+
 // let scales = W / 750;
 
 const screenWidth = wx.getSystemInfoSync().screenWidth;
@@ -22,7 +23,9 @@ function getData_success(res) {
     let y = 20;
 
     for(let i = 0; i < res.data.length; ++i) {
-        // shctx.drawImage(res.data[i].avatarUrl, 0, y, 40, 40);
+        let userImage=wx.createImage();
+        userImage.src=res.data[i].avatarUrl;
+        shctx.drawImage(userImage, sharedCanvas.width/(8*ratio), y-20, 30, 30);
         shctx.fillStyle = '#0ff';
         shctx.font = '20px Arial';
         //shctx.fillText(res.data[i].nickname, 100, y);

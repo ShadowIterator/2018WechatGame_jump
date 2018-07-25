@@ -183,10 +183,12 @@ export default class Main {
 
         ctx.drawImage(sharedCanvas, 0, 0, screenWidth, screenHeight);
 
-      // ctx.fillStyle = '#0ff';
-      // ctx.font = '20px Arial';
-      // ctx.textAlign='center';
-      // ctx.fillText('sherlockcooper', canvas.width/2, 50);
+      // let C = this.btn[0].C;
+      // let startBtnImage=new Image();
+      // startBtnImage.src='images/startbtn.png';
+      // ctx.drawImage(startBtnImage,C.O.x-C.R, C.O.y-C.R, 2*C.R, 2*C.R);
+
+
     }
 
     render_gaming() {
