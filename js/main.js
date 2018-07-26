@@ -66,10 +66,10 @@ export default class Main {
             op: 'init',
         });
 
-        openDataContext.postMessage({
-            op: 'updateScore',
-            score: '12300'
-        });
+        // openDataContext.postMessage({
+        //     op: 'updateScore',
+        //     score: '12300'
+        // });
 
         // openDataContext.postMessage({
         //     op: 'updateScore',
@@ -87,7 +87,7 @@ export default class Main {
 
     gameInit()
     {
-      this.status = 'ranklist';//'init';
+      this.status = 'over';//'init';
 
 
       this.btn.push(new Button(new Circle(new Point(screenWidth/2, buttonY), buttonRadius), 'startBtn'));

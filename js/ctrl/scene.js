@@ -190,7 +190,7 @@ export default class Scene {
             whosyourdaddyProp_default: 0.15,
             reverseProp_default: 0.1,
 
-            CURRENT_AVE_PROP_PER_Y: 0.002,
+            CURRENT_AVE_PROP_PER_Y: 0.02,//0.002,
             lifeProp_current: 0.15,
             scoreProp_current: 0,
             rocketProp_current: 0.3,
@@ -381,9 +381,9 @@ export default class Scene {
     }
 
     __setheroVx(Vx) {
-        let conj = dot(this.hero.V, NVy);
-        this.hero.V = mul(NVy, conj);
-        _add(this.hero.V, Vx);
+        // let conj = dot(this.hero.V, NVy);
+        // this.hero.V = mul(NVy, conj);
+        // _add(this.hero.V, Vx);
     }
 
     _setheroVx(Vx) {
@@ -394,15 +394,15 @@ export default class Scene {
         // _add(this.hero_nextV, Vx);
         // console.log('_setheroVx ',this.hero.V);
         //this.heroVx = Vx;
-        this.__setheroVx(Vx);
+        let conj = dot(this.hero.V, NVy);
+        this.hero.V = mul(NVy, conj);
+        _add(this.hero.V, Vx);
     }
 
     _setheroVy(Vy) {
         let conj = dot(this.hero.V, NVx);
-        // this.hero.V = mul(NVx, conj);
-        // _add(this.hero.V, Vy);
         this.hero.V = mul(NVx, conj);
-        _add(this.hero_nextV, Vy);
+        _add(this.hero.V, Vy);
     }
 
 
@@ -441,13 +441,13 @@ export default class Scene {
 
     genProp(x, y) {
 
-        return this.genRandObjByy([{generator: this.bind_genLifeProp, P: this.params.lifeProp_current},
-            {generator: this.bind_genScoreProp, P: this.params.scoreProp_current},
-            {generator: this.bind_genRocketProp, P: this.params.rocketProp_current},
-            {generator: this.bind_genSpringProp, P: this.params.springProp_current},
-            {generator: this.bind_genReverseProp, P: this.params.reverseProp_current},
-            {generator: this.bind_genWhosyourdaddyProp, P: this.params.whosyourdaddyProp_current}], x, y);
-
+        // return this.genRandObjByy([{generator: this.bind_genLifeProp, P: this.params.lifeProp_current},
+        //     {generator: this.bind_genScoreProp, P: this.params.scoreProp_current},
+        //     {generator: this.bind_genRocketProp, P: this.params.rocketProp_current},
+        //     {generator: this.bind_genSpringProp, P: this.params.springProp_current},
+        //     {generator: this.bind_genReverseProp, P: this.params.reverseProp_current},
+        //     {generator: this.bind_genWhosyourdaddyProp, P: this.params.whosyourdaddyProp_current}], x, y);
+        return this.bind_genSpringProp(x, y);
     }
 
     appendProp(L, H, rho) {
