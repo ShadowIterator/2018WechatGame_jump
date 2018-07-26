@@ -153,7 +153,7 @@ export default class Scene {
         this.props = [];
         this.score = 0;
 
-        this.hero.whosyourdaddy = true;
+        this.hero.whosyourdaddy = false;
 
         this.gameover = false;
 

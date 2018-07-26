@@ -60,7 +60,7 @@ export default class Enemy extends Sprite{
         // ctx.strokeStyle = '#f00';
         // ctx.lineWidth = 2;
         // ctx.stroke();
-        ctx.drawImage(this.img, P.x-this.shape.R, P.y-this.shape.R, this.width, this.height);
+        ctx.drawImage(this.img, P.x-this.shape.R, P.y-this.shape.R, this.shape.getWidth(), this.shape.getHeight());
     }
 
 
