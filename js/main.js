@@ -87,7 +87,9 @@ export default class Main {
 
     gameInit()
     {
+
       this.status = 'init';
+
       this.btn.push(new Button(new Circle(new Point(screenWidth/2, buttonY), buttonRadius), 'startBtn'));
       this.bind_touchstart_hdr = this.touchstart_hdr.bind(this);
       canvas.addEventListener('touchstart', this.bind_touchstart_hdr);
@@ -106,7 +108,7 @@ export default class Main {
         this.status = 'over';
         openDataContext.postMessage({
           op: 'updateScore',
-          score: String(this.score)
+          score: String(Math.floor(this.score))
         });
         this.btn.push(new Button(new Circle(new Point(screenWidth/3, buttonY), buttonRadius), 'ranklist'));
         this.btn.push(new Button(new Circle(new Point(screenWidth*2/3, buttonY), buttonRadius), 'playagain'));
@@ -155,13 +157,16 @@ export default class Main {
           e.preventDefault();
           for(let i=0; i<this.btn.length; i++)
           {
-            if(this.btn[i].desc==='playagain')
+            if(pointInCircle(P, this.btn[i].C))
             {
-              this.restart();
-            }
-            else if(this.btn[i].desc==='ranklist')
-            {
-              this.gameRanklist();
+              if(this.btn[i].desc==='playagain')
+              {
+                this.restart();
+              }
+              else if(this.btn[i].desc==='ranklist')
+              {
+                this.gameRanklist();
+              }
             }
           }
           //this.restart();
@@ -261,15 +266,15 @@ export default class Main {
         let C=this.btn[i].C;
         if(this.btn[i].desc==='lastpage')
         {
-          btnImage.src='images.lastpage.png';
+          btnImage.src='images/lastpage.png';
         }
         else if(this.btn[i].desc==='nextpage')
         {
-          btnImage.src='images.nextpage.png';
+          btnImage.src='images/nextpage.png';
         }
-        else if(this.btn.desc==='close')
+        else if(this.btn[i].desc==='close')
         {
-          btnImage.src='images.close.png';
+          btnImage.src='images/close.png';
         }
         ctx.drawImage(btnImage,C.O.x-C.R, C.O.y-C.R, 2*C.R, 2*C.R);
       }
@@ -301,12 +306,13 @@ export default class Main {
           let C=this.btn[i].C;
           if(this.btn[i].desc==='ranklist')
           {
-            btnImage.src='images.ranklist.png';
+            btnImage.src='images/ranklist.png';
           }
           else if(this.btn[i].desc==='playagain')
           {
-            btnImage.src='images.playagain.png';
+            btnImage.src='images/playagain.png';
           }
+
           ctx.drawImage(btnImage,C.O.x-C.R, C.O.y-C.R, 2*C.R, 2*C.R);
         }
     }

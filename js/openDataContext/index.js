@@ -69,7 +69,7 @@ function singlePageRankList(res)
     shctx.drawImage(userImage, sharedCanvas.width/(8*ratio), y-20, 30, 30);
     shctx.fillStyle = '#0ff';
     shctx.font = '20px Arial';
-    for(let j = 0; j < rsortedList[userSeq].KVDataList.length; ++j) {
+    for(let j = 0; j < sortedList[userSeq].KVDataList.length; ++j) {
       if (sortedList[userSeq].KVDataList[j].key === 'maxScore') {
         shctx.textAlign = 'center';
         shctx.fillText(`${sortedList[userSeq].nickname}   ${sortedList[userSeq].KVDataList[j].value}`, sharedCanvas.width / (2 * ratio), y);
