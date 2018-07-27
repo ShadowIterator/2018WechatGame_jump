@@ -13,8 +13,8 @@ import NormalStair from './normal_stair';
 const cloudSrc='images/cloudline.png';
 
 export default class SectionLine extends Stair{
-    constructor(y, sceneParam, op_funcs = null) {
-        super(new Segment(new Point(-INF, y), new Point(INF, y)), new Point(0, -1));
+    constructor(y, sceneParam, visibal = true, op_funcs = null) {
+        super(new Segment(new Point(-INF, y), new Point(INF, y)), new Point(0, -1), visibal);
         this.sceneParam = sceneParam;
         this.y = y;
         this.op_funcs = op_funcs;
@@ -43,6 +43,7 @@ export default class SectionLine extends Stair{
 
 
     drawToCanvas(ctx, transPosition) {
+        if(!this.visible) return ;
         let P1 = transPosition(this.shape.P1);
         // let P2 = transPosition(this.shape.P2);
         // ctx.beginPath();

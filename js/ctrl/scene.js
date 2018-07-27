@@ -172,14 +172,13 @@ export default class Scene {
             deadStair_key_default: 0.2,
             normalStair_key_default: 0.4,
 
-            movingStair_random_current: 0.2,
-            changingStair_random_current: 0.2,
-            deadStair_random_current: 0.2,
-            normalStair_random_current: 0.4,
-            movingStair_key_current: 0.2,
-            changingStair_key_current: 0.2,
-            // deadStair_key_current: 0.2,
-            normalStair_key_current: 0.6,
+            movingStair_random_current: 0,
+            changingStair_random_current: 0,
+            deadStair_random_current: 0,
+            normalStair_random_current: 1,
+            movingStair_key_current: 0,
+            changingStair_key_current: 0,
+            normalStair_key_current: 1,
 
 
             DEFAULT_AVE_PROP_PER_Y: 0.002,
@@ -190,7 +189,7 @@ export default class Scene {
             whosyourdaddyProp_default: 0.15,
             reverseProp_default: 0.1,
 
-            CURRENT_AVE_PROP_PER_Y: 0.02,//0.002,
+            CURRENT_AVE_PROP_PER_Y: 0.002,
             lifeProp_current: 0.15,
             scoreProp_current: 0,
             rocketProp_current: 0.3,
@@ -220,7 +219,7 @@ export default class Scene {
             DEFAULT_AVE_ENEMY_STP: 2,
 
 
-            CURRENT_AVE_STAIRS_PER_Y: this.__normalizey(0.05),
+            CURRENT_AVE_STAIRS_PER_Y: this.__normalizey(0.03),
             CURRENT_AVE_STAIRS_LEN: this.__normalizex(50),
             CURRENT_VARIANCE_STAIRS_LEN:  1,
             CURRENT_EJECT_VY: 5,
@@ -306,12 +305,87 @@ export default class Scene {
         //         ,genFunctionWithoutParam(this.appendStairs, this, this.underliney, this.centerP.y + this.Hd2, this.underliney + 10, 0, this.W, this.params.CURRENT_AVE_STAIRS_PER_Y * 2)
         //     ]));
 
-        this.stairs.push(new SectionLine(500,
-            {}
-            ,[
-                this._reversex.bind(this)
-            ]
+        //TODO:
+        //1000 changing stair , spring
+        //2000 moving stair, dead stair, roket
+        //3000 enemy
+        //4000 decrease stairs
+        //5000 gravity mode, all moving stairs, no enemies
+        //8000 fly mod
+        //11000 reverse mod
+        //15000 increase g, Vy
+        //20000 button mode, fast move, lots of enemies
+        //25000 ...
+
+        // CURRENT_AVE_STAIRS_PER_Y: this.__normalizey(0.05),
+        // movingStair_random_current: 0,
+        // changingStair_random_current: 0,
+        // deadStair_random_current: 0,
+        // normalStair_random_current: 1,
+        // movingStair_key_current: 0,
+        // changingStair_key_current: 0,
+        // normalStair_key_current: 1,
+
+        this.stairs.push(new SectionLine(1000,
+            {
+                CURRENT_AVE_STAIRS_PER_Y: this.__normalizey(0.03),
+                movingStair_random_current: 0,
+                changingStair_random_current: 0.2,
+                deadStair_random_current: 0,
+                normalStair_random_current: 0.8,
+                movingStair_key_current: 0,
+                changingStair_key_current: 0.2,
+                normalStair_key_current: 0.8
+            }
+            ,false
             ));
+
+        this.stairs.push(new SectionLine(2000,
+            {
+                // CURRENT_AVE_STAIRS_PER_Y: this.__normalizey(0.03),
+                movingStair_random_current: 0.2,
+                changingStair_random_current: 0.2,
+                deadStair_random_current: 0.2,
+                normalStair_random_current: 0.4,
+                movingStair_key_current: 0.3,
+                changingStair_key_current: 0.2,
+                normalStair_key_current: 0.5
+            }
+            ,false
+        ));
+        this.stairs.push(new SectionLine(3000,
+            {
+                CURRENT_AVE_ENEMY_PER_Y: this.__normalizey(0.02)
+            }
+            ,false
+        ));
+
+        this.stairs.push(new SectionLine(3500,
+            {
+                CURRENT_AVE_STAIRS_PER_Y: this.__normalizey(0.01),
+            }
+            ,false
+        ));
+
+        this.stairs.push(new SectionLine(4000,
+            {
+                CURRENT_AVE_STAIRS_PER_Y: this.__normalizey(0.003),
+            }
+            ,false
+        ));
+        this.stairs.push(new SectionLine(5000,
+            {
+                CURRENT_AVE_STAIRS_PER_Y: this.__normalizey(0),
+                movingStair_random_current: 0.2,
+                changingStair_random_current: 0.2,
+                deadStair_random_current: 0.2,
+                normalStair_random_current: 0.4,
+                movingStair_key_current: 1,
+                changingStair_key_current: 0,
+                normalStair_key_current: 0
+            }
+            ,false
+        ));
 
         this.stairs.push(new SectionLine(5000,
             {}
@@ -441,13 +515,13 @@ export default class Scene {
 
     genProp(x, y) {
 
-        // return this.genRandObjByy([{generator: this.bind_genLifeProp, P: this.params.lifeProp_current},
-        //     {generator: this.bind_genScoreProp, P: this.params.scoreProp_current},
-        //     {generator: this.bind_genRocketProp, P: this.params.rocketProp_current},
-        //     {generator: this.bind_genSpringProp, P: this.params.springProp_current},
-        //     {generator: this.bind_genReverseProp, P: this.params.reverseProp_current},
-        //     {generator: this.bind_genWhosyourdaddyProp, P: this.params.whosyourdaddyProp_current}], x, y);
-        return this.bind_genSpringProp(x, y);
+        return this.genRandObjByy([{generator: this.bind_genLifeProp, P: this.params.lifeProp_current},
+            {generator: this.bind_genScoreProp, P: this.params.scoreProp_current},
+            {generator: this.bind_genRocketProp, P: this.params.rocketProp_current},
+            {generator: this.bind_genSpringProp, P: this.params.springProp_current},
+            {generator: this.bind_genReverseProp, P: this.params.reverseProp_current},
+            {generator: this.bind_genWhosyourdaddyProp, P: this.params.whosyourdaddyProp_current}], x, y);
+        // return this.bind_genSpringProp(x, y);
     }
 
     appendProp(L, H, rho) {
@@ -471,6 +545,8 @@ export default class Scene {
             this.params.CURRENT_AVE_STAIRS_LEN + this.params.CURRENT_VARIANCE_STAIRS_LEN * 3, this.params.CURRENT_AVE_STAIRS_LEN,
             this.params.CURRENT_VARIANCE_STAIRS_LEN);
         let lx = tx;
+
+        y -= 30;
 
         let rtn = new MovingStair(new Segment(new Point(lx, y), new Point(lx + len, y)), new Point(0, this.params.CURRENT_EJECT_VY));
 
