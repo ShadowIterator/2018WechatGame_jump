@@ -831,9 +831,9 @@ export default class Scene {
     render(ctx) {
         this.background.drawToCanvas(ctx);
         ctx.fillStyle = '#f00';
-        ctx.font = '10px Arial';
-        ctx.fillText(`your score is ${parseInt(this.score)}`, 0, 10);
-        ctx.fillText(`you life is ${this.hero.life}`, this.W - 70, 10);
+        ctx.font = '16px Arial';
+        ctx.fillText(`score : ${parseInt(this.score)}`, 50, 20);
+        ctx.fillText(`life : ${this.hero.life}`, this.W - 70, 20);
         this.hero.drawToCanvas(ctx, this.transPosition.bind(this));
         for(let i = this.stairs.length - 1; i >= 0; --i) {
             // console.log(this.stairs[i]);
