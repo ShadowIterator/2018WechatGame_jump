@@ -153,7 +153,7 @@ export default class Scene {
         this.props = [];
         this.score = 0;
 
-        this.hero.whosyourdaddy = true;
+        this.hero.whosyourdaddy = false;
 
         this.gameover = false;
 
@@ -521,7 +521,6 @@ export default class Scene {
             {generator: this.bind_genSpringProp, P: this.params.springProp_current},
             {generator: this.bind_genReverseProp, P: this.params.reverseProp_current},
             {generator: this.bind_genWhosyourdaddyProp, P: this.params.whosyourdaddyProp_current}], x, y);
-        // return this.bind_genSpringProp(x, y);
     }
 
     appendProp(L, H, rho) {
