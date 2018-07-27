@@ -21,6 +21,8 @@ import Button from './ctrl/button'
 
 const ratio = wx.getSystemInfoSync().pixelRatio;
 
+
+let ranklist_flag = false;
 let ctx = canvas.getContext('2d');
 // let shctx = sharedCanvas.getContext('2d');
 let screenWidth=canvas.width;
@@ -218,8 +220,8 @@ export default class Main {
         this.scene = new Scene(canvas.width, canvas.height, this.gameover.bind(this));
         this.control = new Control(canvas.width, canvas.height, this.scene);
 
-        this.control.shutDownGravity();
-        this.control.initButton();
+        // this.control.shutDownGravity();
+        // this.control.initButton();
 
         this.scene.controller = this.control;
         this.scene.init();

@@ -13,6 +13,7 @@ import Scene from './scene'
 
 const NVy = new Point(0, 1);
 const Vzero = new Point(0, 0);
+const defaultV = 1.7;
 
 function gravityScale(x) {
   // if(Math.abs(x)<0.1)
@@ -41,8 +42,8 @@ export default class Control {
         this.W = tW;
         this.H = tH;
 
-        this.Vlx = new Point(-1.7 / 320 * tW, 0);
-        this.Vrx = new Point(1.7 / 320 * tW, 0);
+        this.Vlx = new Point(-defaultV / 320 * tW, 0);
+        this.Vrx = new Point(defaultV / 320 * tW, 0);
         this.DEFAULT_BTN_R = 30 / 320 * tW;
 
         this.btn = [];
@@ -56,12 +57,18 @@ export default class Control {
         this.initEvent();
     }
 
-    setVlx(x) {
-        this.Vlx.x = x;
+    reverseLR() {
+        let temp = this.Vlx.x;
+        this.Vlx.x = this.Vrx.x;
+        this.Vrx.x = temp;
     }
 
-    setVrx(x) {
-        this.Vrx.x = x;
+    setVlx_len(x) {
+        this.Vlx.x = x * this.Vlx.x / Math.abs(this.Vlx.x);
+    }
+
+    setVrx_len(x) {
+        this.Vrx.x = x * this.Vrx.x / Math.abs(this.Vrx.x);
     }
 
     init_all()
@@ -72,6 +79,8 @@ export default class Control {
 
     initGravity()
     {
+     this.render = this.render_gravity.bind(this);
+
       wx.startAccelerometer({
         interval: 'game'
       });
@@ -86,6 +95,8 @@ export default class Control {
     
     initButton()
     {
+      this.render = this.render_button.bind(this);
+
       canvas.addEventListener('touchstart', this.touchstart_hdr.bind(this));
       
       canvas.addEventListener('touchmove', this.touchmove_hdr.bind(this));
@@ -236,7 +247,7 @@ export default class Control {
 
 
 
-    render(ctx) {
+    render_button(ctx) {
         for(let i = this.btn.length - 1; i >= 0; --i) {
             ctx.beginPath();
             let C = this.btn[i].C;
@@ -245,6 +256,10 @@ export default class Control {
             ctx.lineWidth = 2;
             ctx.stroke();
         }
+    }
+
+    render_gravity(ctx) {
+
     }
 
 

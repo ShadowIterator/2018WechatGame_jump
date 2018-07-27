@@ -54,8 +54,9 @@ export default class ReverseProp extends Prop {
         // scene.hero.V = this.V;
         // scene._setheroVy(this.V);
         if(cnt === 0) {
-            scene.controller.setVlx(-scene.controller.Vlx.x);
-            scene.controller.setVrx(-scene.controller.Vrx.x);
+            // scene.controller.setVlx(-scene.controller.Vlx.x);
+            // scene.controller.setVrx(-scene.controller.Vrx.x);
+            scene.controller.reverseLR();
         }
         //     _add(scene.hero.V, this.V);
         ++cnt;
@@ -68,8 +69,9 @@ export default class ReverseProp extends Prop {
         // scene.hero.decreaseEff();
         --cnt;
         if(cnt === 0) {
-            scene.controller.setVlx(-scene.controller.Vlx.x);
-            scene.controller.setVrx(-scene.controller.Vrx.x);
+            // scene.controller.setVlx(-scene.controller.Vlx.x);
+            // scene.controller.setVrx(-scene.controller.Vrx.x);
+            scene.controller.reverseLR();
         }
         // super.effOver();
         // else

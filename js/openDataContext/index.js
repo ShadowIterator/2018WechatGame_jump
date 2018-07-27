@@ -54,6 +54,8 @@ function getData_success(res) {
 
 function singlePageRankList(res)
 {
+    console.log(res);
+
   if(currentPage<0)
     currentPage=0;
   if((currentPage-1)*eachPageSize>=res.data.length)
@@ -66,7 +68,9 @@ function singlePageRankList(res)
     let userImage=wx.createImage();
     userSeq=currentPage*eachPageSize+i;
     userImage.src=sortedList[userSeq].avatarUrl;
-    shctx.drawImage(userImage, sharedCanvas.width/(8*ratio), y-20, 30, 30);
+    // shctx.drawImage(userImage, sharedCanvas.width/(8*ratio), y-20, 30, 30);
+      shctx.drawImage(userImage, 10, y-20, 30, 30);
+
     shctx.fillStyle = '#0ff';
     shctx.font = '20px Arial';
     for(let j = 0; j < sortedList[userSeq].KVDataList.length; ++j) {
