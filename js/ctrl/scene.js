@@ -33,8 +33,6 @@ const NVx = new Point(1, 0);
 const glb_DEFAULT_g = 0.2;
 const glb_DEFAULT_EJECT_VY = 5;
 const DTO = 2;
-const contr_defaultV = 1.7;
-const contr_buttonV_fast = 4;
 
 function getRandUniform(L, R) {
     return parseInt(L + Math.random() * (R - L));
@@ -157,6 +155,9 @@ export default class Scene {
         this.enemys = [];
         this.props = [];
         this.score = 0;
+        this.contr_defaultV = this.__normalizex(1.7);
+        this.contr_buttonV_fast = this.__normalizex(5);
+
 
         this.hero.whosyourdaddy = false;
 
@@ -462,65 +463,65 @@ export default class Scene {
             ]
         ));
 
-        this.stairs.push(new SectionLine(1000,
-            {
-
-            }
-            ,true
-            ,[
-                this._enableButton.bind(this)
-            ]
-            ));
-
-        //TODO:
-            //a possible param.
         // this.stairs.push(new SectionLine(1000,
         //     {
-        //         CURRENT_AVE_ENEMY_PER_Y: this.__normalizey(0.01),//0.001,
-        //         g: this.params.g * 0.75
-        //         ,Ag: new Point(0, -this.params.g * 0.75)
-        //         // ,CURRENT_AVE_STAIRS_PER_Y: this.__normalizey(0)
-        //         ,CURRENT_MOVE_X: (mod(this.controller.Vlx)) * this.params.CURRENT_EJECT_VY * 0.9 / Math.abs(this.params.g  * 0.75)
-        //         ,CURRENT_EJECT_VY: this.params.CURRENT_EJECT_VY  * 0.9
-        //         ,CURRENT_EJECT_H: this.params.CURRENT_EJECT_VY * 0.9 * this.params.CURRENT_EJECT_VY  * 0.9 / (2 * (this.params.g * 0.75))
         //
         //     }
         //     ,true
         //     ,[
         //         this._enableButton.bind(this)
-        //         ,this.clearAllStairs.bind(this)
-        //         ,genFunctionWithoutParam(this.appendStairs, this, 1000 - this.Hd2, 1000 + this.Hd2, 1000 - this.Hd2 + 10, 0, this.W, this.params.CURRENT_AVE_STAIRS_PER_Y * 2)
         //     ]
-        // ));
-        //
-        // this.stairs.push(new SectionLine(3000,
-        //     {
-        //         g: this.params.g
-        //         ,Ag: new Point(0, -this.params.g)
-        //         // ,CURRENT_AVE_STAIRS_PER_Y: this.__normalizey(0)
-        //         ,CURRENT_MOVE_X: (mod(this.controller.Vlx)) * this.params.DEFAULT_EJECT_VY / Math.abs(this.params.g)
-        //         ,CURRENT_EJECT_VY: this.params.DEFAULT_EJECT_VY
-        //         ,CURRENT_EJECT_H: this.params.DEFAULT_EJECT_VY* this.params.DEFAULT_EJECT_VY / (2 * (this.params.g))
-        //     }
-        //     ,true
-        //     ,[
-        //         this._shutDownButton.bind(this)
-        //     ]
-        // ));
+        //     ));
+
+        //TODO:
+            //a possible param.
+        this.stairs.push(new SectionLine(21000,
+            {
+                CURRENT_AVE_ENEMY_PER_Y: this.__normalizey(0.01),//0.001,
+                g: this.params.g * 0.75
+                ,Ag: new Point(0, -this.params.g * 0.75)
+                // ,CURRENT_AVE_STAIRS_PER_Y: this.__normalizey(0)
+                ,CURRENT_MOVE_X: (mod(this.controller.Vlx)) * this.params.CURRENT_EJECT_VY * 0.9 / Math.abs(this.params.g  * 0.75)
+                ,CURRENT_EJECT_VY: this.params.CURRENT_EJECT_VY  * 0.9
+                ,CURRENT_EJECT_H: this.params.CURRENT_EJECT_VY * 0.9 * this.params.CURRENT_EJECT_VY  * 0.9 / (2 * (this.params.g * 0.75))
+
+            }
+            ,true
+            ,[
+                this._enableButton.bind(this)
+                ,this.clearAllStairs.bind(this)
+                ,genFunctionWithoutParam(this.appendStairs, this, 1000 - this.Hd2, 1000 + this.Hd2, 1000 - this.Hd2 + 10, 0, this.W, this.params.CURRENT_AVE_STAIRS_PER_Y * 2)
+            ]
+        ));
+
+        this.stairs.push(new SectionLine(25000,
+            {
+                g: this.params.g
+                ,Ag: new Point(0, -this.params.g)
+                // ,CURRENT_AVE_STAIRS_PER_Y: this.__normalizey(0)
+                ,CURRENT_MOVE_X: (mod(this.controller.Vlx)) * this.params.DEFAULT_EJECT_VY / Math.abs(this.params.g)
+                ,CURRENT_EJECT_VY: this.params.DEFAULT_EJECT_VY
+                ,CURRENT_EJECT_H: this.params.DEFAULT_EJECT_VY* this.params.DEFAULT_EJECT_VY / (2 * (this.params.g))
+            }
+            ,true
+            ,[
+                this._shutDownButton.bind(this)
+            ]
+        ));
     }
 
     _enableButton() {
         this.controller.shutDownGravity();
         this.controller.initButton();
-        this.controller.setVlx_len( contr_buttonV_fast );
-        this.controller.setVrx_len( contr_buttonV_fast);
+        this.controller.setVlx_len( this.contr_buttonV_fast );
+        this.controller.setVrx_len( this.contr_buttonV_fast);
     }
 
     _shutDownButton() {
         this.controller.shutDownButton();
         this.controller.initGravity();
-        this.controller.setVlx_len( contr_defaultV );
-        this.controller.setVrx_len( contr_defaultV);
+        this.controller.setVlx_len( this.contr_defaultV );
+        this.controller.setVrx_len( this.contr_defaultV);
     }
 
     _reversecontroller_x() {
