@@ -77,8 +77,8 @@ function singlePageRankList(res)
     }
     console.log(sortedList[userSeq].avatarUrl);
     userImage.src=sortedList[userSeq].avatarUrl;
-    // shctx.drawImage(userImage, sharedCanvas.width/(8*ratio), y-20, 30, 30);
-    shctx.drawImage(userImage, 10, y-20, 30, 30);
+    shctx.drawImage(userImage, sharedCanvas.width/(8*ratio) - (10 * ratio) , y-20, 30, 30);
+    // shctx.drawImage(userImage, 10, y-20, 30, 30);
 
     shctx.fillStyle = '#0ff';
     shctx.font = '20px Arial';

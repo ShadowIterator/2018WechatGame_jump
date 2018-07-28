@@ -101,26 +101,8 @@ export default class Scene {
         this.W = tW;
         this.Wd2 = tW / 2;
         this.Hd2 = tH / 2;
+
         this.callback_gameover = callback_gameover;
-
-        this.heroR = 0;//5 / 320 * this.W;
-        this.hero = {};//new Hero(new Circle(new Point(this.Wd2, 7), 5), new Point(0,0));
-        this.centerP = {};//new Point(this.Wd2, this.Hd2);
-        this.ceilliney = 0;//this.Hd2;
-        this.maxStairH = 0;
-        this.underliney = 0;
-        this.pause = false;
-        this.stairs = [];
-        this.enemys = [];
-        this.props = [];
-        this.score = 0;
-        this.gameover = false;
-        this.controller = {};
-        this.effList = [];
-        this.params = {};
-        this.heroVx = new Point(0, 0);
-
-        this.background = {};
 
         this.bind_genMovingStair = this.genMovingStair.bind(this);
         this.bind_genChangingStair = this.genChangingStair.bind(this);
@@ -137,7 +119,6 @@ export default class Scene {
         this.__bind_sortStairByy = this.__sortStairByy.bind(this);
         this.__bind_sortEnemyByy = this.__sortEnemyByy.bind(this);
         this.__bind_sortPropByy = this.__sortPropByy.bind(this);
-
     }
 
     init() {
@@ -168,15 +149,15 @@ export default class Scene {
         this.background=new Background();
 
         this.params = {
-
-            movingStair_random_default: 0.2,
-            changingStair_random_default: 0.2,
-            deadStair_random_default: 0.2,
-            normalStair_random_default: 0.4,
-            movingStair_key_default: 0.2,
-            changingStair_key_default: 0.2,
-            deadStair_key_default: 0.2,
-            normalStair_key_default: 0.4,
+            //
+            // movingStair_random_default: 0.2,
+            // changingStair_random_default: 0.2,
+            // deadStair_random_default: 0.2,
+            // normalStair_random_default: 0.4,
+            // movingStair_key_default: 0.2,
+            // changingStair_key_default: 0.2,
+            // deadStair_key_default: 0.2,
+            // normalStair_key_default: 0.4,
 
             movingStair_random_current: 0,
             changingStair_random_current: 0,
@@ -187,13 +168,13 @@ export default class Scene {
             normalStair_key_current: 1,
 
 
-            DEFAULT_AVE_PROP_PER_Y: 0.002,
-            lifeProp_default: 0.15,
-            scoreProp_default: 0,
-            rocketProp_default: 0.3,
-            springProp_default: 0.3,
-            whosyourdaddyProp_default: 0.15,
-            reverseProp_default: 0.1,
+            // DEFAULT_AVE_PROP_PER_Y: 0.002,
+            // lifeProp_default: 0.15,
+            // scoreProp_default: 0,
+            // rocketProp_default: 0.3,
+            // springProp_default: 0.3,
+            // whosyourdaddyProp_default: 0.15,
+            // reverseProp_default: 0.1,
 
             CURRENT_AVE_PROP_PER_Y: 0.002,
             lifeProp_current: 0.15,
@@ -210,19 +191,19 @@ export default class Scene {
 
             g: glb_DEFAULT_g,
             Ag: new Point(0, -glb_DEFAULT_g),
-            DEFAULT_MOVE_X: (mod(this.controller.Vlx)) * glb_DEFAULT_EJECT_VY / glb_DEFAULT_g,
-            DEFAULT_EJECT_H: glb_DEFAULT_EJECT_VY * glb_DEFAULT_EJECT_VY / (2 * glb_DEFAULT_g),
-
-            DEFAULT_AVE_STAIRS_PER_Y: this.__normalizey(0.02),
-            DEFAULT_AVE_STAIRS_LEN: this.__normalizex(50),
-            DEFAULT_VARIANCE_STAIRS_LEN:  1,
-            DEFAULT_EJECT_VY: 5,
-            DEFAULT_AVE_ENEMY_PER_Y: this.__normalizey(0.001),
-            DEFAULT_AVE_ENEMY_V: this.__normalizex(1),
-            DEFAULT_AVE_ENEMY_T: 100,
-            DEFAULT_ENEMY_DX: this.__normalizex(250),
-            DEFAULT_ENEMY_DY: this.__normalizey(100),
-            DEFAULT_AVE_ENEMY_STP: 2,
+            // DEFAULT_MOVE_X: (mod(this.controller.Vlx)) * glb_DEFAULT_EJECT_VY / glb_DEFAULT_g,
+            // DEFAULT_EJECT_H: glb_DEFAULT_EJECT_VY * glb_DEFAULT_EJECT_VY / (2 * glb_DEFAULT_g),
+            //
+            // DEFAULT_AVE_STAIRS_PER_Y: this.__normalizey(0.02),
+            // DEFAULT_AVE_STAIRS_LEN: this.__normalizex(50),
+            // DEFAULT_VARIANCE_STAIRS_LEN:  1,
+            // DEFAULT_EJECT_VY: 5,
+            // DEFAULT_AVE_ENEMY_PER_Y: this.__normalizey(0.001),
+            // DEFAULT_AVE_ENEMY_V: this.__normalizex(1),
+            // DEFAULT_AVE_ENEMY_T: 100,
+            // DEFAULT_ENEMY_DX: this.__normalizex(250),
+            // DEFAULT_ENEMY_DY: this.__normalizey(100),
+            // DEFAULT_AVE_ENEMY_STP: 2,
 
 
             CURRENT_AVE_STAIRS_PER_Y: this.__normalizey(0.03),
@@ -244,7 +225,7 @@ export default class Scene {
 
         this.stairs.push(this.genStair_exact(this.hero.shape.getPos().x - getRandUniform(1, this.params.CURRENT_AVE_STAIRS_LEN / 2),
             this.hero.shape.getPos().x + getRandUniform(1, this.params.CURRENT_AVE_STAIRS_LEN / 2),
-            0));
+            4));
 
         console.log('exact stairs done');
 
@@ -317,7 +298,6 @@ export default class Scene {
         //3000 enemy
         //4000 decrease stairs
         //5000 gravity mode, all moving stairs, no enemies
-
         //6500 fly mode
         //13000 close fly mode
         //14000 reverse mode
@@ -326,15 +306,6 @@ export default class Scene {
         //18000 increase g, Vy
         //20000 button mode, fast move, lots of enemies
         //25000 ...
-
-        // CURRENT_AVE_STAIRS_PER_Y: this.__normalizey(0.05),
-        // movingStair_random_current: 0,
-        // changingStair_random_current: 0,
-        // deadStair_random_current: 0,
-        // normalStair_random_current: 1,
-        // movingStair_key_current: 0,
-        // changingStair_key_current: 0,
-        // normalStair_key_current: 1,
 
         this.stairs.push(new SectionLine(1000,
             {
@@ -422,6 +393,13 @@ export default class Scene {
                 ,CURRENT_MOVE_X: (mod(this.controller.Vlx)) * this.params.CURRENT_EJECT_VY / Math.abs(this.params.g)
                 ,CURRENT_EJECT_VY: this.params.CURRENT_EJECT_VY
                 ,CURRENT_EJECT_H: this.params.CURRENT_EJECT_VY * this.params.CURRENT_EJECT_VY / (2 * (this.params.g))
+                ,movingStair_random_current: 0.2
+                ,changingStair_random_current: 0.2
+                ,deadStair_random_current: 0.2
+                ,normalStair_random_current: 0.4
+                ,movingStair_key_current: 0.3
+                ,changingStair_key_current: 0.2
+                ,normalStair_key_current: 0.5
             }
             ,true
             ,[
@@ -834,7 +812,7 @@ export default class Scene {
         ctx.fillStyle = '#f00';
         ctx.font = '16px Arial';
         ctx.fillText(`score : ${parseInt(this.score)}`, 50, 20);
-        ctx.fillText(`life : ${this.hero.life}`, this.W - 70, 20);
+        ctx.fillText(`health : ${this.hero.life}`, this.W - 70, 20);
         this.hero.drawToCanvas(ctx, this.transPosition.bind(this));
         for(let i = this.stairs.length - 1; i >= 0; --i) {
             // console.log(this.stairs[i]);
@@ -953,7 +931,7 @@ export default class Scene {
         // this.controller.init_all();
         this.stairs.push(this.genStair_exact(50,
             this.W - 50,
-            this.underliney));
+            this.underliney + 4));
 
         this.hero.revive();
         // this.hero.whosyourdaddy = true;
