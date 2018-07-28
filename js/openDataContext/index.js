@@ -60,23 +60,32 @@ function singlePageRankList(res)
     currentPage=0;
   if((currentPage-1)*eachPageSize>=res.data.length)
     currentPage--;
-  let y=20;
+  shctx.fillStyle = '#0ff';
+  shctx.font = '20px Arial';
+  shctx.textAlign = 'center';
+  shctx.fillText('Scoreboard', sharedCanvas.width / (2 * ratio), 50);
+  let y=200;
   let sortedList=dataSort(res.data);
   let userSeq;
   for(let i=0; i<eachPageSize; i++)
   {
     let userImage=wx.createImage();
     userSeq=currentPage*eachPageSize+i;
+    if(userSeq>=sortedList.length)
+    {
+      break;
+    }
+    console.log(sortedList[userSeq].avatarUrl);
     userImage.src=sortedList[userSeq].avatarUrl;
     // shctx.drawImage(userImage, sharedCanvas.width/(8*ratio), y-20, 30, 30);
-      shctx.drawImage(userImage, 10, y-20, 30, 30);
+    shctx.drawImage(userImage, 10, y-20, 30, 30);
 
     shctx.fillStyle = '#0ff';
     shctx.font = '20px Arial';
     for(let j = 0; j < sortedList[userSeq].KVDataList.length; ++j) {
       if (sortedList[userSeq].KVDataList[j].key === 'maxScore') {
-        shctx.textAlign = 'center';
-        shctx.fillText(`${sortedList[userSeq].nickname}   ${sortedList[userSeq].KVDataList[j].value}`, sharedCanvas.width / (2 * ratio), y);
+        shctx.textAlign = 'left';
+        shctx.fillText(`${sortedList[userSeq].nickname}   ${sortedList[userSeq].KVDataList[j].value}`, sharedCanvas.width / (5 * ratio), y);
       }
       y += 50;
     }
@@ -95,6 +104,7 @@ wx.onMessage(data => {
         return ;
     }
     else if(data.op === 'rend') {
+        currentPage=0;
         wx.getFriendCloudStorage({
             keyList: ['maxScore'],
             //success: getData_success
