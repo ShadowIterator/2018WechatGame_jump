@@ -350,8 +350,6 @@ export default class Main {
       ctx.textAlign='center';
       ctx.fillText(`What do you wanna do ?`, screenWidth/2, canvas.height / 2);
 
-
-
       for(let i=0; i<this.btn.length; i++)
       {
         let btnImage=new Image();
