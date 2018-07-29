@@ -77,7 +77,8 @@ export default class Main {
         //     op: 'updateScore',
         //     score: '1234'
         // });
-
+        this.bind_touchstart_hdr = this.touchstart_hdr.bind(this);
+        canvas.addEventListener('touchstart', this.bind_touchstart_hdr);
 
 
 
@@ -91,20 +92,22 @@ export default class Main {
     {
 
       this.status = 'init';
+      // this.gamePause();
 
+      this.btn = [];
       this.btn.push(new Button(new Circle(new Point(screenWidth/2, buttonY), buttonRadius), 'startBtn'));
-      this.bind_touchstart_hdr = this.touchstart_hdr.bind(this);
-      canvas.addEventListener('touchstart', this.bind_touchstart_hdr);
+      // this.bind_touchstart_hdr = this.touchstart_hdr.bind(this);
+      // canvas.addEventListener('touchstart', this.bind_touchstart_hdr);
       this.control.removeEvent();
     }
 
     gameover(score) {
         while (this.btn.length!==0)
           this.btn.pop();
-        canvas.removeEventListener(
-          'touchstart',
-          this.bind_touchstart_hdr
-        );
+        // canvas.removeEventListener(
+        //   'touchstart',
+        //   this.bind_touchstart_hdr
+        // );
 
         this.score = score;
         this.status = 'over';
@@ -114,30 +117,30 @@ export default class Main {
         });
         this.btn.push(new Button(new Circle(new Point(screenWidth/3, buttonY), buttonRadius), 'ranklist'));
         this.btn.push(new Button(new Circle(new Point(screenWidth*2/3, buttonY), buttonRadius), 'playagain'));
-        this.bind_touchstart_hdr = this.touchstart_hdr.bind(this);
-        canvas.addEventListener('touchstart', this.bind_touchstart_hdr);
+        // this.bind_touchstart_hdr = this.touchstart_hdr.bind(this);
+        // canvas.addEventListener('touchstart', this.bind_touchstart_hdr);
         this.control.removeEvent();
     }
 
     gamePause()
     {
+      this.status = 'pause';
+      // ++ this.scene.pause;
       while (this.btn.length!==0)
         this.btn.pop();
       this.btn.push(new Button(new Circle(new Point(screenWidth/3, buttonY), buttonRadius), 'mainmenu'));
       this.btn.push(new Button(new Circle(new Point(screenWidth*2/3, buttonY), buttonRadius), 'restart'));
       this.btn.push(new Button(new Circle(new Point(buttonRadius,buttonRadius),buttonRadius), 'backtogame'));
-
-
     }
 
     gameRanklist()
     {
       while (this.btn.length!==0)
         this.btn.pop();
-      canvas.removeEventListener(
-        'touchstart',
-        this.bind_touchstart_hdr
-      );
+      // canvas.removeEventListener(
+      //   'touchstart',
+      //   this.bind_touchstart_hdr
+      // );
       openDataContext.postMessage({
         op: 'rend'
       });
@@ -145,8 +148,8 @@ export default class Main {
       this.btn.push(new Button(new Circle(new Point(screenWidth/3, buttonY), buttonRadius), 'lastpage'));
       this.btn.push(new Button(new Circle(new Point(screenWidth*2/3, buttonY), buttonRadius), 'nextpage'));
       this.btn.push(new Button(new Circle(new Point(screenWidth/2, buttonY), buttonRadius), 'close'));
-      this.bind_touchstart_hdr=this.touchstart_hdr.bind(this);
-      canvas.addEventListener('touchstart', this.bind_touchstart_hdr);
+      // this.bind_touchstart_hdr=this.touchstart_hdr.bind(this);
+      // canvas.addEventListener('touchstart', this.bind_touchstart_hdr);
 
     }
 
@@ -209,7 +212,58 @@ export default class Main {
               }
             }
           }
-
+        }
+        else if(this.status === 'pause') {
+            e.preventDefault();
+            for(let i=0; i<this.btn.length; i++)
+            {
+                if(pointInCircle(P, this.btn[i].C))
+                {
+                    if(this.btn[i].desc==='mainmenu')
+                    {
+                        // this.status = 'init';
+                        this.gameInit();
+                    }
+                    else if(this.btn[i].desc==='restart')
+                    {
+                        // this.status = 'gaming';
+                        this.restart();
+                    }
+                    else if(this.btn[i].desc==='backtogame')
+                    {
+                        // this.gameover(this.score);
+                        // this.scene.pause = false;
+                        // -- this.scene.pause;
+                        // this.status = 'gaming';
+                        this.gaming();
+                    }
+                }
+            }
+        }
+        else if(this.status === 'gaming') {
+            e.preventDefault();
+            for(let i=0; i<this.btn.length; i++)
+            {
+                if(pointInCircle(P, this.btn[i].C))
+                {
+                    if(this.btn[i].desc==='pauseGame')
+                    {
+                        // this.status = 'init';
+                        this.gamePause();
+                    }
+                    // else if(this.btn[i].desc==='restart')
+                    // {
+                    //     // this.status = 'gaming';
+                    //     this.restart();
+                    // }
+                    // else if(this.btn[i].desc==='backtogame')
+                    // {
+                    //     // this.gameover(this.score);
+                    //     this.scene.pause = false;
+                    //     this.status = 'gaming';
+                    // }
+                }
+            }
         }
         // e.preventDefault()
         //
@@ -237,21 +291,23 @@ export default class Main {
         this.scene.controller = this.control;
         this.scene.init();
 
-        while (this.btn.length!==0)
-          this.btn.pop();
+        // while (this.btn.length!==0)
+        //   this.btn.pop();
 
-        this.status = 'gaming';
+        this.gaming();
+
+        // this.status = 'gaming';
         console.log('construct scene done');
 
-        canvas.removeEventListener(
-            'touchstart',
-            this.bind_touchstart_hdr
-        );
+        // canvas.removeEventListener(
+        //     'touchstart',
+        //     this.bind_touchstart_hdr
+        // );
 
-        canvas.addEventListener(
-            'touchstart',
-            this.touchstart_hdr_nothing.bind(this)
-        );
+        // canvas.addEventListener(
+        //     'touchstart',
+        //     this.touchstart_hdr_nothing.bind(this)
+        // );
 
         this.bindLoop = this.loop.bind(this);
 
@@ -300,9 +356,27 @@ export default class Main {
 
     }
 
+    gaming() {
+        this.status = 'gaming';
+        this.btn = [];
+        this.btn.push(new Button(new Circle(new Point(screenWidth - buttonRadius / 2, buttonRadius / 2), buttonRadius / 2), 'pauseGame'));
+
+    }
+
     render_gaming() {
         this.scene.render(ctx);
         this.control.render(ctx);
+        for(let i=0; i<this.btn.length; i++)
+        {
+            let btnImage=new Image();
+            let C=this.btn[i].C;
+            if(this.btn[i].desc==='pauseGame')
+            {
+                // btnImage.src='images/ranklist.png';
+                btnImage.src='images/mainmenu.png';
+            }
+            ctx.drawImage(btnImage,C.O.x-C.R, C.O.y-C.R, 2*C.R, 2*C.R);
+        }
     }
 
     render_over() {
@@ -343,8 +417,7 @@ export default class Main {
       ctx.drawImage(startBtnImage,C.O.x-C.R, C.O.y-C.R, 2*C.R, 2*C.R);
     }
 
-    render_pause()
-    {
+    render_pause() {
       ctx.fillStyle = '#0ff';
       ctx.font = '20px Arial';
       ctx.textAlign='center';
@@ -377,6 +450,7 @@ export default class Main {
         else if(this.status === 'over') this.render_over();
         else if(this.status === 'init') this.render_init();
         else if(this.status === 'ranklist') this.render_ranklist();
+        else if(this.status === 'pause') this.render_pause();
     }
     // // 实现游戏帧循环
     loop() {

@@ -912,7 +912,7 @@ export default class Scene {
       ctx.fillStyle = '#f00';
       ctx.font = '16px Arial';
       ctx.fillText(`score : ${parseInt(this.score)}`, 50, 20);
-      ctx.fillText(`health : ${this.hero.life}`, this.W - 70, 20);
+      ctx.fillText(`health : ${this.hero.life}`, 45, 40);
     }
 
     objectLoop(shape) {
