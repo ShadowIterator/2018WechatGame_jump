@@ -61,6 +61,7 @@ export default class Stair extends Sprite{
     }
 
     drawToCanvas(ctx, transPosition) {
+        if(!this.visible) return ;
         let P1 = transPosition(this.shape.P1);
         ctx.drawImage(this.img, P1.x, P1.y, this.shape.getWidth(), this.shape.getHeight());
     }
