@@ -83,7 +83,7 @@ export default class Main {
 
         wx.setKeepScreenOn({keepScreenOn: true});
         this.restart();
-        //this.gameover();
+
         this.gameInit();
     }
 
@@ -117,6 +117,17 @@ export default class Main {
         this.bind_touchstart_hdr = this.touchstart_hdr.bind(this);
         canvas.addEventListener('touchstart', this.bind_touchstart_hdr);
         this.control.removeEvent();
+    }
+
+    gamePause()
+    {
+      while (this.btn.length!==0)
+        this.btn.pop();
+      this.btn.push(new Button(new Circle(new Point(screenWidth/3, buttonY), buttonRadius), 'mainmenu'));
+      this.btn.push(new Button(new Circle(new Point(screenWidth*2/3, buttonY), buttonRadius), 'restart'));
+      this.btn.push(new Button(new Circle(new Point(buttonRadius,buttonRadius),buttonRadius), 'backtogame'));
+
+
     }
 
     gameRanklist()
@@ -330,6 +341,36 @@ export default class Main {
       let startBtnImage=new Image();
       startBtnImage.src='images/startbtn.png';
       ctx.drawImage(startBtnImage,C.O.x-C.R, C.O.y-C.R, 2*C.R, 2*C.R);
+    }
+
+    render_pause()
+    {
+      ctx.fillStyle = '#0ff';
+      ctx.font = '20px Arial';
+      ctx.textAlign='center';
+      ctx.fillText(`What do you wanna do ?`, screenWidth/2, canvas.height / 2);
+
+
+
+      for(let i=0; i<this.btn.length; i++)
+      {
+        let btnImage=new Image();
+        let C=this.btn[i].C;
+        if(this.btn[i].desc==='backtogame')
+        {
+          btnImage.src='images/backtogame.png';
+        }
+        else if(this.btn[i].desc==='restart')
+        {
+          btnImage.src='images/restart.png';
+        }
+        else if(this.btn[i].desc==='mainmenu')
+        {
+          btnImage.src='images/mainmenu.png';
+        }
+
+        ctx.drawImage(btnImage,C.O.x-C.R, C.O.y-C.R, 2*C.R, 2*C.R);
+      }
     }
 
     render() {
