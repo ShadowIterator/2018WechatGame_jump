@@ -4,7 +4,8 @@
 
 * 张佳麟
     - 2016013256
-    <!-- TODO -->
+    - sherlockcooper@sina.com
+    - 负责游戏界面设计、部分公共数据更新以及控制方式
 * 李仁杰
     - 2016013271
     - ShadowIterator@hotmail.com
