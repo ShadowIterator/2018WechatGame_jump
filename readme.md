@@ -231,11 +231,17 @@
 - 测试平台有小米、三星、iphon6S、iphone8、iphoneX等
 - 建议助教使用安卓进行测试
 
-## 游戏二维码
-![avatar](./QRcode.jpg)
-
 ## 源代码地址
-![https://github.com/ShadowIterator/2018WechatGame_jump][https://github.com/ShadowIterator/2018WechatGame_jump]
+https://github.com/ShadowIterator/2018WechatGame_jump
+
+这个仓库将会于2018年7月29日转为公开仓库
 
 ## 邀请连接
 https://github.com/ShadowIterator/2018WechatGame_jump/invitations
+
+已邀请李肇阳学长和黄超学长为协助者
+
+## 游戏二维码
+![avatar](./QRcode.jpg)
+
+已邀请刘强老师、黄超学长、李肇阳学长和陈高勋学长为体验者。
