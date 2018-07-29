@@ -382,14 +382,18 @@ export default class Scene {
             ,[
                 this.clearAllStairs.bind(this)
                 ,genFunctionWithoutParam(this.appendStairs, this, 6800 - this.Hd2, 6800 + this.Hd2, 0, 0, 0, this.params.CURRENT_AVE_STAIRS_PER_Y * 2)
+                ,this.stairAnimation.bind(this)
+                // ,genFunctionWithoutParam(setTimeout(function))
+                // ,genFunctionWithoutParam(this.animation_appendStairs, this, 6800 - this.Hd2, 6800 + this.Hd2, 0, 0, 0, this.params.CURRENT_AVE_STAIRS_PER_Y * 2)
             ]
         ));
 
+        //TODO: sectionline height, appendstairs height
         this.stairs.push(new SectionLine(13000,
             {
                 g: this.params.g
                 ,Ag: new Point(0, -this.params.g)
-                ,CURRENT_AVE_STAIRS_PER_Y: this.__normalizey(0)
+                ,CURRENT_AVE_STAIRS_PER_Y: this.__normalizey(0.001)
                 ,CURRENT_MOVE_X: (mod(this.controller.Vlx)) * this.params.CURRENT_EJECT_VY / Math.abs(this.params.g)
                 ,CURRENT_EJECT_VY: this.params.CURRENT_EJECT_VY
                 ,CURRENT_EJECT_H: this.params.CURRENT_EJECT_VY * this.params.CURRENT_EJECT_VY / (2 * (this.params.g))
@@ -405,7 +409,9 @@ export default class Scene {
             ,[
                 this.clearAllStairs.bind(this)
                 ,genFunctionWithoutParam(this.appendStairs, this, 13000 - this.Hd2, 13000 + this.Hd2, 13000 - this.Hd2 + 10, 0, this.W, this.params.CURRENT_AVE_STAIRS_PER_Y * 2)
+                ,this.stairAnimation.bind(this)
             ]));
+
 
         this.stairs.push(new SectionLine(14000,
             {
@@ -717,6 +723,23 @@ export default class Scene {
         return rtn;
     }
 
+    //TODO: stair length ?
+    stairAnimation() {
+        this.pause = true;
+        for(let i = 0; i < this.stairs.length; ++i) {
+            this.stairs[i].visible= false;
+        }
+        for(let i = this.stairs.length - 1; i >= 0; --i) {
+            setTimeout((function () {
+                console.log(i);
+                this.stairs[i].visible = true;
+                if(i === 0)
+                    this.pause = false;
+            }).bind(this), 100 * (this.stairs.length - i));
+        }
+        // this.pause = false;
+    }
+
     randamAppendStairs(L, H, rho) {
         for(let k = L; k < H; ++k){
             if(DBcmp(Math.random(), rho) < 0) {
@@ -736,6 +759,70 @@ export default class Scene {
         }
     }
 
+    // animation_appendStairs(L, H, first_y, minx, maxx, rho) {
+    //     // minxx = this.minx;
+    //     // maxx = this.maxx;
+    //     let seq = this.generator_appendStairs(L, H, first_y, minx, maxx, rho);
+    //     while(!seq.next().done) {
+    //         setTimeout((function () {
+    //             this.stairs.push(seq.value);
+    //         }).bind(this), 500);
+    //     }
+    //     //     {
+    //     //     setTimeout(function (){
+    //     //         this.stairs.push(seq.next().value);
+    //     //     }
+    //     // }
+    // }
+    //
+    //
+    //
+    // * generator_appendStairs(L, H, first_y, minx, maxx, rho) {
+    //     if (DBcmp(this.params.g, 0) > 0) {
+    //         let highest_y = first_y;
+    //         let last_y = L;
+    //         let stair = {};
+    //         let stair_x = 0;
+    //         let stair_y = 0;
+    //         while (highest_y < H) {
+    //             stair_x = getRandUniform(Math.max(minx - this.params.CURRENT_MOVE_X, 0), Math.min(maxx + this.params.CURRENT_MOVE_X, this.W));
+    //             stair_y = getRandUniform(last_y, highest_y - 5) + 1;
+    //
+    //             stair = this.genRandObjByy([
+    //                     {generator: this.bind_genMovingStair, P: this.params.movingStair_key_current},
+    //                     {generator: this.bind_genChangingStair, P: this.params.changingStair_key_current},
+    //                     {generator: this.bind_genNormalStair, P: this.params.normalStair_key_current}],
+    //                 stair_x, stair_y);
+    //
+    //             yield stair;
+    //             last_y = highest_y;
+    //             minx = stair.getMinx();
+    //             maxx = stair.getMaxx();
+    //             highest_y = stair.maxHeight(this.params.g);
+    //
+    //         }
+    //         this.maxStairH = highest_y;
+    //         this.minx = minx;
+    //         this.maxx = maxx;
+    //
+    //         for (let k = L; k < H; ++k) {
+    //             if (DBcmp(Math.random(), rho) < 0) {
+    //                 let stair = this.genRandObjByy([{
+    //                         generator: this.bind_genDeadStair,
+    //                         P: this.params.deadStair_random_current
+    //                     },
+    //                         {generator: this.bind_genMovingStair, P: this.params.movingStair_random_current},
+    //                         {generator: this.bind_genChangingStair, P: this.params.changingStair_random_current},
+    //                         {generator: this.bind_genNormalStair, P: this.params.normalStair_random_current}],
+    //                     getRandUniform(0, this.W), k);
+    //                 // this.stairs.push(stair);
+    //                 yield stair;
+    //             }
+    //         }
+    //         return;
+    //     }
+    // }
+
     appendStairs(L, H, first_y, minx, maxx, rho) {
         if(DBcmp(this.params.g, 0) > 0) {
             let highest_y = first_y;
@@ -753,7 +840,7 @@ export default class Scene {
                         {generator: this.bind_genNormalStair, P: this.params.normalStair_key_current}],
                     stair_x, stair_y);
 
-                console.log('gen stair done');
+                // console.log('gen stair done');
                 this.stairs.push(stair);
                 last_y = highest_y;
                 minx = stair.getMinx();
@@ -764,7 +851,6 @@ export default class Scene {
             this.minx = minx;
             this.maxx = maxx;
         }
-
         this.randamAppendStairs(L, H , rho);
     }
 
@@ -808,6 +894,7 @@ export default class Scene {
     }
 
     render(ctx) {
+        // console.log('render');
         this.background.drawToCanvas(ctx);
         ctx.fillStyle = '#f00';
         ctx.font = '16px Arial';
