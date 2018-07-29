@@ -1,24 +1,11 @@
 
 import Sprite from '../base/sprite'
 import {PI, INF, EPS} from  '../libs/geometry'
-import {Point, Circle, Segment, Colli} from '../libs/geometry'
-import {DBcmp, add, _add, sub, _sub, mul, _mul,
-    rotate, _rotate, dot, cross, _reverse,
-    mod_2, mod, _normalize, normalize, _relen,
-    dist_2, relen, isZero, _toZero, calH,
-    pointOnSegment, pointInCircle,
-    CircleOnCircle} from '../libs/geometry'
-
 
 const IMGSRC = 'images/hero.png';
-const HERO_WIDTH = 10;
-const HERO_HEIGHT = 10;
 
 export default class Hero extends Sprite{
     constructor (S, V) {
-        // super(IMGSRC, HERO_WIDTH, HERO_HEIGHT);
-        // this.shape = S;
-
         super(S, IMGSRC, S.getWidth(), S.getHeight());
         this.V = V;
         this.life = 3;

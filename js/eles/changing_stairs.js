@@ -1,4 +1,3 @@
-import {PI, INF, EPS} from  '../libs/geometry'
 import {Point, Circle, Segment, Colli} from '../libs/geometry'
 import {DBcmp, add, _add, sub, _sub, mul, _mul, div, _div,
     rotate, _rotate, dot, cross, _reverse,

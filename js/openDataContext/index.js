@@ -3,11 +3,6 @@ let sharedCanvas = wx.getSharedCanvas();
 
 let shctx = sharedCanvas.getContext('2d');
 
-let W = sharedCanvas.width;
-let H = sharedCanvas.height;
-
-// let scales = W / 750;
-
 const screenWidth = wx.getSystemInfoSync().screenWidth;
 const screenHeight = wx.getSystemInfoSync().screenHeight;
 const ratio = wx.getSystemInfoSync().pixelRatio;
@@ -16,13 +11,6 @@ const eachPageSize=5;
 let currentPage=0;
 
 function getData_success(res) {
-    // shctx.fillStyle = '#0ff';
-    // shctx.font = '20px Arial';
-    // shctx.textAlign='center';
-    // shctx.fillText(`game over, touch screen to restart`, W / 2, 220);
-    // console.log('sucess');
-
-    // console.log(res);
     let y = 20;
 
     for(let i = 0; i < res.data.length; ++i) {
@@ -32,18 +20,6 @@ function getData_success(res) {
         shctx.fillStyle = '#0ff';
         shctx.font = '20px Arial';
         shctx.textAlign='center';
-        //shctx.fillText(res.data[i].nickname, 100, y);
-        //console.log(res.data[i].nickname);
-        // shctx.fill(`${res[i].KVData.curScore}`, 200, y);
-        // for(let j = 0; j < res.data[i].KVDataList.length; ++j) {
-        //     if(res.data[i].KVDataList[j].key === 'maxScore') {
-        //         shctx.textAlign='center';
-        //         shctx.fillText(`${res.data[i].nickname}   ${res.data[i].KVDataList[j].value}`, sharedCanvas.width/(2*ratio), y);
-        //         // console.log(res.data[i].KVDataList[j].value);
-        //     }
-        // shctx.textAlign='center';
-        // shctx.fillText(`${res.data[i].nickname}   ${res.data[i].KVDataList[0].value}`, sharedCanvas.width/(2*ratio), y);
-        // }
 
         if(res.data[i].KVDataList.length !== 0)
             shctx.fillText(`${res.data[i].nickname}   ${res.data[i].KVDataList[0].value}`, sharedCanvas.width/(2*ratio), y);
@@ -78,7 +54,6 @@ function singlePageRankList(res)
     console.log(sortedList[userSeq].avatarUrl);
     userImage.src=sortedList[userSeq].avatarUrl;
     shctx.drawImage(userImage, sharedCanvas.width/(8*ratio) - (10 * ratio) , y-20, 30, 30);
-    // shctx.drawImage(userImage, 10, y-20, 30, 30);
 
     shctx.fillStyle = '#0ff';
     shctx.font = '20px Arial';
@@ -94,20 +69,14 @@ function singlePageRankList(res)
 }
 
 wx.onMessage(data => {
-    // console.log(data.op);
     if(data.op === 'init') {
-
-        //console.log(sharedCanvas.width);
         shctx.scale(ratio, ratio);
-        //console.log(sharedCanvas.width);
-
         return ;
     }
     else if(data.op === 'rend') {
         currentPage=0;
         wx.getFriendCloudStorage({
             keyList: ['maxScore'],
-            //success: getData_success
             success: singlePageRankList
         });
     }
@@ -133,15 +102,6 @@ wx.onMessage(data => {
           success:  singlePageRankList
         });
     }
-    // shctx.fillStyle = '#0ff';
-    // shctx.font = '20px Arial';
-    // shctx.textAlign='center';
-    // shctx.fillText(`game over, touch screen to restart`, 750/2, 220);
-    // console.log(data)
-    /* {
-      text: 'hello',
-      year: 2018
-    } */
 });
 
 function dataSort(gameData) {
@@ -178,19 +138,6 @@ function updateScore (score) {
             console.log('set curScore, sucess', res);
         })
     });
-    // wx.setUserCloudStorage({
-    //     KVDataList: [{
-    //         key: 'curScore',
-    //         value: score
-    //     }],
-    //     success: (res => {
-    //         console.log('save cur success');
-    //         // console.log('save max success', res);
-    //     }),
-    //     fail: (res => {
-    //         console.log('save max failed', res);
-    //     })
-    // });
 
     wx.getUserCloudStorage({
         keyList: ['curScore', 'maxScore'],
@@ -200,15 +147,6 @@ function updateScore (score) {
             let curScore = data.KVDataList[0].value;
             console.log(data);
             console.log(curScore);
-            // if (!data.KVDataList[1]){
-            //     saveMaxScore(lastScore);
-            //     myScore = lastScore;
-            // } else if (lastScore > data.KVDataList[1].value) {
-            //     saveMaxScore(lastScore);
-            //     myScore = lastScore;
-            // } else {
-            //     myScore = data.KVDataList[1].value;
-            // }
             if(!data.KVDataList[1] || (Number(curScore) > Number(data.KVDataList[1].value))) {
                 saveMaxScore(curScore);
             }

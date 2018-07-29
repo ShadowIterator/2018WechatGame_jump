@@ -16,9 +16,7 @@ const stairAudio='audio/stair.mp3';
 
 export default class Stair extends Sprite{
     constructor (S, Vy, visibal = true) {
-        // super(IMGSRC);
         super(S, IMGSRC, S.getWidth(), S.getHeight());
-        // this.shape = S;
         this.Vy = Vy;
         this.V = new Point(0, 0);
         this.className = 'stair';
@@ -39,7 +37,6 @@ export default class Stair extends Sprite{
         if(scene.hero.status !== 'normal')
             return ;
         let VN = this.Vy;
-        // VN.y += 5;
         let VH = rotate(VN, -PI / 2);
         _normalize(VH);
         _mul(VH, dot(VH, scene.hero.V));

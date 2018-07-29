@@ -1,12 +1,3 @@
-import {PI, INF, EPS} from  '../libs/geometry'
-import {Point, Circle, Segment, Colli} from '../libs/geometry'
-import {DBcmp, add, _add, sub, _sub, mul, _mul, div, _div,
-    rotate, _rotate, dot, cross, _reverse,
-    mod_2, mod, _normalize, normalize, _relen,
-    dist_2, relen, isZero, _toZero, calH,
-    pointOnSegment, pointInCircle,
-    CircleOnCircle} from '../libs/geometry'
-
 import Stair from './stair'
 
 const movingStairSrc='images/movingstair.png';
@@ -52,10 +43,8 @@ export default class MovingStair extends Stair {
     }
 
     maxHeight(g) {
-        // return this.Vy.y * this.Vy.y / (2 * g) + this.shape.P1.y;
         return this.Vy.y * this.Vy.y / (2 * g) + this.maxy;
     }
-
 
     getHeight() {
         return this.maxy;

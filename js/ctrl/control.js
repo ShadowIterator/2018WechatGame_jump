@@ -16,24 +16,15 @@ const Vzero = new Point(0, 0);
 const defaultV = 1.7;
 
 function gravityScale(x) {
-  // if(Math.abs(x)<0.1)
-  //   return 0;
-  // else
   {
-    //(0.1,0.5), (1,8), (0,0)
-    //c=0
-    //0.1a+b=5
-    //a+b=8
     return 3.33*x*x+4.67*Math.abs(x);
   }
 }
 
 function _setx(V, Vx) {
-    // console.log(V, Vx);
     let conj = dot(V, NVy);
     V = mul(NVy, conj);
     _add(V, Vx);
-    // console.log('_setx, V ', V);
 }
 
 export default class Control {
@@ -69,12 +60,6 @@ export default class Control {
 
     setVrx_len(x) {
         this.Vrx.x = x * this.Vrx.x / Math.abs(this.Vrx.x);
-    }
-
-    init_all()
-    {
-        this.Vlx = new Point(-1.7 / 320 * this.W, 0);
-        this.Vrx = new Point(1.7 / 320 * this.W, 0);
     }
 
     initGravity()
@@ -118,27 +103,11 @@ export default class Control {
     
     
     initEvent() {
-        // this.initButton();
-
         this.initGravity()
-
     }
 
   gravity_change(e)
   {
-    // if(e.x>=0.1)
-    // {
-    //   this.target._setheroVx(mul(this.Vrx, gravityScale(e.x)));
-    // }
-    // else if(e.x<=-0.1)
-    // {
-    //   this.target._setheroVx(mul(this.Vlx, gravityScale(e.x)));
-    // }
-    // else
-    // {
-    //   this.target._setheroVx(Vzero);
-    // }
-    
     if(e.x>0)
     {
       this.target._setheroVx(mul(this.Vrx, gravityScale(e.x)));
@@ -163,25 +132,8 @@ export default class Control {
 
     touchstart_hdr(e) {
         e.preventDefault();
-        console.log('touchstart');
         let P = new Point(0, 0);
-        // for(let i = 0; i < e.touches.length; ++i) {
-        //     P.x = e.touches[i].clientX;
-        //     P.y = e.touches[i].clientY;
-        //     for(let j = 0; j < this.btn.length; ++j) {
-        //         if( pointInCircle(P, this.btn[j].C)) {
-        //             if(this.btn[j].desc === 'jleft') {
-        //                
-        //                 this.target._setheroVx(this.Vlx);
-        //                
-        //             }
-        //             else {
-        //                 this.target._setheroVx(this.Vrx);
-        //                 // _setx(this.target.hero.V, Vrx);
-        //             }
-        //         }
-        //     }
-        // }
+
       for(let i=0; i<e.changedTouches.length; ++i)
       {
           P.x = e.changedTouches[i].clientX;
@@ -197,13 +149,10 @@ export default class Control {
               else {
                 this.target._setheroVx(this.Vrx);
                 this.touchRight.add(e.changedTouches[i].identifier);
-              // _setx(this.target.hero.V, Vrx);
               }
             }
           }
       }
-      // console.log('touchLeft', this.touchLeft.size);
-      // console.log('touchRight', this.touchRight.size);
     }
 
     touchmove_hdr(e) {
@@ -212,22 +161,17 @@ export default class Control {
 
     touchend_hdr(e) {
         e.preventDefault();
-        // console.log('touchend');
         for(let i=0; i<e.changedTouches.length; ++i)
         {
           if(this.touchLeft.has(e.changedTouches[i].identifier))
           {
             this.touchLeft.delete(e.changedTouches[i].identifier);
-            // console.log('deleteLeft');
           }
           else if(this.touchRight.has(e.changedTouches[i].identifier))
           {
             this.touchRight.delete(e.changedTouches[i].identifier);
-            // console.log('deleteRight');
           }
         }
-        // console.log('touchLeft', this.touchLeft.size);
-        // console.log('touchRight', this.touchRight.size);
         if(this.touchLeft.size===0 && this.touchRight.size!==0)
         {
           this.target._setheroVx(this.Vrx);
@@ -240,8 +184,6 @@ export default class Control {
         {
           this.target._setheroVx(Vzero);
         }
-        
-        
     }
 
 
@@ -261,6 +203,5 @@ export default class Control {
     render_gravity(ctx) {
 
     }
-
 
 }
