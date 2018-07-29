@@ -75,7 +75,7 @@
 ### 章节切换
 由`分界线`实现。在体验版中，我们手动设置三个章节
 - 高度为`0`到`6500`是入门章节，这个章节中，随着高度的升高，`stair_density`逐渐减少，`enemy_density`增大
-- 高度`6500`到`13000`，重力向上，主要玩法是躲避地刺和怪物，这个阶段的游戏难度较小
+- 高度`6500`到`13000`，重力向上，主要玩法是躲避地刺和怪物，这个阶段的游戏难度较小，注意重力改变的时候必须重新生成`跳板`，如果在一帧内刷新所有跳板，玩家可能不适应，于是我们做了一个过场动画，一块一块地生成新的跳板。
 - 高度`14000`到`20000`，重力向上，左右控制反向
 - <s>打到`20000`是不可能打到`20000`的，这辈子都不可能打到`20000`的</s>
 
@@ -235,4 +235,7 @@
 ![avatar](./QRcode.jpg)
 
 ## 源代码地址
-![https://github.com/ShadowIterator/2018WechatGame_jump/tree/dev_lrj][https://github.com/ShadowIterator/2018WechatGame_jump/tree/dev_lrj]
+![https://github.com/ShadowIterator/2018WechatGame_jump][https://github.com/ShadowIterator/2018WechatGame_jump]
+
+## 邀请连接
+https://github.com/ShadowIterator/2018WechatGame_jump/invitations

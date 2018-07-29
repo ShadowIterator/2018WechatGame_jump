@@ -373,7 +373,7 @@ export default class Main {
             if(this.btn[i].desc==='pauseGame')
             {
                 // btnImage.src='images/ranklist.png';
-                btnImage.src='images/mainmenu.png';
+                btnImage.src='images/pause.png';
             }
             ctx.drawImage(btnImage,C.O.x-C.R, C.O.y-C.R, 2*C.R, 2*C.R);
         }
