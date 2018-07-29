@@ -324,7 +324,7 @@ export default class Main {
       ctx.fillStyle = '#0ff';
       ctx.font = '20px Arial';
       ctx.textAlign='center';
-      ctx.fillText(`Doodle jump`, screenWidth/2, canvas.height / 2);
+      ctx.fillText(`Jump`, screenWidth/2, canvas.height / 2);
 
       let C = this.btn[0].C;
       let startBtnImage=new Image();

@@ -809,10 +809,7 @@ export default class Scene {
 
     render(ctx) {
         this.background.drawToCanvas(ctx);
-        ctx.fillStyle = '#f00';
-        ctx.font = '16px Arial';
-        ctx.fillText(`score : ${parseInt(this.score)}`, 50, 20);
-        ctx.fillText(`health : ${this.hero.life}`, this.W - 70, 20);
+
         this.hero.drawToCanvas(ctx, this.transPosition.bind(this));
         for(let i = this.stairs.length - 1; i >= 0; --i) {
             // console.log(this.stairs[i]);
@@ -825,6 +822,10 @@ export default class Scene {
             this.props[i].drawToCanvas(ctx, this.transPosition.bind(this));
         }
 
+      ctx.fillStyle = '#f00';
+      ctx.font = '16px Arial';
+      ctx.fillText(`score : ${parseInt(this.score)}`, 50, 20);
+      ctx.fillText(`health : ${this.hero.life}`, this.W - 70, 20);
     }
 
     objectLoop(shape) {
