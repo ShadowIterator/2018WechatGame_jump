@@ -34,10 +34,14 @@ function singlePageRankList(res)
 
     console.log(res);
 
+    console.log( currentPage);
+
   if(currentPage<0)
     currentPage=0;
-  if((currentPage-1)*eachPageSize>=res.data.length)
-    currentPage--;
+  if((currentPage) * eachPageSize >= res.data.length)
+    currentPage = Math.ceil(res.data.length / eachPageSize) - 1;
+      // currentPage--;
+
   shctx.fillStyle = '#0ff';
   shctx.font = '20px Arial';
   shctx.textAlign = 'center';

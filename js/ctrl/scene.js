@@ -334,19 +334,19 @@ export default class Scene {
 
         this.stairs.push(new SectionLine(21000,
             {
-                CURRENT_AVE_ENEMY_PER_Y: this.__normalizey(0.01),//0.001,
-                g: this.params.g * 0.75
-                ,Ag: new Point(0, -this.params.g * 0.75)
-                ,CURRENT_MOVE_X: (mod(this.controller.Vlx)) * this.params.CURRENT_EJECT_VY * 0.9 / Math.abs(this.params.g  * 0.75)
-                ,CURRENT_EJECT_VY: this.params.CURRENT_EJECT_VY  * 0.9
-                ,CURRENT_EJECT_H: this.params.CURRENT_EJECT_VY * 0.9 * this.params.CURRENT_EJECT_VY  * 0.9 / (2 * (this.params.g * 0.75))
+                CURRENT_AVE_ENEMY_PER_Y: this.__normalizey(0.015),//0.001,
+                g: this.params.g * 1.7
+                ,Ag: new Point(0, -this.params.g * 1.5)
+                ,CURRENT_MOVE_X: (mod(this.controller.Vlx)) * this.params.CURRENT_EJECT_VY * 1.7 / Math.abs(this.params.g  * 1.7)
+                ,CURRENT_EJECT_VY: this.params.CURRENT_EJECT_VY  * 1.7
+                ,CURRENT_EJECT_H: this.params.CURRENT_EJECT_VY * 1.7 * this.params.CURRENT_EJECT_VY  * 1.7 / (2 * (this.params.g * 1.7))
 
             }
             ,true
             ,[
                 this._enableButton.bind(this)
                 ,this.clearAllStairs.bind(this)
-                ,genFunctionWithoutParam(this.appendStairs, this, 21000 - this.Hd2, 21000 + this.Hd2, 21000 - this.Hd2 + 10, 0, this.W, this.params.CURRENT_AVE_STAIRS_PER_Y * 2)
+                ,genFunctionWithoutParam(this.appendStairs, this, 21000 - this.Hd2, 21000 + this.Hd2, 21000 - this.Hd2 + 10, 0, this.W, this.params.CURRENT_AVE_STAIRS_PER_Y)
                 ,this.stairAnimation.bind(this)
             ]
         ));

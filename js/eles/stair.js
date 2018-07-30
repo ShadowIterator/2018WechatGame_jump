@@ -43,6 +43,7 @@ export default class Stair extends Sprite{
         scene.hero.V = add(VH, VN);
         scene.hero.V.y += 1;
         this.audio.play();
+        wx.vibrateShort();
     }
 
     getMinx() {

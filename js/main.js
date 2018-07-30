@@ -37,13 +37,12 @@ export default class Main {
 
         wx.setKeepScreenOn({keepScreenOn: true});
         this.restart();
-
         this.gameInit();
+
     }
 
     gameInit()
     {
-
       this.status = 'init';
       this.btn = [];
       this.btn.push(new Button(new Circle(new Point(screenWidth/2, buttonY), buttonRadius), 'startBtn'));
