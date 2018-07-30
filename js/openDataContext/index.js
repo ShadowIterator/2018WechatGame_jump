@@ -30,6 +30,8 @@ function getData_success(res) {
 
 function singlePageRankList(res)
 {
+    shctx.clearRect(0, 0, sharedCanvas.width, sharedCanvas.height);
+
     console.log(res);
 
   if(currentPage<0)
